@@ -1,0 +1,56 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: loom-monitor
+  namespace: loom
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: loom
+  endpoints:
+  - port: metrics
+    interval: 30s
+    path: /metrics
+  namespaceSelector:
+    matchNames:
+    - loom
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-alerts
+  namespace: loom
+data:
+  loom-alerts.yaml: |
+    groups:
+    - name: loom
+      rules:
+      - alert: LoomDown
+        expr: up{job="loom"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "LOOM instance is down"
+          description: "LOOM instance {{ $labels.instance }} has been down for more than 1 minute."
+      
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate on LOOM"
+          description: "Error rate is above 5% for the last 5 minutes."
+      
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High latency on LOOM"
+          description: "95th percentile latency is above 2 seconds."

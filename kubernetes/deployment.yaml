@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: loom
+  namespace: loom
+  labels:
+    app: loom
+    component: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: loom
+      component: api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: loom
+        component: api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8001"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: loom
+        image: loom:latest  # 替换为实际的镜像仓库地址，如 yourregistry/loom:v0.1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+          name: http
+        - containerPort: 8001
+          name: metrics
+        env:
+        - name: LOOM_LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: loom-config
+              key: LOOM_LOG_LEVEL
+        - name: LOOM_DATA_DIR
+          valueFrom:
+            configMapKeyRef:
+              name: loom-config
+              key: LOOM_DATA_DIR
+        - name: LOOM_ENABLE_METRICS
+          valueFrom:
+            configMapKeyRef:
+              name: loom-config
+              key: LOOM_ENABLE_METRICS
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: loom-secrets
+              key: openai-api-key
+        - name: ANTHROPIC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: loom-secrets
+              key: anthropic-api-key
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+        volumeMounts:
+        - name: data-volume
+          mountPath: /app/data
+        - name: canon-volume
+          mountPath: /app/canon
+        - name: config-volume
+          mountPath: /app/config
+      volumes:
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: loom-data-pvc
+      - name: canon-volume
+        persistentVolumeClaim:
+          claimName: loom-canon-pvc
+      - name: config-volume
+        configMap:
+          name: loom-config
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000

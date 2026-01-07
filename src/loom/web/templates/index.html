@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - LOOM</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- 导航栏 -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-spider"></i>
+                <span>LOOM</span>
+                <span class="nav-subtitle">Language-Oriented Ontology Machine</span>
+            </div>
+            <div class="nav-links">
+                <a href="/" class="nav-link active"><i class="fas fa-home"></i> 首页</a>
+                <a href="/#sessions" class="nav-link"><i class="fas fa-comments"></i> 会话</a>
+                <a href="/#rules" class="nav-link"><i class="fas fa-book"></i> 规则</a>
+                <a href="/#config" class="nav-link"><i class="fas fa-cog"></i> 配置</a>
+                <a href="/api/docs" class="nav-link" target="_blank"><i class="fas fa-code"></i> API</a>
+            </div>
+            <div class="nav-status">
+                <span id="connection-status" class="status-indicator offline">
+                    <i class="fas fa-circle"></i> 离线
+                </span>
+            </div>
+        </nav>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 欢迎区域 -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <h1><i class="fas fa-magic"></i> 欢迎使用 LOOM</h1>
+                    <p class="hero-subtitle">基于 Markdown 规则的非承载叙事引擎</p>
+                    <p class="hero-description">
+                        LOOM 是一个强大的叙事引擎，允许你通过简单的规则文件创建和管理复杂的世界观。
+                        使用 AI 驱动的情节生成，打造属于你的独特故事体验。
+                    </p>
+                    <div class="hero-actions">
+                        <button class="btn btn-primary" onclick="showCreateSessionModal()">
+                            <i class="fas fa-plus"></i> 创建新会话
+                        </button>
+                        <button class="btn btn-secondary" onclick="loadSessions()">
+                            <i class="fas fa-sync"></i> 刷新会话
+                        </button>
+                        <a href="/api/docs" class="btn btn-outline" target="_blank">
+                            <i class="fas fa-book-open"></i> API 文档
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <div class="world-visualization">
+                        <div class="world-node center">
+                            <i class="fas fa-globe"></i>
+                            <span>世界</span>
+                        </div>
+                        <div class="world-connector"></div>
+                        <div class="world-node left">
+                            <i class="fas fa-scroll"></i>
+                            <span>规则</span>
+                        </div>
+                        <div class="world-node right">
+                            <i class="fas fa-robot"></i>
+                            <span>AI</span>
+                        </div>
+                        <div class="world-node top">
+                            <i class="fas fa-users"></i>
+                            <span>玩家</span>
+                        </div>
+                        <div class="world-node bottom">
+                            <i class="fas fa-history"></i>
+                            <span>历史</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 会话管理区域 -->
+            <section id="sessions" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-comments"></i> 会话管理</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-sm btn-primary" onclick="showCreateSessionModal()">
+                            <i class="fas fa-plus"></i> 新建
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="loadSessions()">
+                            <i class="fas fa-sync"></i> 刷新
+                        </button>
+                    </div>
+                </div>
+                <div class="section-content">
+                    <div id="sessions-loading" class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> 加载会话中...
+                    </div>
+                    <div id="sessions-container" class="cards-container">
+                        <!-- 会话卡片将通过 JavaScript 动态加载 -->
+                    </div>
+                    <div id="no-sessions" class="empty-state" style="display: none;">
+                        <i class="fas fa-inbox"></i>
+                        <h3>暂无会话</h3>
+                        <p>还没有创建任何会话，点击上方按钮创建一个吧！</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 规则管理区域 -->
+            <section id="rules" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-book"></i> 规则管理</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-sm btn-primary" onclick="loadRules()">
+                            <i class="fas fa-sync"></i> 刷新规则
+                        </button>
+                        <button class="btn btn-sm btn-secondary" onclick="showCreateRuleModal()">
+                            <i class="fas fa-plus"></i> 新建规则
+                        </button>
+                    </div>
+                </div>
+                <div class="section-content">
+                    <div id="rules-loading" class="loading">
+                        <i class="fas fa-spinner fa-spin"></i> 加载规则中...
+                    </div>
+                    <div id="rules-container" class="cards-container">
+                        <!-- 规则卡片将通过 JavaScript 动态加载 -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 系统状态区域 -->
+            <section id="config" class="section">
+                <div class="section-header">
+                    <h2><i class="fas fa-cog"></i> 系统状态</h2>
+                    <div class="section-actions">
+                        <button class="btn btn-sm btn-primary" onclick="loadSystemStatus()">
+                            <i class="fas fa-sync"></i> 刷新状态
+                        </button>
+                    </div>
+                </div>
+                <div class="section-content">
+                    <div class="status-grid">
+                        <div class="status-card">
+                            <div class="status-icon success">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <div class="status-info">
+                                <h3>API 服务</h3>
+                                <p id="api-status">检查中...</p>
+                            </div>
+                        </div>
+                        <div class="status-card">
+                            <div class="status-icon warning">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div class="status-info">
+                                <h3>数据存储</h3>
+                                <p id="db-status">检查中...</p>
+                            </div>
+                        </div>
+                        <div class="status-card">
+                            <div class="status-icon info">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="status-info">
+                                <h3>AI 提供商</h3>
+                                <p id="ai-status">检查中...</p>
+                            </div>
+                        </div>
+                        <div class="status-card">
+                            <div class="status-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="status-info">
+                                <h3>规则文件</h3>
+                                <p id="rules-status">检查中...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <i class="fas fa-spider"></i>
+                    <span>LOOM v0.1.0</span>
+                </div>
+                <div class="footer-links">
+                    <a href="/api/docs" target="_blank">API 文档</a>
+                    <a href="https://github.com/your-org/loom" target="_blank">GitHub</a>
+                    <a href="#" onclick="showAboutModal()">关于</a>
+                </div>
+                <div class="footer-copyright">
+                    &copy; 2025 LOOM Team. 基于 MIT 许可证开源。
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- 模态框容器 -->
+    <div id="modal-container"></div>
+
+    <!-- JavaScript 文件 -->
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/sessions.js"></script>
+    <script src="/static/js/rules.js"></script>
+    <script src="/static/js/websocket.js"></script>
+    
+    <!-- 初始化脚本 -->
+    <script>
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查 API 状态
+            checkApiStatus();
+            
+            // 加载会话
+            loadSessions();
+            
+            // 加载规则
+            loadRules();
+            
+            // 连接 WebSocket
+            connectWebSocket();
+            
+            // 更新系统状态
+            loadSystemStatus();
+        });
+    </script>
+</body>
+</html>

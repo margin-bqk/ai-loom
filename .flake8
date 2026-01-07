@@ -1,0 +1,36 @@
+[flake8]
+# 继承 black 的配置
+max-line-length = 88
+extend-ignore = E203, W503
+exclude =
+    .git,
+    __pycache__,
+    .venv,
+    venv,
+    .mypy_cache,
+    .pytest_cache,
+    build,
+    dist,
+    *.egg-info,
+    docs/_build,
+    migrations
+
+# 启用插件
+per-file-ignores =
+    __init__.py: F401
+    tests/*: S101
+
+# 文档字符串检查
+docstring-convention = google
+
+# 导入检查
+import-order-style = black
+
+# 复杂度检查
+max-complexity = 10
+
+# 统计信息
+statistics = True
+
+# 输出格式
+format = default

@@ -1,0 +1,153 @@
+[project]
+name = "loom"
+version = "0.1.0"
+description = "Language-Oriented Ontology Machine - A non‑carrying narrative engine based on Markdown rules"
+readme = "README.md"
+authors = [
+    {name = "LOOM Team", email = "team@loom.dev"}
+]
+maintainers = [
+    {name = "LOOM Maintainers", email = "maintainers@loom.dev"}
+]
+license = {text = "MIT"}
+keywords = ["ai", "narrative", "role-playing", "markdown", "llm", "storytelling", "game-engine"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Topic :: Games/Entertainment :: Role-Playing",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Natural Language :: English",
+    "Framework :: AsyncIO",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "aiohttp>=3.9.0",
+    "aiosqlite>=0.20.0",
+    "pydantic>=2.0.0",
+    "sqlalchemy>=2.0.0",
+    "markdown-it-py>=3.0.0",
+    "typer>=0.9.0",
+    "pyyaml>=6.0",
+    "watchdog>=3.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "mypy>=1.7.0",
+    "flake8>=6.0.0",
+    "isort>=5.12.0",
+    "pre-commit>=3.5.0",
+]
+vector = [
+    "chromadb>=0.4.0",
+    "sentence-transformers>=2.2.0",
+]
+api = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "python-multipart>=0.0.6",
+]
+cli = [
+    "rich>=13.0.0",
+    "prompt-toolkit>=3.0.0",
+]
+all = [
+    "loom[dev]",
+    "loom[vector]",
+    "loom[api]",
+    "loom[cli]",
+]
+
+[project.urls]
+Homepage = "https://github.com/your-org/loom"
+Documentation = "https://loom.dev/docs"
+Repository = "https://github.com/your-org/loom.git"
+Issues = "https://github.com/your-org/loom/issues"
+Changelog = "https://github.com/your-org/loom/releases"
+Download = "https://github.com/your-org/loom/releases/latest"
+Support = "https://github.com/your-org/loom/discussions"
+Funding = "https://github.com/sponsors/your-org"
+
+[project.scripts]
+loom = "loom.cli:app"
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--tb=short",
+]
+asyncio_mode = "auto"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "e2e: marks tests as end-to-end tests",
+]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["loom*"]
+exclude = ["loom.tests*"]
+
+[tool.setuptools.package-data]
+loom = ["py.typed"]
