@@ -454,8 +454,9 @@ class FallbackStrategy:
             "new_provider": best_provider
         }
     
-                               error: ErrorInfo,
-                               available_providers: List[str]) -> Optional[Dict[str, Any]]:
+    async def _response_caching(self, request: Dict[str, Any],
+                                error: ErrorInfo,
+                                available_providers: List[str]) -> Optional[Dict[str, Any]]:
         """响应缓存"""
         # 这里可以实现缓存查找逻辑
         # 如果找到缓存响应，则返回
