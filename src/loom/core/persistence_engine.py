@@ -8,14 +8,17 @@
 import json
 import sqlite3
 import aiosqlite
+import uuid
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional, Any, Tuple
 import asyncio
 from contextlib import asynccontextmanager
 from enum import Enum
+import yaml
 
 from ..utils.logging_config import get_logger
+from .interfaces import NarrativeArchive
 
 logger = get_logger(__name__)
 
@@ -83,7 +86,7 @@ class SQLitePersistence(PersistenceEngine):
         self.pool_size = pool_size
         self._connection_pool: List[aiosqlite.Connection] = []
         self._pool_lock = asyncio.Lock()
-        self._migration_version = 2
+        self._migration_version = 3
         
         # 确保数据目录存在
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
@@ -201,6 +204,43 @@ class SQLitePersistence(PersistenceEngine):
             await conn.execute("CREATE INDEX IF NOT EXISTS idx_memories_type ON memories(type)")
             await conn.execute("CREATE INDEX IF NOT EXISTS idx_memories_created ON memories(created_at)")
             
+            # 叙事档案表
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS narrative_archives (
+                    id TEXT PRIMARY KEY,
+                    session_id TEXT NOT NULL,
+                    title TEXT NOT NULL,
+                    summary TEXT NOT NULL,
+                    narrative_timeline TEXT NOT NULL,
+                    key_characters TEXT NOT NULL,
+                    plot_arcs TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL,
+                    version INTEGER DEFAULT 1,
+                    metadata TEXT NOT NULL,
+                    FOREIGN KEY (session_id) REFERENCES sessions (id) ON DELETE CASCADE
+                )
+            """)
+            
+            # 叙事档案版本表
+            await conn.execute("""
+                CREATE TABLE IF NOT EXISTS archive_versions (
+                    id TEXT PRIMARY KEY,
+                    archive_id TEXT NOT NULL,
+                    version INTEGER NOT NULL,
+                    description TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    created_by TEXT DEFAULT 'system',
+                    FOREIGN KEY (archive_id) REFERENCES narrative_archives (id) ON DELETE CASCADE,
+                    UNIQUE(archive_id, version)
+                )
+            """)
+            
+            await conn.execute("CREATE INDEX IF NOT EXISTS idx_archives_session ON narrative_archives(session_id)")
+            await conn.execute("CREATE INDEX IF NOT EXISTS idx_archives_created ON narrative_archives(created_at)")
+            await conn.execute("CREATE INDEX IF NOT EXISTS idx_archive_versions_archive ON archive_versions(archive_id)")
+            
             # 迁移版本表
             await conn.execute("""
                 CREATE TABLE IF NOT EXISTS migrations (
@@ -246,8 +286,41 @@ class SQLitePersistence(PersistenceEngine):
                 -- 初始版本，表已创建
             """,
             2: """
-                -- 添加会话统计字段
-                ALTER TABLE sessions ADD COLUMN stats TEXT DEFAULT '{}';
+                -- 版本2：无操作（stats列已在表创建时添加）
+                -- 此版本仅用于版本号递增
+            """,
+            3: """
+                -- 添加叙事档案支持
+                CREATE TABLE IF NOT EXISTS narrative_archives (
+                    id TEXT PRIMARY KEY,
+                    session_id TEXT NOT NULL,
+                    title TEXT NOT NULL,
+                    summary TEXT NOT NULL,
+                    narrative_timeline TEXT NOT NULL,
+                    key_characters TEXT NOT NULL,
+                    plot_arcs TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    updated_at TEXT NOT NULL,
+                    version INTEGER DEFAULT 1,
+                    metadata TEXT NOT NULL,
+                    FOREIGN KEY (session_id) REFERENCES sessions (id) ON DELETE CASCADE
+                );
+                
+                CREATE TABLE IF NOT EXISTS archive_versions (
+                    id TEXT PRIMARY KEY,
+                    archive_id TEXT NOT NULL,
+                    version INTEGER NOT NULL,
+                    description TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    created_at TEXT NOT NULL,
+                    created_by TEXT DEFAULT 'system',
+                    FOREIGN KEY (archive_id) REFERENCES narrative_archives (id) ON DELETE CASCADE,
+                    UNIQUE(archive_id, version)
+                );
+                
+                CREATE INDEX IF NOT EXISTS idx_archives_session ON narrative_archives(session_id);
+                CREATE INDEX IF NOT EXISTS idx_archives_created ON narrative_archives(created_at);
+                CREATE INDEX IF NOT EXISTS idx_archive_versions_archive ON archive_versions(archive_id);
             """
         }
         return migrations.get(version)
@@ -632,6 +705,363 @@ class SQLitePersistence(PersistenceEngine):
         except Exception as e:
             logger.error(f"Failed to cleanup old data: {e}")
             return {"archived_sessions": 0, "deleted_sessions": 0}
+    
+    # 叙事档案相关方法
+    async def save_narrative_archive(self, archive: NarrativeArchive) -> bool:
+        """保存叙事档案"""
+        try:
+            async with self._transaction() as conn:
+                await conn.execute("""
+                    INSERT OR REPLACE INTO narrative_archives
+                    (id, session_id, title, summary, narrative_timeline, key_characters,
+                     plot_arcs, created_at, updated_at, version, metadata)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    archive.id,
+                    archive.session_id,
+                    archive.title,
+                    archive.summary,
+                    json.dumps(archive.narrative_timeline),
+                    json.dumps(archive.key_characters),
+                    json.dumps(archive.plot_arcs),
+                    archive.created_at.isoformat(),
+                    archive.updated_at.isoformat(),
+                    archive.version,
+                    json.dumps(archive.metadata)
+                ))
+            
+            logger.debug(f"Narrative archive {archive.id} saved to database")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to save narrative archive {archive.id}: {e}")
+            return False
+    
+    async def load_narrative_archive(self, archive_id: str) -> Optional[NarrativeArchive]:
+        """加载叙事档案"""
+        try:
+            async with self._transaction() as conn:
+                cursor = await conn.execute("SELECT * FROM narrative_archives WHERE id = ?", (archive_id,))
+                row = await cursor.fetchone()
+                
+                if not row:
+                    return None
+                
+                archive_data = {
+                    "id": row[0],
+                    "session_id": row[1],
+                    "title": row[2],
+                    "summary": row[3],
+                    "narrative_timeline": json.loads(row[4]),
+                    "key_characters": json.loads(row[5]),
+                    "plot_arcs": json.loads(row[6]),
+                    "created_at": datetime.fromisoformat(row[7]),
+                    "updated_at": datetime.fromisoformat(row[8]),
+                    "version": row[9],
+                    "metadata": json.loads(row[10]) if row[10] else {}
+                }
+            
+            logger.debug(f"Narrative archive {archive_id} loaded from database")
+            return NarrativeArchive(**archive_data)
+        except Exception as e:
+            logger.error(f"Failed to load narrative archive {archive_id}: {e}")
+            return None
+    
+    async def list_narrative_archives(self, session_id: Optional[str] = None, limit: int = 100, offset: int = 0) -> List[NarrativeArchive]:
+        """列出叙事档案"""
+        try:
+            async with self._transaction() as conn:
+                query = """
+                    SELECT * FROM narrative_archives
+                    WHERE 1=1
+                """
+                params = []
+                
+                if session_id:
+                    query += " AND session_id = ?"
+                    params.append(session_id)
+                
+                query += " ORDER BY created_at DESC LIMIT ? OFFSET ?"
+                params.extend([limit, offset])
+                
+                cursor = await conn.execute(query, params)
+                rows = await cursor.fetchall()
+                
+                archives = []
+                for row in rows:
+                    try:
+                        archive_data = {
+                            "id": row[0],
+                            "session_id": row[1],
+                            "title": row[2],
+                            "summary": row[3],
+                            "narrative_timeline": json.loads(row[4]),
+                            "key_characters": json.loads(row[5]),
+                            "plot_arcs": json.loads(row[6]),
+                            "created_at": datetime.fromisoformat(row[7]),
+                            "updated_at": datetime.fromisoformat(row[8]),
+                            "version": row[9],
+                            "metadata": json.loads(row[10]) if row[10] else {}
+                        }
+                        archives.append(NarrativeArchive(**archive_data))
+                    except Exception as e:
+                        logger.error(f"Failed to parse archive data for {row[0]}: {e}")
+                
+                return archives
+        except Exception as e:
+            logger.error(f"Failed to list narrative archives: {e}")
+            return []
+    
+    async def export_to_markdown(self, archive_id: str, output_path: str) -> bool:
+        """导出叙事档案为Markdown格式"""
+        try:
+            archive = await self.load_narrative_archive(archive_id)
+            if not archive:
+                logger.error(f"Archive {archive_id} not found")
+                return False
+            
+            # 创建Markdown内容
+            md_content = []
+            md_content.append(f"# {archive.title}")
+            md_content.append(f"")
+            md_content.append(f"**会话ID**: {archive.session_id}")
+            md_content.append(f"**创建时间**: {archive.created_at}")
+            md_content.append(f"**更新时间**: {archive.updated_at}")
+            md_content.append(f"**版本**: {archive.version}")
+            md_content.append(f"")
+            
+            md_content.append("## 摘要")
+            md_content.append(archive.summary)
+            md_content.append("")
+            
+            md_content.append("## 关键角色")
+            for character in archive.key_characters:
+                md_content.append(f"### {character.get('name', '未知角色')}")
+                md_content.append(f"- **角色**: {character.get('role', '未知')}")
+                md_content.append(f"- **描述**: {character.get('description', '无描述')}")
+                if 'traits' in character:
+                    md_content.append(f"- **特质**: {', '.join(character['traits'])}")
+                md_content.append("")
+            
+            md_content.append("## 叙事时间线")
+            for i, event in enumerate(archive.narrative_timeline):
+                md_content.append(f"### 事件 {i+1}: {event.get('title', '未命名事件')}")
+                md_content.append(f"- **时间**: {event.get('timestamp', '未知时间')}")
+                md_content.append(f"- **类型**: {event.get('type', '未知类型')}")
+                md_content.append(f"- **描述**: {event.get('description', '无描述')}")
+                md_content.append("")
+            
+            md_content.append("## 情节弧线")
+            for i, arc in enumerate(archive.plot_arcs):
+                md_content.append(f"### 弧线 {i+1}: {arc.get('name', '未命名弧线')}")
+                md_content.append(f"- **状态**: {arc.get('status', '未知')}")
+                md_content.append(f"- **进度**: {arc.get('progress', 0) * 100:.0f}%")
+                md_content.append(f"- **描述**: {arc.get('description', '无描述')}")
+                md_content.append("")
+            
+            # 写入文件
+            output_path_obj = Path(output_path)
+            output_path_obj.parent.mkdir(parents=True, exist_ok=True)
+            
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write("\n".join(md_content))
+            
+            logger.info(f"Narrative archive {archive_id} exported to {output_path}")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to export narrative archive {archive_id}: {e}")
+            return False
+    
+    async def import_from_markdown(self, markdown_path: str, session_id: str) -> Optional[NarrativeArchive]:
+        """从Markdown导入叙事档案"""
+        try:
+            # 读取Markdown文件
+            with open(markdown_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # 简单解析Markdown（实际实现需要更复杂的解析）
+            lines = content.split('\n')
+            
+            # 提取标题
+            title = ""
+            summary = ""
+            key_characters = []
+            narrative_timeline = []
+            plot_arcs = []
+            
+            current_section = None
+            current_character = None
+            current_event = None
+            current_arc = None
+            
+            for line in lines:
+                line = line.strip()
+                if line.startswith('# '):
+                    title = line[2:].strip()
+                elif line.startswith('## 摘要'):
+                    current_section = 'summary'
+                elif line.startswith('## 关键角色'):
+                    current_section = 'characters'
+                elif line.startswith('## 叙事时间线'):
+                    current_section = 'timeline'
+                elif line.startswith('## 情节弧线'):
+                    current_section = 'arcs'
+                elif line.startswith('### '):
+                    # 子标题
+                    if current_section == 'characters':
+                        if current_character:
+                            key_characters.append(current_character)
+                        current_character = {'name': line[4:].strip()}
+                    elif current_section == 'timeline':
+                        if current_event:
+                            narrative_timeline.append(current_event)
+                        current_event = {'title': line[4:].strip()}
+                    elif current_section == 'arcs':
+                        if current_arc:
+                            plot_arcs.append(current_arc)
+                        current_arc = {'name': line[4:].strip()}
+                elif line.startswith('- **'):
+                    # 属性行
+                    if line.startswith('- **角色**:'):
+                        if current_character:
+                            current_character['role'] = line.split(':', 1)[1].strip()
+                    elif line.startswith('- **描述**:'):
+                        if current_section == 'summary':
+                            summary = line.split(':', 1)[1].strip()
+                        elif current_character:
+                            current_character['description'] = line.split(':', 1)[1].strip()
+                        elif current_event:
+                            current_event['description'] = line.split(':', 1)[1].strip()
+                        elif current_arc:
+                            current_arc['description'] = line.split(':', 1)[1].strip()
+            
+            # 添加最后一个项目
+            if current_character:
+                key_characters.append(current_character)
+            if current_event:
+                narrative_timeline.append(current_event)
+            if current_arc:
+                plot_arcs.append(current_arc)
+            
+            # 创建档案对象
+            import uuid
+            from datetime import datetime
+            
+            archive = NarrativeArchive(
+                id=str(uuid.uuid4()),
+                session_id=session_id,
+                title=title or "导入的叙事档案",
+                summary=summary or "从Markdown文件导入",
+                narrative_timeline=narrative_timeline,
+                key_characters=key_characters,
+                plot_arcs=plot_arcs,
+                created_at=datetime.now(),
+                updated_at=datetime.now(),
+                version=1,
+                metadata={"source": markdown_path, "imported_at": datetime.now().isoformat()}
+            )
+            
+            # 保存到数据库
+            success = await self.save_narrative_archive(archive)
+            if success:
+                logger.info(f"Narrative archive imported from {markdown_path} as {archive.id}")
+                return archive
+            
+            return None
+        except Exception as e:
+            logger.error(f"Failed to import narrative archive from {markdown_path}: {e}")
+            return None
+    
+    async def create_archive_version(self, archive_id: str, description: str) -> Optional[str]:
+        """创建档案版本"""
+        try:
+            archive = await self.load_narrative_archive(archive_id)
+            if not archive:
+                logger.error(f"Archive {archive_id} not found")
+                return None
+            
+            # 获取当前最大版本号
+            async with self._transaction() as conn:
+                cursor = await conn.execute(
+                    "SELECT MAX(version) FROM archive_versions WHERE archive_id = ?",
+                    (archive_id,)
+                )
+                row = await cursor.fetchone()
+                next_version = (row[0] or 0) + 1
+                
+                # 创建版本记录
+                version_id = str(uuid.uuid4())
+                await conn.execute("""
+                    INSERT INTO archive_versions
+                    (id, archive_id, version, description, content, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """, (
+                    version_id,
+                    archive_id,
+                    next_version,
+                    description,
+                    json.dumps({
+                        "title": archive.title,
+                        "summary": archive.summary,
+                        "narrative_timeline": archive.narrative_timeline,
+                        "key_characters": archive.key_characters,
+                        "plot_arcs": archive.plot_arcs,
+                        "metadata": archive.metadata
+                    }),
+                    datetime.now().isoformat()
+                ))
+                
+                # 更新档案版本号
+                archive.version = next_version
+                archive.updated_at = datetime.now()
+                await self.save_narrative_archive(archive)
+            
+            logger.info(f"Created version {next_version} for archive {archive_id}")
+            return version_id
+        except Exception as e:
+            logger.error(f"Failed to create version for archive {archive_id}: {e}")
+            return None
+    
+    async def rollback_archive_version(self, archive_id: str, version: int) -> bool:
+        """回滚到指定版本"""
+        try:
+            # 加载指定版本
+            async with self._transaction() as conn:
+                cursor = await conn.execute(
+                    "SELECT content FROM archive_versions WHERE archive_id = ? AND version = ?",
+                    (archive_id, version)
+                )
+                row = await cursor.fetchone()
+                
+                if not row:
+                    logger.error(f"Version {version} not found for archive {archive_id}")
+                    return False
+                
+                version_content = json.loads(row[0])
+                
+                # 更新档案
+                archive = await self.load_narrative_archive(archive_id)
+                if not archive:
+                    logger.error(f"Archive {archive_id} not found")
+                    return False
+                
+                archive.title = version_content.get("title", archive.title)
+                archive.summary = version_content.get("summary", archive.summary)
+                archive.narrative_timeline = version_content.get("narrative_timeline", archive.narrative_timeline)
+                archive.key_characters = version_content.get("key_characters", archive.key_characters)
+                archive.plot_arcs = version_content.get("plot_arcs", archive.plot_arcs)
+                archive.metadata = version_content.get("metadata", archive.metadata)
+                archive.updated_at = datetime.now()
+                
+                # 保存回滚后的档案
+                success = await self.save_narrative_archive(archive)
+                if success:
+                    logger.info(f"Rolled back archive {archive_id} to version {version}")
+                    return True
+            
+            return False
+        except Exception as e:
+            logger.error(f"Failed to rollback archive {archive_id} to version {version}: {e}")
+            return False
     
     async def close(self):
         """关闭所有数据库连接"""

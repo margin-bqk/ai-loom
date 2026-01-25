@@ -1,5 +1,5 @@
 """
-玩家干预层 (Player Intervention)
+玩家干预层 (玩家干预)
 
 职责：支持OOC注释、世界编辑、Retcon、基调调整等。
 """

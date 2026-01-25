@@ -1,7 +1,7 @@
 [project]
 name = "loom"
-version = "0.1.0"
-description = "Language-Oriented Ontology Machine - A non‑carrying narrative engine based on Markdown rules"
+version = "0.10.0"
+description = "Language-Oriented Open Mythos - A non‑carrying narrative engine based on Markdown rules"
 readme = "README.md"
 authors = [
     {name = "LOOM Team", email = "team@loom.dev"}

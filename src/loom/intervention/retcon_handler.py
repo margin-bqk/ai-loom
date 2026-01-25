@@ -59,6 +59,12 @@ class RetconHandler:
         target = parts[1].strip()
         rest = parts[2].strip()
         
+        # 验证操作类型
+        valid_operations = ["modify_fact", "add_memory", "remove_memory", "alter_timeline"]
+        if operation_type not in valid_operations:
+            logger.warning(f"Invalid retcon operation type: {operation_type}")
+            return None
+        
         # 分离修改内容和理由
         if '(' in rest and ')' in rest:
             change_text = rest[:rest.find('(')].strip()

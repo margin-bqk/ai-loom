@@ -1,4 +1,4 @@
-# LOOM - Language-Oriented Ontology Machine
+# LOOM - Language-Oriented Open Mythos
 
 ![Vibe Coding](https://img.shields.io/badge/Vibe-Coding-8B5CF6)
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)
@@ -7,16 +7,16 @@
 [![Tests Status](https://img.shields.io/badge/tests-passing-brightgreen)](https://github.com/your-org/loom/actions)
 [![Coverage](https://img.shields.io/badge/coverage-85%25-green)](https://github.com/your-org/loom/actions)
 
-**LOOM** 是一个基于 Markdown 规则的非承载式叙事引擎，专为 AI 驱动的角色扮演和互动叙事设计。
+**LOOM** 是一个语言驱动的开放叙事解释器运行时，专为 AI 驱动的角色扮演和互动叙事设计。
 
 ## ✨ 核心理念
 
-LOOM 采用 **非承载式架构**，将游戏规则完全从框架代码中分离出来。规则以纯 Markdown 文件定义，引擎本身对规则内容保持 **叙事失明**，仅负责规则的传递、解释和执行。
+LOOM 采用 **非承载式架构**，将叙事规则完全从框架代码中分离出来。规则以纯 Markdown 文件定义，解释器本身对规则内容保持 **叙事失明**，仅负责规则的传递、解释和执行。
 
 ### 核心特性
 
 - **📝 Markdown 规则**：使用标准 Markdown 定义世界规则、角色、物品和机制
-- **🧠 叙事失明**：引擎不解析规则内容，仅传递文本，确保规则完全独立
+- **🧠 叙事失明**：解释器不解析规则内容，仅传递文本，确保规则完全独立
 - **⚡ 异步优先**：全异步架构，支持高并发会话管理
 - **💾 持久化优先**：内置 SQLite 存储，支持长期会话和版本回滚
 - **🎮 玩家干预**：支持 OOC 注释、世界编辑、Retcon 等多种干预类型
@@ -415,4 +415,4 @@ mkdocs build
 
 **LOOM** - 编织你的叙事世界 🧵✨
 
-*最后更新: 2025-12-31*
+*最后更新: 2026-01-12*

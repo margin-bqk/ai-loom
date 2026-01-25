@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
       - name: loom
-        image: loom:latest  # 替换为实际的镜像仓库地址，如 yourregistry/loom:v0.1.0
+        image: yourregistry/loom:v0.10.0  # 替换为实际的镜像仓库地址
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000

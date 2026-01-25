@@ -1,5 +1,5 @@
 """
-规则层 (Markdown Canon)
+规则层 (Markdown规则)
 
 职责：纯Markdown编写的世界观、叙事基调、冲突解决哲学等。
 """

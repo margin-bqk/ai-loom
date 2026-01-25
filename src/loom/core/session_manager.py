@@ -263,9 +263,9 @@ class SessionManager:
                     session = self.active_sessions[session_id]
                     session.status = SessionStatus.ARCHIVED
                     session.update_activity()
-                    await self.save_session(session, force=True)
-                    logger.info(f"Archived session {session_id}")
-                    return True
+                    # 先释放锁，然后保存会话（save_session会重新获取锁）
+                    # 避免死锁
+                    pass
                 else:
                     del self.active_sessions[session_id]
             
@@ -275,6 +275,12 @@ class SessionManager:
                 if success:
                     logger.info(f"Deleted session {session_id} from persistence")
                     return True
+        
+        # 在锁外部保存会话
+        if not permanent and session_id in self.active_sessions:
+            await self.save_session(self.active_sessions[session_id], force=True)
+            logger.info(f"Archived session {session_id}")
+            return True
         
         logger.info(f"Removed session {session_id} from memory")
         return True
@@ -307,8 +313,10 @@ class SessionManager:
         async with self._get_session_lock(session_id):
             session.status = status
             session.update_activity()
-            await self.save_session(session, force=True)
+            # 不在此处调用save_session，避免死锁
         
+        # 在锁外部保存会话
+        await self.save_session(session, force=True)
         logger.info(f"Updated session {session_id} status to {status.value}")
         return True
     

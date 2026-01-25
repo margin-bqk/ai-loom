@@ -1,9 +1,9 @@
-# LOOM Docker 镜像
-# 构建: docker build -t loom:latest .
-# 运行: docker run -p 8000:8000 loom:latest
+# LOOM v0.10.0 Docker 镜像
+# 构建: docker build -t loom:0.10.0 -t loom:latest .
+# 运行: docker run -p 8000:8000 loom:0.10.0
 
-# 使用 Python 3.11 作为基础镜像
-FROM python:3.11-slim as builder
+# 使用 Python 3.12 作为基础镜像（支持最新特性）
+FROM python:3.12-slim as builder
 
 # 设置工作目录
 WORKDIR /app
@@ -28,7 +28,7 @@ RUN pip install --upgrade pip && \
     pip install --no-cache-dir -e .[api,cli,vector]
 
 # 第二阶段：运行阶段
-FROM python:3.11-slim as runtime
+FROM python:3.12-slim as runtime
 
 WORKDIR /app
 

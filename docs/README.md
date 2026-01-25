@@ -1,6 +1,6 @@
 # LOOM 文档
 
-欢迎使用 LOOM（Language-Oriented Ontology Machine）文档。LOOM 是一个基于 Markdown 规则的非承载式叙事引擎，采用五层架构设计。
+欢迎使用 LOOM（Language-Oriented Open Mythos）文档。LOOM 是一个基于 Markdown 规则的非承载式叙事引擎，采用五层架构设计。
 
 ## 文档目录
 

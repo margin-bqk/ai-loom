@@ -43,7 +43,7 @@
 
 ## 简介
 
-LOOM（Language-Oriented Ontology Machine）是一个基于 Markdown 规则的非承载式叙事引擎，专为 AI 驱动的角色扮演和互动叙事设计。本指南将帮助您从零开始使用 LOOM，创建和管理您的叙事世界。
+LOOM（Language-Oriented Open Mythos）是一个基于 Markdown 规则的非承载式叙事引擎，专为 AI 驱动的角色扮演和互动叙事设计。本指南将帮助您从零开始使用 LOOM，创建和管理您的叙事世界。
 
 ## 安装指南
 

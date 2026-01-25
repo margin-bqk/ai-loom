@@ -26,7 +26,7 @@ setup_logging("INFO")
 # 创建 FastAPI 应用
 app = FastAPI(
     title="LOOM Web UI",
-    description="Language-Oriented Ontology Machine - Web 界面",
+    description="Language-Oriented Open Mythos - Web 界面",
     version="0.1.0",
     docs_url="/api/docs",
     redoc_url="/api/redoc",

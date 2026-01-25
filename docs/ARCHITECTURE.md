@@ -2,7 +2,7 @@
 
 ## 概述
 
-LOOM（Language-Oriented Ontology Machine）是一个基于五层架构的非承载式叙事引擎。其核心设计理念是"叙事失明"——引擎本身不解析规则内容，仅传递文本，由 LLM 在每回合重新解释规则。
+LOOM（Language-Oriented Open Mythos）是一个基于五层架构的语言驱动的开放叙事解释器运行时。其核心设计理念是"叙事失明"——解释器本身不解析规则内容，仅传递文本，由 LLM 在每回合重新解释规则。
 
 ## 五层架构
 
@@ -50,7 +50,7 @@ LOOM（Language-Oriented Ontology Machine）是一个基于五层架构的非承
 - **特性**: 热重载、环境变量覆盖、配置验证
 - **接口**: `get_config()`, `save_config()`, `reload()`
 
-### 2. 规则层 (Markdown Canon)
+### 2. 规则层 (Markdown规则)
 
 **职责**: 纯Markdown编写的世界观、叙事基调、冲突解决哲学等。
 
@@ -89,7 +89,7 @@ canon/
 - **特性**: Git集成、差异比较、回滚支持
 - **接口**: `commit()`, `diff()`, `rollback()`
 
-### 3. 解释层 (LLM Reasoning)
+### 3. 解释层 (LLM推理)
 
 **职责**: 每回合重新解释规则，推导符合规则的叙事结果。
 
@@ -130,7 +130,7 @@ canon/
 - **特性**: 语义分析、矛盾检测、建议生成
 - **接口**: `check()`, `suggest_corrections()`, `get_violations()`
 
-### 4. 世界记忆层 (World Memory)
+### 4. 世界记忆层 (世界记忆)
 
 **职责**: 结构化叙事状态存储（Canon事实、角色、剧情线、地点等）。
 
@@ -180,7 +180,7 @@ MemoryRelation:
 - **特性**: 自动摘要、重要性评估、压缩优化
 - **接口**: `generate_summary()`, `process_summarization()`
 
-### 5. 玩家干预层 (Player Intervention)
+### 5. 玩家干预层 (玩家干预)
 
 **职责**: 支持OOC注释、世界编辑、Retcon、基调调整等。
 
@@ -493,9 +493,4 @@ class LoomPlugin:
 - **就绪检查**: 服务是否准备好接收请求
 - **存活检查**: 服务是否仍在运行
 - **依赖检查**: 检查数据库、缓存、LLM API等依赖
-- **自定义检查**: 业务逻辑健康状态
-
-## 安全考虑
-
-### 数据安全
--
+- **自定义

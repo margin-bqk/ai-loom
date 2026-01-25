@@ -112,6 +112,29 @@ class SecurityConfig(BaseModel):
     require_justification_for_retcon: bool = True
 
 
+class NarrativeConfig(BaseModel):
+    """叙事解释器配置"""
+    enabled: bool = True
+    consistency_check_enabled: bool = True
+    continuity_check_enabled: bool = True
+    auto_summarize: bool = True
+    summarization_interval_turns: int = Field(10, ge=1, le=100)
+    narrative_arc_tracking: bool = True
+    max_narrative_arcs: int = Field(5, ge=1, le=20)
+    default_narrative_tone: str = Field("neutral", pattern="^(neutral|serious|humorous|dramatic|mysterious)$")
+    default_narrative_pace: str = Field("normal", pattern="^(slow|normal|fast)$")
+    
+    # 一致性检查配置
+    consistency_threshold: float = Field(0.7, ge=0.0, le=1.0)
+    max_continuity_issues: int = Field(5, ge=0, le=50)
+    
+    # 档案配置
+    auto_archive: bool = True
+    archive_interval_turns: int = Field(50, ge=10, le=1000)
+    max_archive_versions: int = Field(10, ge=1, le=100)
+    export_format: str = Field("markdown", pattern="^(markdown|json|yaml)$")
+
+
 class MonitoringConfig(BaseModel):
     """监控配置"""
     enable_metrics: bool = True
@@ -134,6 +157,9 @@ class AppConfig:
     
     # 会话默认配置
     session_defaults: SessionDefaultsConfig = field(default_factory=SessionDefaultsConfig)
+    
+    # 叙事解释器配置
+    narrative: NarrativeConfig = field(default_factory=NarrativeConfig)
     
     # 运行时配置
     max_concurrent_turns: int = Field(3, ge=1, le=100)
@@ -211,6 +237,13 @@ class AppConfig:
                 config.security = SecurityConfig(**data["security"])
             except ValidationError as e:
                 logger.warning(f"Invalid security config: {e}")
+        
+        # 处理叙事配置
+        if "narrative" in data:
+            try:
+                config.narrative = NarrativeConfig(**data["narrative"])
+            except ValidationError as e:
+                logger.warning(f"Invalid narrative config: {e}")
         
         # 处理监控配置
         if "monitoring" in data:
@@ -297,6 +330,7 @@ class AppConfig:
             "provider_selection": self.provider_selection.dict(),
             "memory": self.memory.dict(),
             "session_defaults": self.session_defaults.dict(),
+            "narrative": self.narrative.dict(),
             "max_concurrent_turns": self.max_concurrent_turns,
             "log_level": self.log_level,
             "data_dir": self.data_dir,
@@ -412,7 +446,10 @@ class ConfigManager:
             "LOOM_MAX_CONCURRENT_TURNS": "max_concurrent_turns",
             "LOOM_CACHE_ENABLED": "cache_enabled",
             "LOOM_CACHE_TTL_MINUTES": "cache_ttl_minutes",
-            "LOOM_DEFAULT_PROVIDER": "session_defaults.default_llm_provider"
+            "LOOM_DEFAULT_PROVIDER": "session_defaults.default_llm_provider",
+            "LOOM_NARRATIVE_ENABLED": "narrative.enabled",
+            "LOOM_CONSISTENCY_CHECK_ENABLED": "narrative.consistency_check_enabled",
+            "LOOM_AUTO_ARCHIVE": "narrative.auto_archive"
         }
         
         for env_var, config_key in env_mappings.items():

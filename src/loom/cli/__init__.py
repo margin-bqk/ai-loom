@@ -16,7 +16,7 @@ from . import commands
 # 创建 Typer 应用
 app = typer.Typer(
     name="loom",
-    help="Language-Oriented Ontology Machine - 基于Markdown规则的非承载叙事引擎",
+    help="Language-Oriented Open Mythos - 语言驱动的开放叙事解释器运行时",
     add_completion=False,
     no_args_is_help=True,
 )

@@ -182,6 +182,74 @@ llm_providers:
     temperature: 0.7
 ```
 
+### 从 0.9.x 升级到 0.10.0（阶段1重构）
+
+#### 重要变更
+1. **项目定位重构**: 从"游戏引擎"改为"叙事解释器"相关术语
+2. **架构标准化**: 五层架构（核心、规则、解释、记忆、干预）接口标准化
+3. **配置更新**: 新增环境变量和配置选项
+4. **接口兼容性**: 保持主要API向后兼容，但部分内部接口有调整
+
+#### 迁移步骤
+
+```bash
+# 1. 备份当前安装
+cp -r /path/to/loom /path/to/loom-backup-$(date +%Y%m%d)
+
+# 2. 检查当前版本
+loom --version
+
+# 3. 升级到 v0.10.0
+pip install --upgrade loom==0.10.0
+
+# 4. 验证安装
+loom --version  # 应该显示 0.10.0
+
+# 5. 更新配置文件（如果需要）
+cp .env.example .env.new
+# 手动合并现有配置到新文件
+mv .env .env.old
+mv .env.new .env
+
+# 6. 运行兼容性检查
+loom check --compatibility
+
+# 7. 测试基本功能
+loom run --test --canon examples/basic_world.md
+```
+
+#### 配置变更
+
+**新增环境变量**:
+```bash
+# 叙事解释器模式
+NARRATIVE_INTERPRETER_MODE=advanced
+
+# 一致性检查强度
+CONSISTENCY_CHECK_LEVEL=medium
+
+# 记忆存储类型
+MEMORY_STORAGE_TYPE=sqlite
+
+# 干预处理模式
+INTERVENTION_HANDLING_MODE=adaptive
+
+# 性能监控
+ENABLE_PERFORMANCE_MONITORING=true
+METRICS_EXPORT_PORT=8001
+```
+
+#### 向后兼容性说明
+- **CLI命令**: 所有现有CLI命令保持兼容
+- **API端点**: Web API端点保持兼容
+- **数据格式**: 会话数据格式保持兼容
+- **规则文件**: Markdown规则文件格式保持兼容
+
+#### 已知迁移问题
+1. **测试失败**: 部分集成测试可能因接口调整而失败
+2. **插件兼容性**: 自定义插件可能需要更新以匹配新接口
+3. **性能差异**: 新版本可能有不同的性能特征
+
 ### 从 0.2.0 升级到 1.0.0
 
 #### 重大变更
