@@ -1,0 +1,148 @@
+site_name: AI-Loom Documentation
+site_description: AI-Loom增强叙事生成系统文档
+site_author: AI-Loom Team
+site_url: https://ai-loom.github.io/
+
+repo_name: ai-loom/ai-loom
+repo_url: https://github.com/ai-loom/ai-loom
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: google
+            show_source: true
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - extra
+  - footnotes
+  - meta
+  - toc:
+      permalink: true
+      toc_depth: 1-3
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: "!!python/name:material.extensions.emoji.twemoji"
+      emoji_generator: "!!python/name:material.extensions.emoji.to_svg"
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+nav:
+  - 首页: index.md
+  - 快速开始:
+      - 安装并运行: quick-start/install-and-run.md
+      - 第一个示例: quick-start/first-example.md
+      - 基础配置: quick-start/basic-configuration.md
+      - 验证安装: quick-start/verify-installation.md
+  - 用户指南:
+      - 开始使用: user-guide/getting-started.md
+      - CLI参考:
+          - 基础命令: user-guide/cli-reference/basic-commands.md
+          - run命令详解: user-guide/cli-reference/run-command.md
+          - session命令详解: user-guide/cli-reference/session-command.md
+          - config命令详解: user-guide/cli-reference/config-command.md
+          - 命令示例: user-guide/cli-reference/examples.md
+      - API使用:
+          - API快速开始: user-guide/api-usage/quick-api-start.md
+          - Python客户端: user-guide/api-usage/python-client.md
+          - HTTP API参考: user-guide/api-usage/http-api.md
+          - API示例代码: user-guide/api-usage/api-examples.md
+      - 配置指南:
+          - 配置文件详解: user-guide/configuration/config-files.md
+          - 环境变量配置: user-guide/configuration/environment-vars.md
+          - LLM提供商配置: user-guide/configuration/llm-providers.md
+          - 高级配置: user-guide/configuration/advanced-config.md
+      - 实践示例:
+          - 基础叙事示例: user-guide/practical-examples/basic-narrative.md
+          - 奇幻世界示例: user-guide/practical-examples/fantasy-example.md
+          - 科幻世界示例: user-guide/practical-examples/sci-fi-example.md
+          - 交互式示例: user-guide/practical-examples/interactive-example.md
+  - 开发指南:
+      - 开发环境设置: development/setup-development.md
+      - 代码组织结构: development/code-organization.md
+      - 测试指南: development/testing-guide.md
+      - 调试指南: development/debugging-guide.md
+      - 贡献指南: development/contributing.md
+      - 代码质量标准: development/code-standards.md
+      - 扩展开发指南: development/extension-development.md
+      - 性能基准: development/performance-benchmarks.md
+  - 部署指南:
+      - 部署指南: deployment/deployment-guide.md
+      - 本地部署: deployment/local-deployment.md
+      - Docker部署: deployment/docker-deployment.md
+      - 云部署: deployment/cloud-deployment.md
+      - 监控和日志: deployment/monitoring.md
+      - 故障排除: deployment/troubleshooting.md
+      - 升级指南: deployment/upgrade-guide.md
+      - 发布流程: deployment/release-process.md
+  - 参考文档:
+      - 架构概述: reference/architecture-overview.md
+      - 世界构建指南: reference/world-building-guide.md
+      - 性能调优: reference/performance-tuning.md
+      - 安全指南: reference/security-guide.md
+      - 测试覆盖率报告: reference/test-coverage.md
+      - 测试工具: reference/test-tools.md
+      - 文档验证: reference/documentation-validation.md
+      - 第一阶段测试报告: reference/test-report-phase1.md
+      - 发布说明:
+          - v0.10.0: reference/release-notes/v0.10.0.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ai-loom/ai-loom
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/ai-loom
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/ai_loom
+
+copyright: Copyright &copy; 2026 AI-Loom Team

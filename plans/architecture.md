@@ -1,32 +1,60 @@
-## 1. 五层架构详细设计
+# LOOM 架构设计
 
-### 1.1 运行时核心层 (Runtime Core)
+## 概述
 
-**职责**：生命周期管理、调度、持久化、Session管理、Prompt组装、Memory读写、回合调度、崩溃恢复。
+LOOM（Language-Oriented Open Mythos）是一个基于五层架构的语言驱动的开放叙事解释器运行时。其核心设计理念是"叙事失明"——解释器本身不解析规则内容，仅传递文本，由 LLM 在每回合重新解释规则。
 
-**模块划分**：
-- `SessionManager`：会话生命周期（创建、加载、保存、删除）
-- `TurnScheduler`：异步回合调度器，管理回合队列和并发
-- `PersistenceEngine`：持久化存储接口（SQLite/DuckDB）
-- `PromptAssembler`：动态组装Prompt，注入规则、记忆、玩家输入
-- `SafetyBoundary`：崩溃恢复、异常处理、资源清理
-- `ConfigManager`：配置加载与环境变量管理
+## 五层架构
 
-**数据流**：
-```
-Session → TurnScheduler → PromptAssembler → LLM → Memory → Persistence
-```
+### 1. 运行时核心层 (Runtime Core)
 
-**约束**：
+**职责**: 生命周期管理、调度、持久化、Session管理、Prompt组装、Memory读写、回合调度、崩溃恢复。
+
+**关键组件**:
+- `SessionManager`: 会话生命周期管理
+- `TurnScheduler`: 异步回合调度器
+- `PersistenceEngine`: 持久化存储接口
+- `PromptAssembler`: 动态组装Prompt
+- `ConfigManager`: 配置加载与环境变量管理
+
+**设计原则**:
 - 保持叙事失明：不解析规则内容，仅传递文本
 - 无状态设计：核心层不存储叙事状态
 - 异步优先：所有I/O操作使用async/await
+- 容错设计：自动错误恢复和状态回滚
 
-### 1.2 规则层 (Markdown Canon)
+**组件详细说明**:
 
-**职责**：纯Markdown编写的世界观、叙事基调、冲突解决哲学等。
+#### SessionManager
+- **功能**: 管理会话的创建、加载、保存和删除
+- **特性**: 支持并发会话、会话快照、自动保存
+- **接口**: `create_session()`, `load_session()`, `save_session()`, `delete_session()`
 
-**文件结构**：
+#### TurnScheduler
+- **功能**: 管理异步回合队列，控制并发处理
+- **特性**: 优先级队列、超时处理、负载均衡
+- **接口**: `submit_turn()`, `get_turn_status()`, `cancel_turn()`
+
+#### PersistenceEngine
+- **功能**: 提供统一的持久化接口
+- **特性**: 支持多种存储后端、事务支持、版本控制
+- **接口**: `store()`, `retrieve()`, `delete()`, `query()`
+
+#### PromptAssembler
+- **功能**: 动态组装Prompt，支持模板系统
+- **特性**: 上下文感知、变量替换、模板缓存
+- **接口**: `assemble()`, `register_template()`, `clear_cache()`
+
+#### ConfigManager
+- **功能**: 管理应用配置和环境变量
+- **特性**: 热重载、环境变量覆盖、配置验证
+- **接口**: `get_config()`, `save_config()`, `reload()`
+
+### 2. 规则层 (Markdown规则)
+
+**职责**: 纯Markdown编写的世界观、叙事基调、冲突解决哲学等。
+
+**文件结构**:
 ```
 canon/
 ├── world.md          # 世界观与形而上学
@@ -37,28 +65,42 @@ canon/
 └── meta.md           # 规则元信息（版本、作者等）
 ```
 
-**规则特性**：
+**规则特性**:
 - 人类可读，LLM可解释
 - 支持Markdown扩展语法（如`:::rule`自定义块）
 - 版本控制通过Git管理
 - 热加载：运行时监听文件变化
+- 模块化：支持规则导入和组合
 
-**验证机制**：
-- 语法检查（Markdown解析）
-- 冲突检测（规则间矛盾）
-- 完整性检查（必需章节）
+**组件详细说明**:
 
-### 1.3 解释层 (LLM Reasoning)
+#### RuleLoader
+- **功能**: 加载和解析Markdown规则文件
+- **特性**: 文件监控、缓存、依赖解析
+- **接口**: `load_canon()`, `get_all_canons()`, `watch_for_changes()`
 
-**职责**：每回合重新解释规则，推导符合规则的叙事结果。
+#### MarkdownCanon
+- **功能**: 表示解析后的规则集
+- **特性**: 结构化访问、验证、序列化
+- **接口**: `get_section()`, `validate()`, `to_dict()`
 
-**组件**：
-- `RuleInterpreter`：加载并解释Markdown规则
-- `LLMProvider`：抽象LLM提供商接口
-- `ReasoningPipeline`：推理流水线（理解→分析→推导→输出）
-- `ConsistencyChecker`：检查输出与规则/记忆一致性
+#### VersionControl
+- **功能**: 管理规则版本和历史
+- **特性**: Git集成、差异比较、回滚支持
+- **接口**: `commit()`, `diff()`, `rollback()`
 
-**工作流程**：
+### 3. 解释层 (LLM推理)
+
+**职责**: 每回合重新解释规则，推导符合规则的叙事结果。
+
+**组件**:
+- `RuleInterpreter`: 加载并解释Markdown规则
+- `LLMProvider`: 抽象LLM提供商接口
+- `ReasoningPipeline`: 推理流水线（理解→分析→推导→输出）
+- `ConsistencyChecker`: 检查输出与规则/记忆一致性
+- `PerformanceOptimizer`: 优化LLM调用性能
+
+**工作流程**:
 1. 加载当前规则集（完整Markdown）
 2. 加载相关记忆摘要
 3. 接收玩家输入（含干预意图）
@@ -66,16 +108,33 @@ canon/
 5. 解析LLM响应，提取叙事结果
 6. 更新记忆和状态
 
-**设计原则**：
-- 非确定性：允许软逻辑和启发式推理
-- 解释缓存：缓存常见规则解释以减少LLM调用
-- 回退机制：当LLM响应不符合要求时的降级策略
+**组件详细说明**:
 
-### 1.4 世界记忆层 (World Memory)
+#### RuleInterpreter
+- **功能**: 解释Markdown规则，提取约束和主题
+- **特性**: 自然语言处理、约束提取、冲突检测
+- **接口**: `interpret()`, `format_for_prompt()`, `detect_conflicts()`
 
-**职责**：结构化叙事状态存储（Canon事实、角色、剧情线、地点等）。
+#### LLMProvider
+- **功能**: 抽象LLM提供商接口
+- **特性**: 多提供商支持、流式响应、成本跟踪
+- **接口**: `generate()`, `generate_stream()`, `get_cost_estimate()`
 
-**数据结构**：
+#### ReasoningPipeline
+- **功能**: 实现完整的推理流程
+- **特性**: 多阶段处理、错误恢复、质量评估
+- **接口**: `process()`, `batch_process()`, `evaluate_quality()`
+
+#### ConsistencyChecker
+- **功能**: 检查输出与规则和记忆的一致性
+- **特性**: 语义分析、矛盾检测、建议生成
+- **接口**: `check()`, `suggest_corrections()`, `get_violations()`
+
+### 4. 世界记忆层 (世界记忆)
+
+**职责**: 结构化叙事状态存储（Canon事实、角色、剧情线、地点等）。
+
+**数据结构**:
 ```python
 # 记忆实体类型
 MemoryEntity:
@@ -93,208 +152,200 @@ MemoryRelation:
   - relation_type: "part_of" | "caused_by" | "located_at" | "related_to"
 ```
 
-**存储方案**：
+**存储方案**:
 - 主存储：SQLite（关系型数据）
 - 可选向量存储：Chroma/Qdrant（语义检索）
 - 缓存层：Redis（可选，热数据）
+- 备份存储：文件系统备份
 
-**检索接口**：
-- `get_relevant_memories(context, limit=10)`：获取相关记忆
-- `summarize_memories(time_range)`：生成LLM驱动的摘要
-- `update_memory(entity, delta)`：增量更新
-- `rollback_memory(version)`：版本回滚
+**组件详细说明**:
 
-**记忆管理**：
-- 自动摘要：定期压缩旧记忆
-- 一致性检查：检测矛盾事实
-- 垃圾回收：清理无关记忆
+#### WorldMemory
+- **功能**: 管理结构化叙事状态存储
+- **特性**: 实体关系管理、版本控制、查询优化
+- **接口**: `store_entity()`, `retrieve_entity()`, `search_entities()`
 
-### 1.5 玩家干预层 (Player Intervention)
+#### StructuredStore
+- **功能**: 提供结构化数据存储
+- **特性**: SQL支持、索引优化、事务处理
+- **接口**: `create_table()`, `insert()`, `select()`, `update()`
 
-**职责**：支持OOC注释、世界编辑、Retcon、基调调整等。
+#### VectorStore
+- **功能**: 提供向量相似性搜索
+- **特性**: 语义检索、相似度计算、聚类分析
+- **接口**: `add_vectors()`, `search_similar()`, `cluster()`
 
-**干预类型**：
-1. **OOC注释**：`(OOC: ...)` 格式，不影响叙事
-2. **世界编辑**：`[EDIT: ...]` 直接修改世界状态
-3. **Retcon**：`[RETCON: ...]` 追溯性修改历史
-4. **基调调整**：`[TONE: ...]` 调整叙事风格
-5. **意图声明**：`[INTENT: ...]` 声明玩家意图
+#### MemorySummarizer
+- **功能**: 生成记忆摘要
+- **特性**: 自动摘要、重要性评估、压缩优化
+- **接口**: `generate_summary()`, `process_summarization()`
 
-**处理流程**：
+### 5. 玩家干预层 (玩家干预)
+
+**职责**: 支持OOC注释、世界编辑、Retcon、基调调整等。
+
+**干预类型**:
+1. **OOC注释**: `(OOC: ...)` 格式，不影响叙事
+2. **世界编辑**: `[EDIT: ...]` 直接修改世界状态
+3. **Retcon**: `[RETCON: ...]` 追溯性修改历史
+4. **基调调整**: `[TONE: ...]` 调整叙事风格
+5. **意图声明**: `[INTENT: ...]` 声明玩家意图
+6. **规则查询**: `[QUERY: ...]` 查询当前规则
+
+**处理流程**:
 ```
 玩家输入 → 干预解析器 → 意图识别 → 规则验证 → 吸收处理 → 状态更新
 ```
 
-**组件**：
-- `InterventionParser`：解析干预语法
-- `IntentRecognizer`：识别玩家意图
-- `PermissionValidator`：基于规则层验证权限
-- `AbsorptionEngine`：将干预融入叙事状态
-- `AuditLogger`：记录干预历史
+**组件详细说明**:
 
-**设计原则**：
-- 吸收而非拒绝：尽可能满足玩家意图
-- 权限边界：尊重规则层定义的权限
-- 审计追踪：所有干预可追溯、可撤销
+#### PlayerIntervention
+- **功能**: 解析和处理玩家干预
+- **特性**: 自然语言理解、意图识别、权限验证
+- **接口**: `parse_input()`, `process_interventions()`, `validate_permission()`
 
-## 2. 技术栈选型
+#### WorldEditor
+- **功能**: 处理玩家对世界状态的直接编辑
+- **特性**: 编辑命令解析、状态变更、冲突解决
+- **接口**: `parse_edit_command()`, `execute_edit()`, `validate_edit()`
 
-### 2.1 编程语言和框架
-- **语言**：Python 3.10+
-- **异步框架**：asyncio + aiohttp
-- **Web框架**：FastAPI（用于API服务）
-- **CLI框架**：Typer 或 Click
-- **配置管理**：Pydantic Settings
+#### RetconHandler
+- **功能**: 处理追溯性修改
+- **特性**: 时间线管理、一致性维护、版本控制
+- **接口**: `parse_retcon_command()`, `execute_retcon()`, `rollback_to_version()`
 
-### 2.2 数据库系统
-- **主数据库**：SQLite（嵌入式，零配置）
-- **分析数据库**：DuckDB（可选，用于复杂查询）
-- **向量数据库**：Chroma（本地）或 Qdrant（云）
-- **缓存**：Redis（可选，用于会话缓存）
+#### OOCHandler
+- **功能**: 处理OOC注释
+- **特性**: 注释提取、意图分析、响应生成
+- **接口**: `extract_ooc()`, `process_ooc()`, `generate_response()`
 
-### 2.3 LLM接入方案
-- **抽象层**：Provider无关设计
-- **支持提供商**：
-  - OpenAI (GPT-4, GPT-3.5)
-  - Anthropic (Claude)
-  - 本地模型 (Llama, Phi via Ollama)
-  - 其他 (Google Gemini, Azure OpenAI)
-- **BYOK设计**：用户提供API密钥
-- **成本控制**：令牌计数、预算告警
+## 数据流设计
 
-### 2.4 版本控制集成
-- **规则版本**：Git仓库管理
-- **会话版本**：每个会话对应Git分支
-- **回滚能力**：可恢复到任意历史状态
-- **差异查看**：规则变化可视化
+### 正常叙事流
 
-### 2.5 异步任务处理
-- **任务队列**：asyncio队列
-- **并发控制**：信号量限制LLM并发
-- **超时处理**：可配置超时时间
-- **重试机制**：指数退避重试
-
-### 2.6 序列化和数据格式
-- **配置格式**：YAML + JSON
-- **规则格式**：Markdown + 自定义扩展
-- **数据序列化**：JSON（存储） + MessagePack（可选）
-- **API格式**：JSON Schema + OpenAPI
-
-## 3. 组件接口设计
-
-### 3.1 层间API接口
-
-**运行时核心层接口**：
-```python
-class RuntimeCore:
-    async def create_session(config: SessionConfig) -> Session
-    async def load_session(session_id: str) -> Session
-    async def save_session(session: Session)
-    async def schedule_turn(turn: Turn) -> TurnResult
-    async def assemble_prompt(context: PromptContext) -> str
+```
+玩家输入
+    ↓
+干预解析器 (PlayerIntervention)
+    ↓
+规则加载器 (RuleLoader)
+    ↓
+记忆检索器 (WorldMemory)
+    ↓
+Prompt组装器 (PromptAssembler)
+    ↓
+LLM调用 (LLMProvider)
+    ↓
+结果解析器 (RuleInterpreter)
+    ↓
+一致性检查 (ConsistencyChecker)
+    ↓
+记忆更新器 (WorldMemory)
+    ↓
+状态保存器 (PersistenceEngine)
+    ↓
+输出响应
 ```
 
-**规则层接口**：
-```python
-class RuleLayer:
-    def load_canon(path: str) -> Canon
-    def get_rule_section(section: str) -> str
-    def validate_canon(canon: Canon) -> ValidationResult
-    def watch_for_changes(callback: Callable)
+### 错误处理流
+
+```
+异常发生
+    ↓
+错误分类器 (按类型分类)
+    ↓
+恢复策略选择
+    ├── 重试策略 (可重试错误)
+    ├── 降级策略 (部分功能不可用)
+    ├── 回滚策略 (状态不一致)
+    └── 终止策略 (严重错误)
+    ↓
+执行恢复操作
+    ↓
+日志记录 (结构化日志)
+    ↓
+用户通知 (友好错误信息)
 ```
 
-**解释层接口**：
-```python
-class InterpretationLayer:
-    async def interpret(
-        rules: str,
-        memories: List[Memory],
-        player_input: str
-    ) -> InterpretationResult
-    async def check_consistency(
-        result: InterpretationResult,
-        rules: str
-    ) -> ConsistencyReport
+### 性能优化流
+
+```
+请求到达
+    ↓
+缓存检查 (多层缓存)
+    ├── 内存缓存 (热点数据)
+    ├── Redis缓存 (会话数据)
+    └── 本地缓存 (规则数据)
+    ↓
+并行处理 (适用时)
+    ├── 规则加载 (异步)
+    ├── 记忆检索 (异步)
+    └── LLM调用 (异步)
+    ↓
+结果合并和验证
+    ↓
+响应返回
 ```
 
-**世界记忆层接口**：
-```python
-class WorldMemory:
-    async def store(entity: MemoryEntity)
-    async def retrieve(
-        query: str,
-        filters: Optional[Dict] = None
-    ) -> List[MemoryEntity]
-    async def summarize(
-        entities: List[MemoryEntity]
-    ) -> str
-    async def rollback(to_version: int)
+## 组件交互图
+
+```mermaid
+graph TB
+    A[玩家输入] --> B[PlayerIntervention]
+    B --> C[RuleLoader]
+    C --> D[WorldMemory]
+    D --> E[PromptAssembler]
+    E --> F[LLMProvider]
+    F --> G[RuleInterpreter]
+    G --> H[ConsistencyChecker]
+    H --> I[WorldMemory]
+    I --> J[PersistenceEngine]
+    J --> K[输出响应]
+    
+    L[ConfigManager] --> M[所有组件]
+    N[SessionManager] --> O[TurnScheduler]
+    O --> P[所有会话]
+    
+    Q[监控系统] --> R[性能指标]
+    Q --> S[错误日志]
+    Q --> T[成本跟踪]
 ```
 
-**玩家干预层接口**：
-```python
-class PlayerIntervention:
-    def parse_input(input: str) -> ParsedInput
-    async def process_intervention(
-        intervention: Intervention,
-        session: Session
-    ) -> ProcessedResult
-    def validate_permission(
-        intervention: Intervention,
-        rules: Canon
-    ) -> bool
-```
+## 技术栈选型
 
-### 3.2 数据流设计
+### 编程语言和框架
+- **语言**: Python 3.10+
+- **异步框架**: asyncio + aiohttp
+- **Web框架**: FastAPI（用于API服务）
+- **CLI框架**: Typer
+- **配置管理**: Pydantic Settings
+- **测试框架**: pytest + hypothesis
+- **文档生成**: mkdocs + mkdocstrings
 
-**正常叙事流**：
-```
-玩家输入 → 干预解析 → 规则加载 → 记忆检索 → Prompt组装 → LLM调用 → 结果解析 → 记忆更新 → 状态保存 → 输出响应
-```
+### 数据库系统
+- **主数据库**: SQLite（嵌入式，零配置）
+- **分析数据库**: DuckDB（可选，用于复杂查询）
+- **向量数据库**: Chroma（本地）或 Qdrant（云）
+- **缓存**: Redis（可选，用于会话缓存）
+- **消息队列**: Redis Streams（可选，用于异步处理）
 
-**错误处理流**：
-```
-异常发生 → 错误分类 → 恢复策略选择 → 状态回滚 → 重试/降级 → 日志记录 → 用户通知
-```
+### LLM接入方案
+- **抽象层**: Provider无关设计
+- **支持提供商**: OpenAI, Anthropic, 本地模型 (Llama, Phi via Ollama), Google Gemini, Azure OpenAI
+- **BYOK设计**: 用户提供API密钥
+- **成本控制**: 令牌计数、预算告警、使用限制
+- **性能优化**: 请求批处理、响应缓存、连接池
 
-### 3.3 错误处理和恢复机制
+### 监控和可观测性
+- **日志系统**: structlog + JSON格式
+- **指标收集**: Prometheus客户端
+- **分布式追踪**: OpenTelemetry
+- **错误跟踪**: Sentry（可选）
+- **性能分析**: py-spy + memory-profiler
 
-**错误分类**：
-1. **LLM错误**：API失败、超时、配额不足
-2. **规则错误**：语法错误、冲突、缺失
-3. **记忆错误**：存储失败、检索超时、一致性冲突
-4. **系统错误**：内存不足、磁盘满、网络中断
+## 部署架构
 
-**恢复策略**：
-- **重试**：可重试错误（网络超时）
-- **降级**：功能降级（使用缓存、简化推理）
-- **回滚**：状态回滚到上一个稳定点
-- **人工干预**：严重错误时暂停并等待干预
-
-**监控指标**：
-- 回合延迟（P50, P95, P99）
-- LLM调用成功率
-- 记忆检索命中率
-- 错误率与分类
-
-### 3.4 配置管理和热加载
-
-**配置层级**：
-1. **环境配置**：API密钥、数据库路径
-2. **会话配置**：规则路径、记忆策略
-3. **运行时配置**：并发数、超时时间
-4. **LLM配置**：模型选择、温度参数
-
-**热加载支持**：
-- 规则文件变化自动重载
-- 配置更新无需重启
-- 插件系统动态加载
-
-## 4. 部署架构
-
-### 4.1 本地运行模式
-
-**单机部署**：
+### 本地运行模式
 ```
 用户机器
 ├── LOOM CLI
@@ -303,207 +354,143 @@ class PlayerIntervention:
 └── 本地LLM（可选）
 ```
 
-**要求**：
+**要求**:
 - Python 3.10+
 - 磁盘空间：100MB+
 - 内存：2GB+（使用本地LLM需更多）
+- 网络：访问LLM API（如使用云端LLM）
 
-### 4.2 服务器部署方案
-
-**微服务架构**：
+### 服务器部署方案
 ```
-负载均衡器
-├── API服务（FastAPI）
-├── 会话管理服务
-├── 记忆存储服务
-├── LLM网关服务
-└── 规则仓库服务
+负载均衡器 (Nginx/Traefik)
+├── API服务 (FastAPI + Uvicorn)
+├── 会话管理服务 (SessionManager)
+├── 记忆存储服务 (WorldMemory)
+├── LLM网关服务 (LLMProvider)
+├── 规则仓库服务 (RuleLoader)
+└── 监控服务 (Prometheus + Grafana)
 ```
 
-**容器化部署**：
+**要求**:
+- 容器化部署 (Docker/Kubernetes)
+- 高可用配置
+- 自动扩缩容
+- 备份和恢复策略
+
+### 容器化部署
 ```docker
 # Docker Compose配置
+version: '3.8'
+
 services:
   api:
     image: loom-api:latest
-    ports: ["8000:8000"]
-  memory:
-    image: loom-memory:latest
-    volumes: ["memory-data:/data"]
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:pass@db:5432/loom
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=loom
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis-data:/data
+
   llm-gateway:
     image: loom-llm-gateway:latest
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+
+  monitoring:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+
+volumes:
+  postgres-data:
+  redis-data:
+  grafana-data:
 ```
 
-**云原生部署**：
-- Kubernetes部署
-- 自动扩缩容（基于会话数）
-- 服务网格（Istio）用于流量管理
+## 扩展点设计
 
-### 4.3 扩展性和性能考虑
-
-**水平扩展**：
-- 无状态API服务可水平扩展
-- 会话亲和性负载均衡
-- 共享记忆存储（Redis集群）
-
-**性能优化**：
-- **缓存策略**：
-  - 规则解释缓存（TTL 5分钟）
-  - 记忆摘要缓存
-  - LLM响应缓存（相同输入）
-- **批处理**：
-  - 批量记忆检索
-  - 并行LLM调用（多个会话）
-- **懒加载**：
-  - 按需加载规则章节
-  - 延迟记忆检索
-
-**容量规划**：
-- 单会话内存占用：~50MB
-- 数据库增长：~1MB/1000回合
-- 并发会话数：受LLM API限制
-
-## 5. 开发环境配置
-
-### 5.1 依赖管理
-
-**pyproject.toml**：
-```toml
-[project]
-name = "loom"
-version = "0.1.0"
-dependencies = [
-    "aiohttp>=3.9.0",
-    "pydantic>=2.0.0",
-    "sqlalchemy>=2.0.0",
-    "markdown-it-py>=3.0.0",
-    "typer>=0.9.0",
-    "fastapi>=0.104.0",
-    "uvicorn>=0.24.0",
-]
-
-[project.optional-dependencies]
-dev = [
-    "pytest>=7.4.0",
-    "pytest-asyncio>=0.21.0",
-    "black>=23.0.0",
-    "mypy>=1.7.0",
-    "flake8>=6.0.0",
-]
-vector = [
-    "chromadb>=0.4.0",
-    "sentence-transformers>=2.2.0",
-]
+### 插件系统
+```
+plugins/
+├── memory_backends/     # 记忆存储后端插件
+├── llm_providers/      # LLM提供商插件
+├── rule_validators/    # 规则验证器插件
+├── intervention_types/ # 干预类型插件
+├── prompt_templates/   # Prompt模板插件
+└── export_formats/     # 导出格式插件
 ```
 
-**工具链**：
-- **包管理**：Poetry 或 UV
-- **虚拟环境**：venv 或 conda
-- **依赖锁定**：poetry.lock 或 requirements.txt
-
-### 5.2 开发工具链
-
-**代码质量**：
-- **格式化**：Black + isort
-- **静态检查**：mypy + flake8
-- **安全扫描**：bandit + safety
-- **复杂度检查**：radon
-
-**开发工具**：
-- **IDE配置**：VS Code配置（.vscode/）
-- **调试配置**：launch.json调试配置
-- **预提交钩子**：pre-commit配置
-- **文档生成**：MkDocs + Swagger
-
-**测试工具**：
-- **单元测试**：pytest + pytest-asyncio
-- **集成测试**：pytest + 测试数据库
-- **端到端测试**：pytest + 模拟LLM
-- **性能测试**：locust 或 pytest-benchmark
-
-### 5.3 测试框架和CI/CD
-
-**测试目录结构**：
-```
-tests/
-├── unit/
-│   ├── test_runtime.py
-│   ├── test_rules.py
-│   └── test_memory.py
-├── integration/
-│   ├── test_interpretation.py
-│   └── test_intervention.py
-├── e2e/
-│   └── test_full_session.py
-└── fixtures/
-    └── sample_canon/
+**插件接口**:
+```python
+class LoomPlugin:
+    def initialize(config: Dict) -> None
+    def get_capabilities() -> List[str]
+    def get_config_schema() -> Dict[str, Any]
+    def cleanup() -> None
 ```
 
-**CI/CD流水线**：
-```yaml
-# GitHub Actions配置
-name: CI
-on: [push, pull_request]
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
-      - run: pip install -e ".[dev]"
-      - run: pytest --cov=loom --cov-report=xml
-      - run: mypy loom
-      - run: black --check loom tests
-      - run: flake8 loom tests
-```
+### 自定义记忆后端
+- **接口**: `MemoryBackend`抽象类
+- **实现示例**: SQLiteBackend, PostgreSQLBackend, RedisBackend, MongoDBBackend
+- **配置驱动**: 通过配置文件选择后端
+- **特性**: 事务支持、索引优化、备份恢复
 
-**部署流水线**：
-- **开发环境**：自动部署到测试服务器
-- **预发布环境**：手动触发部署
-- **生产环境**：标签触发，蓝绿部署
+### 自定义LLM提供商
+- **接口**: `LLMProvider`抽象类
+- **实现示例**: OpenAIProvider, AnthropicProvider, OllamaProvider, HuggingFaceProvider
+- **统一API**: 所有提供商实现相同接口
+- **特性**: 流式响应、成本跟踪、错误处理
 
-## 6. 文件结构
+### 自定义规则验证器
+- **接口**: `RuleValidator`抽象类
+- **实现示例**: SyntaxValidator, ConsistencyValidator, StyleValidator
+- **配置驱动**: 可组合的验证器链
+- **特性**: 自定义规则、错误报告、自动修复
 
-### 6.1 项目根目录
-```
-loom/
-├── src/
-│   └── loom/
-│       ├── __init__.py
-│       ├── core/              # 运行时核心层
-│       │   ├── session.py
-│       │   ├── scheduler.py
-│       │   ├── persistence.py
-│       │   └── prompt.py
-│       ├── rules/             # 规则层
-│       │   ├── canon.py
-│       │   ├── loader.py
-│       │   └── validator.py
-│       ├── interpretation/    # 解释层
-│       │   ├── interpreter.py
-│       │   ├── llm/
-│       │   │   ├── provider.py
-│       │   │   ├── openai.py
-│       │   │   └── anthropic.py
-│       │   └── pipeline.py
-│       ├── memory/            # 世界记忆层
-│       │   ├── entities.py
-│       │   ├── storage.py
-│       │   ├── retrieval.py
-│       │   └── summarization.py
-│       ├── intervention/      # 玩家干预层
-│       │   ├── parser.py
-│       │   ├── intent.py
-│       │   └── absorption.py
-│       └── api/               # API接口
-│           ├── server.py
-│           ├── routes/
-│           └── schemas.py
-├── tests/
-├── examples/
-│   ├── canons/               # 示例规则集
-│   └── scripts/              # 示例脚本
-├── docs/
-├── py
+## 监控与可观测性
+
+### 日志系统
+- **结构化日志**: JSON格式，包含会话ID、回合号等上下文
+- **日志级别**: DEBUG, INFO, WARNING, ERROR, CRITICAL
+- **日志输出**: 文件 + 控制台 + 可选远程收集
+- **日志轮转**: 按大小和时间自动轮转
+- **日志查询**: 支持ELK栈或类似方案
+
+### 指标收集
+- **性能指标**: 回合延迟、LLM响应时间、记忆检索时间、队列长度
+- **业务指标**: 活跃会话数、总回合数、干预次数、规则使用频率
+- **成本指标**: LLM令牌使用量、API调用次数、估算成本
+- **质量指标**: 规则解释一致性、记忆相关性、用户满意度
+- **系统指标**: CPU使用率、内存使用、磁盘IO、网络流量
+
+### 追踪系统
+- **分布式追踪**: 每个请求分配唯一追踪ID
+- **跨度记录**: 记录各层处理时间、错误信息、上下文数据
+- **可视化**: Jaeger或Zipkin集成（可选）
+- **性能分析**: 识别性能瓶颈和优化机会
+
+### 健康检查
+- **就绪检查**: 服务是否准备好接收请求
+- **存活检查**: 服务是否仍在运行
+- **依赖检查**: 检查数据库、缓存、LLM API等依赖
+- **自定义
