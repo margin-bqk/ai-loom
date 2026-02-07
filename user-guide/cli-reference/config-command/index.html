@@ -1,0 +1,3901 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="AI-Loom增强叙事生成系统文档">
+      
+      
+        <meta name="author" content="AI-Loom Team">
+      
+      
+        <link rel="canonical" href="https://margin-bqk.github.io/ai-loom/user-guide/cli-reference/config-command/">
+      
+      
+        <link rel="prev" href="../session-command/">
+      
+      
+        <link rel="next" href="../examples/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>config命令详解 - AI-Loom Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#config" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="AI-Loom Documentation" class="md-header__button md-logo" aria-label="AI-Loom Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            AI-Loom Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              config命令详解
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/margin-bqk/ai-loom" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    margin-bqk/ai-loom
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  首页
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../quick-start/install-and-run/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  快速开始
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  用户指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../development/setup-development/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  开发指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../deployment/deployment-guide/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  部署指南
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../reference/architecture-overview/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  参考文档
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="AI-Loom Documentation" class="md-nav__button md-logo" aria-label="AI-Loom Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    AI-Loom Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/margin-bqk/ai-loom" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    margin-bqk/ai-loom
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    首页
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    快速开始
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    快速开始
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/install-and-run/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    安装并运行
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/first-example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一个示例
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/basic-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基础配置
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../quick-start/verify-installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    验证安装
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    用户指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    用户指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    开始使用
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI参考
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CLI参考
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../basic-commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基础命令
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../run-command/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    run命令详解
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../session-command/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    session命令详解
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    config命令详解
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    config命令详解
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        概述
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命令语法
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        子命令
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="子命令">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-show-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. show - 显示配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-set-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. set - 设置配置值
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-get-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. get - 获取配置值
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-unset-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. unset - 删除配置项
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-validate-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. validate - 验证配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-test-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. test - 测试配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-import-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. import - 导入配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-export-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. export - 导出配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-reset-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. reset - 重置配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-diff-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. diff - 比较配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        配置键参考
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="配置键参考">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM 配置键
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        会话配置键
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        记忆系统配置键
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        监控配置键
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        使用示例
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="使用示例">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        示例 1：配置开发环境
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        示例 2：配置生产环境
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        示例 3：故障排除配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        最佳实践
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="最佳实践">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 安全实践
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 性能优化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 维护实践
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 调试技巧
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        故障排除
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="故障排除">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        相关命令
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        获取帮助
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    命令示例
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API使用
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API使用
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-usage/quick-api-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API快速开始
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-usage/python-client/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python客户端
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-usage/http-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HTTP API参考
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api-usage/api-examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API示例代码
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    配置指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    配置指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/config-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    配置文件详解
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/environment-vars/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    环境变量配置
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/llm-providers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LLM提供商配置
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../configuration/advanced-config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    高级配置
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    实践示例
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    实践示例
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practical-examples/basic-narrative/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    基础叙事示例
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practical-examples/fantasy-example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    奇幻世界示例
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practical-examples/sci-fi-example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    科幻世界示例
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../practical-examples/interactive-example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    交互式示例
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    开发指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    开发指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/setup-development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    开发环境设置
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/code-organization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    代码组织结构
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/testing-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    测试指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/debugging-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    调试指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    贡献指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/code-standards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    代码质量标准
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/extension-development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    扩展开发指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/performance-benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    性能基准
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    部署指南
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    部署指南
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../deployment/deployment-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    部署指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../deployment/local-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    本地部署
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../deployment/docker-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Docker部署
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../deployment/cloud-deployment/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    云部署
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../deployment/monitoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    监控和日志
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../deployment/troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    故障排除
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../deployment/upgrade-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    升级指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../deployment/release-process/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    发布流程
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    参考文档
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    参考文档
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/architecture-overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    架构概述
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/world-building-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    世界构建指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/performance-tuning/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    性能调优
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/security-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    安全指南
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/test-coverage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    测试覆盖率报告
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/test-tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    测试工具
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/documentation-validation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    文档验证
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/test-report-phase1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    第一阶段测试报告
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_6_9" id="__nav_6_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    发布说明
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_6_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    发布说明
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/release-notes/v0.10.0/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v0.10.0
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        概述
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        命令语法
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        子命令
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="子命令">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-show-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. show - 显示配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-set-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. set - 设置配置值
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-get-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. get - 获取配置值
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-unset-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. unset - 删除配置项
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-validate-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. validate - 验证配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-test-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. test - 测试配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-import-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. import - 导入配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-export-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. export - 导出配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-reset-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. reset - 重置配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-diff-" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. diff - 比较配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        配置键参考
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="配置键参考">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#llm" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        LLM 配置键
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        会话配置键
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        记忆系统配置键
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        监控配置键
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        使用示例
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="使用示例">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        示例 1：配置开发环境
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        示例 2：配置生产环境
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        示例 3：故障排除配置
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        最佳实践
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="最佳实践">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. 安全实践
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. 性能优化
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. 维护实践
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. 调试技巧
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_10" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        故障排除
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="故障排除">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_11" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        常见问题
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_12" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        相关命令
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_13" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        获取帮助
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="config">config 命令<a class="headerlink" href="#config" title="Permanent link">&para;</a></h1>
+<h2 id="_1">概述<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p><code>config</code> 命令用于管理 LOOM 的配置系统。它支持查看、编辑、验证、导入导出配置等操作。</p>
+<h2 id="_2">命令语法<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<div class="highlight"><pre><span></span><code>loom<span class="w"> </span>config<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>COMMAND<span class="w"> </span><span class="o">[</span>ARGS<span class="o">]</span>...
+</code></pre></div>
+<h2 id="_3">子命令<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h3 id="1-show-">1. <code>show</code> - 显示配置<a class="headerlink" href="#1-show-" title="Permanent link">&para;</a></h3>
+<p>显示当前配置信息。</p>
+<p><strong>语法</strong>:
+<div class="highlight"><pre><span></span><code>loom<span class="w"> </span>config<span class="w"> </span>show<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</code></pre></div></p>
+<p><strong>选项</strong>:
+- <code>--section, -s TEXT</code>: 显示特定配置部分 (llm, memory, session, etc.)
+- <code>--format, -f TEXT</code>: 输出格式 (table, json, yaml) [默认: table]
+- <code>--verbose, -v</code>: 详细输出，显示配置来源
+- <code>--show-sources</code>: 显示每个配置项的来源
+- <code>--help</code>: 显示帮助信息</p>
+<p><strong>示例</strong>:
+<div class="highlight"><pre><span></span><code><span class="c1"># 显示所有配置（表格格式）</span>
+loom<span class="w"> </span>config<span class="w"> </span>show
+
+<span class="c1"># 显示 LLM 配置部分</span>
+loom<span class="w"> </span>config<span class="w"> </span>show<span class="w"> </span>--section<span class="w"> </span>llm
+
+<span class="c1"># 显示 JSON 格式的会话配置</span>
+loom<span class="w"> </span>config<span class="w"> </span>show<span class="w"> </span>--section<span class="w"> </span>session<span class="w"> </span>--format<span class="w"> </span>json
+
+<span class="c1"># 显示详细配置，包括来源</span>
+loom<span class="w"> </span>config<span class="w"> </span>show<span class="w"> </span>--verbose<span class="w"> </span>--show-sources
+</code></pre></div></p>
+<p><strong>输出示例</strong> (表格格式):
+<div class="highlight"><pre><span></span><code>┌─────────────────┬─────────────────────────────────────┐
+│ Section         │ Value                               │
+├─────────────────┼─────────────────────────────────────┤
+│ llm.openai      │                                     │
+│   enabled       │ true                                │
+│   model         │ gpt-3.5-turbo                       │
+│   temperature   │ 0.7                                 │
+│   max_tokens    │ 1000                                │
+│   timeout       │ 30                                  │
+└─────────────────┴─────────────────────────────────────┘
+</code></pre></div></p>
+<h3 id="2-set-">2. <code>set</code> - 设置配置值<a class="headerlink" href="#2-set-" title="Permanent link">&para;</a></h3>
+<p>设置配置项的值。</p>
+<p><strong>语法</strong>:
+<div class="highlight"><pre><span></span><code>loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>KEY<span class="w"> </span>VALUE
+</code></pre></div></p>
+<p><strong>选项</strong>:
+- <code>--global, -g</code>: 保存到全局配置文件 (~/.loom/config.yaml)
+- <code>--local, -l</code>: 保存到项目配置文件 (./config/local.yaml)
+- <code>--env, -e</code>: 设置为环境变量（仅当前会话）
+- <code>--type TEXT</code>: 值类型 (string, int, float, bool, json)
+- <code>--help</code>: 显示帮助信息</p>
+<p><strong>参数</strong>:
+- <code>KEY</code>: 配置键，使用点号分隔 (如: <code>llm.openai.model</code>)
+- <code>VALUE</code>: 配置值</p>
+<p><strong>示例</strong>:
+<div class="highlight"><pre><span></span><code><span class="c1"># 设置 OpenAI 模型</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>llm.openai.model<span class="w"> </span><span class="s2">&quot;gpt-4-turbo&quot;</span>
+
+<span class="c1"># 设置温度参数（浮点数）</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>llm.openai.temperature<span class="w"> </span><span class="m">0</span>.5<span class="w"> </span>--type<span class="w"> </span>float
+
+<span class="c1"># 设置最大回合数（整数）</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>session.default_max_turns<span class="w"> </span><span class="m">100</span><span class="w"> </span>--type<span class="w"> </span>int
+
+<span class="c1"># 启用缓存（布尔值）</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>llm.openai.enable_caching<span class="w"> </span><span class="nb">true</span><span class="w"> </span>--type<span class="w"> </span>bool
+
+<span class="c1"># 设置 JSON 值</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>memory.vector_store<span class="w"> </span><span class="s1">&#39;{&quot;enabled&quot;: true, &quot;provider&quot;: &quot;chromadb&quot;}&#39;</span><span class="w"> </span>--type<span class="w"> </span>json
+
+<span class="c1"># 保存到全局配置</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--global<span class="w"> </span>llm.openai.model<span class="w"> </span><span class="s2">&quot;gpt-4&quot;</span>
+
+<span class="c1"># 保存到本地配置</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--local<span class="w"> </span>session.auto_save_interval<span class="w"> </span><span class="m">10</span>
+</code></pre></div></p>
+<h3 id="3-get-">3. <code>get</code> - 获取配置值<a class="headerlink" href="#3-get-" title="Permanent link">&para;</a></h3>
+<p>获取特定配置项的值。</p>
+<p><strong>语法</strong>:
+<div class="highlight"><pre><span></span><code>loom<span class="w"> </span>config<span class="w"> </span>get<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>KEY
+</code></pre></div></p>
+<p><strong>选项</strong>:
+- <code>--format, -f TEXT</code>: 输出格式 (raw, json, yaml) [默认: raw]
+- <code>--default TEXT</code>: 如果键不存在，返回默认值
+- <code>--help</code>: 显示帮助信息</p>
+<p><strong>示例</strong>:
+<div class="highlight"><pre><span></span><code><span class="c1"># 获取 OpenAI 模型</span>
+loom<span class="w"> </span>config<span class="w"> </span>get<span class="w"> </span>llm.openai.model
+
+<span class="c1"># 获取 JSON 格式的完整 LLM 配置</span>
+loom<span class="w"> </span>config<span class="w"> </span>get<span class="w"> </span>llm<span class="w"> </span>--format<span class="w"> </span>json
+
+<span class="c1"># 获取不存在的键，返回默认值</span>
+loom<span class="w"> </span>config<span class="w"> </span>get<span class="w"> </span>nonexistent.key<span class="w"> </span>--default<span class="w"> </span><span class="s2">&quot;default_value&quot;</span>
+</code></pre></div></p>
+<h3 id="4-unset-">4. <code>unset</code> - 删除配置项<a class="headerlink" href="#4-unset-" title="Permanent link">&para;</a></h3>
+<p>删除配置项，恢复为默认值。</p>
+<p><strong>语法</strong>:
+<div class="highlight"><pre><span></span><code>loom<span class="w"> </span>config<span class="w"> </span><span class="nb">unset</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span><span class="w"> </span>KEY
+</code></pre></div></p>
+<p><strong>选项</strong>:
+- <code>--global, -g</code>: 从全局配置中删除
+- <code>--local, -l</code>: 从本地配置中删除
+- <code>--all</code>: 从所有配置源中删除
+- <code>--help</code>: 显示帮助信息</p>
+<p><strong>示例</strong>:
+<div class="highlight"><pre><span></span><code><span class="c1"># 删除特定配置项</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">unset</span><span class="w"> </span>llm.openai.temperature
+
+<span class="c1"># 从全局配置中删除</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">unset</span><span class="w"> </span>--global<span class="w"> </span>llm.openai.model
+
+<span class="c1"># 从本地配置中删除</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">unset</span><span class="w"> </span>--local<span class="w"> </span>session.auto_save_interval
+
+<span class="c1"># 从所有配置源中删除</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">unset</span><span class="w"> </span>--all<span class="w"> </span>llm.openai.api_key
+</code></pre></div></p>
+<h3 id="5-validate-">5. <code>validate</code> - 验证配置<a class="headerlink" href="#5-validate-" title="Permanent link">&para;</a></h3>
+<p>验证配置文件的语法和完整性。</p>
+<p><strong>语法</strong>:
+<div class="highlight"><pre><span></span><code>loom<span class="w"> </span>config<span class="w"> </span>validate<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</code></pre></div></p>
+<p><strong>选项</strong>:
+- <code>--file, -f PATH</code>: 验证特定配置文件
+- <code>--check-required</code>: 检查必需配置项
+- <code>--check-connections</code>: 检查外部连接（LLM、数据库等）
+- <code>--report PATH</code>: 生成验证报告文件
+- <code>--fix</code>: 自动修复可修复的问题
+- <code>--help</code>: 显示帮助信息</p>
+<p><strong>示例</strong>:
+<div class="highlight"><pre><span></span><code><span class="c1"># 验证当前配置</span>
+loom<span class="w"> </span>config<span class="w"> </span>validate
+
+<span class="c1"># 验证特定配置文件</span>
+loom<span class="w"> </span>config<span class="w"> </span>validate<span class="w"> </span>--file<span class="w"> </span>custom_config.yaml
+
+<span class="c1"># 检查必需配置项</span>
+loom<span class="w"> </span>config<span class="w"> </span>validate<span class="w"> </span>--check-required
+
+<span class="c1"># 检查外部连接</span>
+loom<span class="w"> </span>config<span class="w"> </span>validate<span class="w"> </span>--check-connections
+
+<span class="c1"># 生成验证报告</span>
+loom<span class="w"> </span>config<span class="w"> </span>validate<span class="w"> </span>--report<span class="w"> </span>validation_report.json
+
+<span class="c1"># 自动修复问题</span>
+loom<span class="w"> </span>config<span class="w"> </span>validate<span class="w"> </span>--fix
+</code></pre></div></p>
+<p><strong>验证输出示例</strong>:
+<div class="highlight"><pre><span></span><code>✓ Configuration syntax is valid
+✓ All required fields are present
+⚠ Missing API key for OpenAI provider
+✓ Database connection successful
+✗ Invalid timeout value: must be positive integer
+</code></pre></div></p>
+<h3 id="6-test-">6. <code>test</code> - 测试配置<a class="headerlink" href="#6-test-" title="Permanent link">&para;</a></h3>
+<p>测试配置的实际功能，如 LLM 连接、数据库连接等。</p>
+<p><strong>语法</strong>:
+<div class="highlight"><pre><span></span><code>loom<span class="w"> </span>config<span class="w"> </span><span class="nb">test</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</code></pre></div></p>
+<p><strong>选项</strong>:
+- <code>--provider TEXT</code>: 测试特定 LLM 提供商
+- <code>--all</code>: 测试所有已启用的提供商
+- <code>--database</code>: 测试数据库连接
+- <code>--memory</code>: 测试记忆系统
+- <code>--timeout INTEGER</code>: 测试超时时间（秒） [默认: 30]
+- <code>--verbose, -v</code>: 详细输出
+- <code>--help</code>: 显示帮助信息</p>
+<p><strong>示例</strong>:
+<div class="highlight"><pre><span></span><code><span class="c1"># 测试 OpenAI 连接</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--provider<span class="w"> </span>openai
+
+<span class="c1"># 测试所有提供商</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--all
+
+<span class="c1"># 测试数据库连接</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--database
+
+<span class="c1"># 测试记忆系统</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--memory
+
+<span class="c1"># 详细测试</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--all<span class="w"> </span>--verbose
+</code></pre></div></p>
+<p><strong>测试输出示例</strong>:
+<div class="highlight"><pre><span></span><code>Testing OpenAI provider...
+  ✓ Connection successful (200ms)
+  ✓ Model available: gpt-3.5-turbo
+  ✓ Authentication valid
+  ✓ Response time: 1.2s
+
+Testing database connection...
+  ✓ SQLite database accessible
+  ✓ Schema version: 2.0.0
+  ✓ Read/write permissions OK
+
+All tests passed! ✅
+</code></pre></div></p>
+<h3 id="7-import-">7. <code>import</code> - 导入配置<a class="headerlink" href="#7-import-" title="Permanent link">&para;</a></h3>
+<p>从文件导入配置。</p>
+<p><strong>语法</strong>:
+<div class="highlight"><pre><span></span><code>loom<span class="w"> </span>config<span class="w"> </span>import<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</code></pre></div></p>
+<p><strong>选项</strong>:
+- <code>--file, -f PATH</code>: 要导入的配置文件 [必需]
+- <code>--merge</code>: 合并到现有配置（而不是替换）
+- <code>--overwrite</code>: 覆盖现有配置项
+- <code>--dry-run</code>: 预览导入效果，不实际应用
+- <code>--help</code>: 显示帮助信息</p>
+<p><strong>示例</strong>:
+<div class="highlight"><pre><span></span><code><span class="c1"># 从文件导入配置</span>
+loom<span class="w"> </span>config<span class="w"> </span>import<span class="w"> </span>--file<span class="w"> </span>backup_config.yaml
+
+<span class="c1"># 合并配置</span>
+loom<span class="w"> </span>config<span class="w"> </span>import<span class="w"> </span>--file<span class="w"> </span>custom_settings.yaml<span class="w"> </span>--merge
+
+<span class="c1"># 预览导入效果</span>
+loom<span class="w"> </span>config<span class="w"> </span>import<span class="w"> </span>--file<span class="w"> </span>new_config.yaml<span class="w"> </span>--dry-run
+</code></pre></div></p>
+<h3 id="8-export-">8. <code>export</code> - 导出配置<a class="headerlink" href="#8-export-" title="Permanent link">&para;</a></h3>
+<p>导出当前配置到文件。</p>
+<p><strong>语法</strong>:
+<div class="highlight"><pre><span></span><code>loom<span class="w"> </span>config<span class="w"> </span><span class="nb">export</span><span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</code></pre></div></p>
+<p><strong>选项</strong>:
+- <code>--file, -f PATH</code>: 导出文件路径 [必需]
+- <code>--format TEXT</code>: 导出格式 (yaml, json) [默认: yaml]
+- <code>--include-defaults</code>: 包括默认值
+- <code>--include-sources</code>: 包括配置来源信息
+- <code>--section TEXT</code>: 只导出特定部分
+- <code>--help</code>: 显示帮助信息</p>
+<p><strong>示例</strong>:
+<div class="highlight"><pre><span></span><code><span class="c1"># 导出完整配置</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--file<span class="w"> </span>config_backup.yaml
+
+<span class="c1"># 导出 JSON 格式</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--file<span class="w"> </span>config_backup.json<span class="w"> </span>--format<span class="w"> </span>json
+
+<span class="c1"># 只导出 LLM 配置</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--file<span class="w"> </span>llm_config.yaml<span class="w"> </span>--section<span class="w"> </span>llm
+
+<span class="c1"># 包括默认值</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--file<span class="w"> </span>full_config.yaml<span class="w"> </span>--include-defaults
+</code></pre></div></p>
+<h3 id="9-reset-">9. <code>reset</code> - 重置配置<a class="headerlink" href="#9-reset-" title="Permanent link">&para;</a></h3>
+<p>重置配置为默认值。</p>
+<p><strong>语法</strong>:
+<div class="highlight"><pre><span></span><code>loom<span class="w"> </span>config<span class="w"> </span>reset<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</code></pre></div></p>
+<p><strong>选项</strong>:
+- <code>--global, -g</code>: 重置全局配置
+- <code>--local, -l</code>: 重置本地配置
+- <code>--all</code>: 重置所有配置
+- <code>--confirm</code>: 跳过确认提示
+- <code>--help</code>: 显示帮助信息</p>
+<p><strong>示例</strong>:
+<div class="highlight"><pre><span></span><code><span class="c1"># 重置所有配置（需要确认）</span>
+loom<span class="w"> </span>config<span class="w"> </span>reset
+
+<span class="c1"># 重置全局配置</span>
+loom<span class="w"> </span>config<span class="w"> </span>reset<span class="w"> </span>--global
+
+<span class="c1"># 重置本地配置</span>
+loom<span class="w"> </span>config<span class="w"> </span>reset<span class="w"> </span>--local
+
+<span class="c1"># 跳过确认提示</span>
+loom<span class="w"> </span>config<span class="w"> </span>reset<span class="w"> </span>--all<span class="w"> </span>--confirm
+</code></pre></div></p>
+<h3 id="10-diff-">10. <code>diff</code> - 比较配置<a class="headerlink" href="#10-diff-" title="Permanent link">&para;</a></h3>
+<p>比较不同配置源之间的差异。</p>
+<p><strong>语法</strong>:
+<div class="highlight"><pre><span></span><code>loom<span class="w"> </span>config<span class="w"> </span>diff<span class="w"> </span><span class="o">[</span>OPTIONS<span class="o">]</span>
+</code></pre></div></p>
+<p><strong>选项</strong>:
+- <code>--source1 TEXT</code>: 第一个配置源 (current, global, local, default, file:PATH)
+- <code>--source2 TEXT</code>: 第二个配置源 [默认: current]
+- <code>--format TEXT</code>: 输出格式 (table, json, unified) [默认: table]
+- <code>--only-different</code>: 只显示不同的项
+- <code>--help</code>: 显示帮助信息</p>
+<p><strong>示例</strong>:
+<div class="highlight"><pre><span></span><code><span class="c1"># 比较当前配置与默认配置</span>
+loom<span class="w"> </span>config<span class="w"> </span>diff<span class="w"> </span>--source1<span class="w"> </span>current<span class="w"> </span>--source2<span class="w"> </span>default
+
+<span class="c1"># 比较全局配置与本地配置</span>
+loom<span class="w"> </span>config<span class="w"> </span>diff<span class="w"> </span>--source1<span class="w"> </span>global<span class="w"> </span>--source2<span class="w"> </span><span class="nb">local</span>
+
+<span class="c1"># 比较配置文件</span>
+loom<span class="w"> </span>config<span class="w"> </span>diff<span class="w"> </span>--source1<span class="w"> </span>file:config1.yaml<span class="w"> </span>--source2<span class="w"> </span>file:config2.yaml
+
+<span class="c1"># 只显示不同的项</span>
+loom<span class="w"> </span>config<span class="w"> </span>diff<span class="w"> </span>--source1<span class="w"> </span>current<span class="w"> </span>--source2<span class="w"> </span>default<span class="w"> </span>--only-different
+</code></pre></div></p>
+<h2 id="_4">配置键参考<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<h3 id="llm">LLM 配置键<a class="headerlink" href="#llm" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>llm.{provider}.enabled</code> - 是否启用提供商</li>
+<li><code>llm.{provider}.api_key</code> - API 密钥（建议使用环境变量）</li>
+<li><code>llm.{provider}.model</code> - 模型名称</li>
+<li><code>llm.{provider}.temperature</code> - 温度参数 (0.0-2.0)</li>
+<li><code>llm.{provider}.max_tokens</code> - 最大令牌数</li>
+<li><code>llm.{provider}.timeout</code> - 超时时间（秒）</li>
+<li><code>llm.{provider}.max_retries</code> - 最大重试次数</li>
+<li><code>llm.{provider}.enable_caching</code> - 是否启用缓存</li>
+<li><code>llm.{provider}.cache_ttl</code> - 缓存生存时间（秒）</li>
+</ul>
+<h3 id="_5">会话配置键<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>session.default_max_turns</code> - 默认最大回合数</li>
+<li><code>session.auto_save_interval</code> - 自动保存间隔（回合数）</li>
+<li><code>session.persistence.enabled</code> - 是否启用持久化</li>
+<li><code>session.persistence.engine</code> - 持久化引擎 (sqlite, postgresql)</li>
+<li><code>session.persistence.database_path</code> - 数据库路径</li>
+<li><code>session.memory.short_term_capacity</code> - 短期记忆容量</li>
+<li><code>session.memory.long_term_capacity</code> - 长期记忆容量</li>
+</ul>
+<h3 id="_6">记忆系统配置键<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>memory.vector_store.enabled</code> - 是否启用向量存储</li>
+<li><code>memory.vector_store.provider</code> - 向量存储提供商 (chromadb, sqlite)</li>
+<li><code>memory.vector_store.collection_name</code> - 集合名称</li>
+<li><code>memory.vector_store.embedding_model</code> - 嵌入模型</li>
+<li><code>memory.structured_store.enabled</code> - 是否启用结构化存储</li>
+<li><code>memory.structured_store.provider</code> - 结构化存储提供商</li>
+<li><code>memory.summarizer.enabled</code> - 是否启用摘要生成器</li>
+<li><code>memory.summarizer.max_chunk_size</code> - 最大块大小</li>
+<li><code>memory.summarizer.compression_ratio</code> - 压缩比例</li>
+</ul>
+<h3 id="_7">监控配置键<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>monitoring.enabled</code> - 是否启用监控</li>
+<li><code>monitoring.metrics[].name</code> - 指标名称</li>
+<li><code>monitoring.metrics[].enabled</code> - 是否启用指标</li>
+<li><code>monitoring.metrics[].aggregation</code> - 聚合方式</li>
+<li><code>monitoring.alerting.enabled</code> - 是否启用告警</li>
+<li><code>monitoring.alerting.webhook_url</code> - 告警 Webhook URL</li>
+</ul>
+<h2 id="_8">使用示例<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<h3 id="1">示例 1：配置开发环境<a class="headerlink" href="#1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 设置开发环境配置</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--local<span class="w"> </span>llm.openai.model<span class="w"> </span><span class="s2">&quot;gpt-3.5-turbo&quot;</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--local<span class="w"> </span>llm.openai.temperature<span class="w"> </span><span class="m">0</span>.8
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--local<span class="w"> </span>session.default_max_turns<span class="w"> </span><span class="m">20</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--local<span class="w"> </span>session.auto_save_interval<span class="w"> </span><span class="m">5</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--local<span class="w"> </span>logging.level<span class="w"> </span><span class="s2">&quot;DEBUG&quot;</span>
+
+<span class="c1"># 验证配置</span>
+loom<span class="w"> </span>config<span class="w"> </span>validate<span class="w"> </span>--check-required
+
+<span class="c1"># 测试连接</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--provider<span class="w"> </span>openai
+</code></pre></div>
+<h3 id="2">示例 2：配置生产环境<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 设置生产环境配置</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--global<span class="w"> </span>llm.openai.model<span class="w"> </span><span class="s2">&quot;gpt-4-turbo&quot;</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--global<span class="w"> </span>llm.openai.temperature<span class="w"> </span><span class="m">0</span>.7
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--global<span class="w"> </span>llm.openai.enable_caching<span class="w"> </span><span class="nb">true</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--global<span class="w"> </span>session.default_max_turns<span class="w"> </span><span class="m">100</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--global<span class="w"> </span>monitoring.enabled<span class="w"> </span><span class="nb">true</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>--global<span class="w"> </span>logging.level<span class="w"> </span><span class="s2">&quot;WARNING&quot;</span>
+
+<span class="c1"># 导出配置备份</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">export</span><span class="w"> </span>--file<span class="w"> </span>production_backup.yaml
+
+<span class="c1"># 测试所有功能</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--all<span class="w"> </span>--timeout<span class="w"> </span><span class="m">60</span>
+</code></pre></div>
+<h3 id="3">示例 3：故障排除配置<a class="headerlink" href="#3" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># 查看当前配置</span>
+loom<span class="w"> </span>config<span class="w"> </span>show<span class="w"> </span>--verbose
+
+<span class="c1"># 检查配置问题</span>
+loom<span class="w"> </span>config<span class="w"> </span>validate<span class="w"> </span>--check-connections
+
+<span class="c1"># 测试特定功能</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">test</span><span class="w"> </span>--provider<span class="w"> </span>openai<span class="w"> </span>--verbose
+
+<span class="c1"># 重置有问题的配置</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">unset</span><span class="w"> </span>llm.openai.api_key
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>llm.openai.api_key<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENAI_API_KEY</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="c1"># 比较与默认配置的差异</span>
+loom<span class="w"> </span>config<span class="w"> </span>diff<span class="w"> </span>--source1<span class="w"> </span>current<span class="w"> </span>--source2<span class="w"> </span>default<span class="w"> </span>--only-different
+</code></pre></div>
+<h2 id="_9">最佳实践<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h2>
+<h3 id="1_1">1. 安全实践<a class="headerlink" href="#1_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>使用环境变量存储 API 密钥，而不是硬编码在配置文件中</li>
+<li>定期轮换 API 密钥</li>
+<li>为不同环境使用不同的配置</li>
+</ul>
+<h3 id="2_1">2. 性能优化<a class="headerlink" href="#2_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>启用缓存以减少 API 调用</li>
+<li>设置合理的超时和重试参数</li>
+<li>根据使用场景调整记忆容量</li>
+</ul>
+<h3 id="3_1">3. 维护实践<a class="headerlink" href="#3_1" title="Permanent link">&para;</a></h3>
+<ul>
+<li>定期备份配置</li>
+<li>使用版本控制管理配置文件</li>
+<li>为不同团队成员创建配置模板</li>
+</ul>
+<h3 id="4">4. 调试技巧<a class="headerlink" href="#4" title="Permanent link">&para;</a></h3>
+<ul>
+<li>使用 <code>--verbose</code> 选项查看详细输出</li>
+<li>使用 <code>--dry-run</code> 预览更改效果</li>
+<li>使用 <code>diff</code> 命令比较配置差异</li>
+</ul>
+<h2 id="_10">故障排除<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h2>
+<h3 id="_11">常见问题<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h3>
+<h4 id="1_2">1. 配置更改未生效<a class="headerlink" href="#1_2" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1"># 检查配置优先级</span>
+loom<span class="w"> </span>config<span class="w"> </span>show<span class="w"> </span>--show-sources
+
+<span class="c1"># 重新加载配置</span>
+loom<span class="w"> </span>config<span class="w"> </span>reset<span class="w"> </span>--local
+</code></pre></div>
+<h4 id="2-api">2. API 密钥错误<a class="headerlink" href="#2-api" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1"># 检查环境变量</span>
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$OPENAI_API_KEY</span>
+
+<span class="c1"># 重新设置</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">unset</span><span class="w"> </span>llm.openai.api_key
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>llm.openai.api_key<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">OPENAI_API_KEY</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div>
+<h4 id="3_2">3. 配置文件语法错误<a class="headerlink" href="#3_2" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1"># 验证语法</span>
+loom<span class="w"> </span>config<span class="w"> </span>validate<span class="w"> </span>--file<span class="w"> </span>config.yaml
+
+<span class="c1"># 查看错误详情</span>
+python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import yaml; yaml.safe_load(open(&#39;config.yaml&#39;))&quot;</span>
+</code></pre></div>
+<h4 id="4_1">4. 配置冲突<a class="headerlink" href="#4_1" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="c1"># 查看冲突</span>
+loom<span class="w"> </span>config<span class="w"> </span>diff<span class="w"> </span>--source1<span class="w"> </span>global<span class="w"> </span>--source2<span class="w"> </span><span class="nb">local</span>
+
+<span class="c1"># 解决冲突</span>
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">unset</span><span class="w"> </span>--global<span class="w"> </span>conflicting.key
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">unset</span><span class="w"> </span>--local<span class="w"> </span>conflicting.key
+loom<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>conflicting.key<span class="w"> </span><span class="s2">&quot;correct_value&quot;</span>
+</code></pre></div>
+<h2 id="_12">相关命令<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="../run-command/"><code>run</code> 命令</a> - 运行会话</li>
+<li><a href="../session-command/"><code>session</code> 命令</a> - 管理会话</li>
+<li><a href="../rules/basic-commands.md"><code>rules</code> 命令</a> - 管理规则</li>
+</ul>
+<h2 id="_13">获取帮助<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h2>
+<p>```bash</p>
+<h1 id="_14">查看完整帮助<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h1>
+<p>loom config --help</p>
+<h1 id="_15">查看特定子命令帮助<a class="headerlink" href="#_15" title="Permanent link">&para;</a></h1>
+<p>loom config show --help
+loom config set --help</p>
+<h1 id="_16">查看配置键文档<a class="headerlink" href="#_16" title="Permanent link">&para;</a></h1>
+<p>loom config docs</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 AI-Loom Team
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/margin-bqk/ai-loom" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://discord.gg/ai-loom" target="_blank" rel="noopener" title="discord.gg" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://twitter.com/ai_loom" target="_blank" rel="noopener" title="twitter.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M459.4 151.7c.3 4.5.3 9.1.3 13.6 0 138.7-105.6 298.6-298.6 298.6-59.5 0-114.7-17.2-161.1-47.1 8.4 1 16.6 1.3 25.3 1.3 49.1 0 94.2-16.6 130.3-44.8-46.1-1-84.8-31.2-98.1-72.8 6.5 1 13 1.6 19.8 1.6 9.4 0 18.8-1.3 27.6-3.6-48.1-9.7-84.1-52-84.1-103v-1.3c14 7.8 30.2 12.7 47.4 13.3-28.3-18.8-46.8-51-46.8-87.4 0-19.5 5.2-37.4 14.3-53C87.4 130.8 165 172.4 252.1 176.9c-1.6-7.8-2.6-15.9-2.6-24C249.5 95.1 296.3 48 354.4 48c30.2 0 57.5 12.7 76.7 33.1 23.7-4.5 46.5-13.3 66.6-25.3-7.8 24.4-24.4 44.8-46.1 57.8 21.1-2.3 41.6-8.1 60.4-16.2-14.3 20.8-32.2 39.3-52.6 54.3"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.tabs", "navigation.sections", "navigation.expand", "navigation.indexes", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.code.annotate"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
