@@ -345,14 +345,202 @@ class LLMProvider(ABC):
     def get_cost_estimate(self, prompt: str, response: str = "") -> float:
         """
         估算成本
-        
+
         Args:
             prompt: 输入提示
             response: 响应文本
-            
+
         Returns:
             float: 估算成本
         """
+```
+
+### DeepSeekProvider
+
+DeepSeek API 提供者，支持中文优化和推理模式。
+
+```python
+class DeepSeekProvider(LLMProvider):
+    """DeepSeek API提供者"""
+    
+    def __init__(self, config: Dict[str, Any]):
+        """
+        初始化DeepSeek提供者
+        
+        Args:
+            config: 配置字典，包含以下字段：
+                - api_key: DeepSeek API密钥
+                - base_url: API基础URL（默认: https://api.deepseek.com）
+                - model: 模型名称（deepseek-chat 或 deepseek-reasoner）
+                - thinking_enabled: 是否启用推理模式
+                - max_tokens: 最大生成令牌数
+                - temperature: 温度参数
+        """
+        super().__init__(config)
+        self.api_key = config.get("api_key")
+        self.base_url = config.get("base_url", "https://api.deepseek.com")
+        self.thinking_enabled = config.get("thinking_enabled", False)
+        
+        # DeepSeek特定配置
+        self.max_tokens = config.get("max_tokens", 4096)
+        self.temperature = config.get("temperature", 1.0)
+        
+    async def _generate_impl(self, prompt: str, **kwargs) -> LLMResponse:
+        """
+        生成文本的具体实现
+        
+        Args:
+            prompt: 输入提示
+            **kwargs: 额外参数
+            
+        Returns:
+            LLMResponse: LLM响应
+            
+        Raises:
+            Exception: API调用失败时抛出异常
+        """
+        session = await self.get_session()
+        try:
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json"
+            }
+            
+            # 构建请求体
+            payload = {
+                "model": kwargs.get("model", self.model),
+                "messages": [
+                    {"role": "user", "content": prompt}
+                ],
+                "temperature": kwargs.get("temperature", self.temperature),
+                "max_tokens": kwargs.get("max_tokens", self.max_tokens),
+                "stream": False
+            }
+            
+            # 处理推理模式
+            if self.thinking_enabled:
+                payload["thinking"] = {"type": "enabled"}
+            else:
+                payload["thinking"] = {"type": "disabled"}
+            
+            # 添加其他参数
+            for key in ["frequency_penalty", "presence_penalty", "top_p", "stop"]:
+                if key in kwargs:
+                    payload[key] = kwargs[key]
+            
+            async with session.post(
+                f"{self.base_url}/chat/completions",
+                json=payload,
+                headers=headers,
+                timeout=self.timeout
+            ) as response:
+                if response.status != 200:
+                    error_text = await response.text()
+                    logger.error(f"DeepSeek API error: {response.status} - {error_text}")
+                    raise Exception(f"API error: {response.status}")
+                
+                data = await response.json()
+                
+                return LLMResponse(
+                    content=data["choices"][0]["message"]["content"],
+                    model=data["model"],
+                    usage=data.get("usage", {}),
+                    metadata={
+                        "id": data.get("id"),
+                        "finish_reason": data["choices"][0].get("finish_reason"),
+                        "provider": "deepseek",
+                        "thinking_enabled": self.thinking_enabled
+                    }
+                )
+        finally:
+            await self.release_session(session)
+    
+    def _calculate_cost(self, response: LLMResponse) -> float:
+        """
+        计算DeepSeek成本
+        
+        Args:
+            response: LLM响应
+            
+        Returns:
+            float: 计算出的成本（美元）
+        """
+        if not response.usage:
+            return super()._calculate_cost(response)
+        
+        # DeepSeek定价模型
+        input_tokens = response.usage.get("prompt_tokens", 0)
+        output_tokens = response.usage.get("completion_tokens", 0)
+        
+        # 定价：$0.28/1M输入token，$0.42/1M输出token
+        input_cost = (input_tokens / 1_000_000) * 0.28
+        output_cost = (output_tokens / 1_000_000) * 0.42
+        
+        return input_cost + output_cost
+    
+    def validate_config(self) -> List[str]:
+        """
+        验证配置
+        
+        Returns:
+            List[str]: 错误信息列表，空列表表示配置有效
+        """
+        errors = []
+        if not self.api_key:
+            errors.append("API key is required for DeepSeek provider")
+        if not self.model:
+            errors.append("Model is required for DeepSeek provider")
+        return errors
+    
+    async def generate_stream(self, prompt: str, **kwargs):
+        """
+        流式生成文本
+        
+        Args:
+            prompt: 输入提示
+            **kwargs: 额外参数
+            
+        Yields:
+            str: 生成的文本块
+        """
+        # 实现SSE流式响应处理
+        session = await self.get_session()
+        try:
+            headers = {
+                "Authorization": f"Bearer {self.api_key}",
+                "Content-Type": "application/json",
+                "Accept": "text/event-stream"
+            }
+            
+            payload = {
+                "model": kwargs.get("model", self.model),
+                "messages": [
+                    {"role": "user", "content": prompt}
+                ],
+                "temperature": kwargs.get("temperature", self.temperature),
+                "max_tokens": kwargs.get("max_tokens", self.max_tokens),
+                "stream": True
+            }
+            
+            if self.thinking_enabled:
+                payload["thinking"] = {"type": "enabled"}
+            
+            async with session.post(
+                f"{self.base_url}/chat/completions",
+                json=payload,
+                headers=headers,
+                timeout=self.timeout
+            ) as response:
+                async for line in response.content:
+                    if line.startswith(b"data: "):
+                        data = line[6:].strip()
+                        if data == b"[DONE]":
+                            break
+                        # 解析SSE数据并yield文本块
+                        # 这里简化处理，实际需要解析JSON
+                        yield data.decode("utf-8")
+        finally:
+            await self.release_session(session)
 ```
 
 ### ReasoningPipeline

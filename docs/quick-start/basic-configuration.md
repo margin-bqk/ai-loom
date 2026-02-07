@@ -58,6 +58,17 @@ llm_providers:
     api_key: ${ANTHROPIC_API_KEY:}
     model: claude-3-haiku-20240307
     
+  deepseek:
+    type: deepseek
+    enabled: true
+    api_key: ${DEEPSEEK_API_KEY:}
+    base_url: https://api.deepseek.com
+    model: deepseek-chat
+    thinking_enabled: false  # 是否启用推理模式
+    temperature: 1.0
+    max_tokens: 4096
+    timeout: 60  # DeepSeek可能需要更长的超时时间
+    
   google:
     type: google
     enabled: false  # 默认禁用
@@ -136,6 +147,7 @@ monitoring:
 # LLM API 密钥
 export OPENAI_API_KEY="sk-your-key-here"
 export ANTHROPIC_API_KEY="your-anthropic-key"
+export DEEPSEEK_API_KEY="your-deepseek-api-key"
 export GOOGLE_API_KEY="your-google-key"
 
 # 数据库配置
@@ -158,6 +170,7 @@ export LOOM_ENV="development"  # development, production, testing
 # LLM 提供商
 OPENAI_API_KEY=sk-your-openai-api-key
 ANTHROPIC_API_KEY=your-anthropic-api-key
+DEEPSEEK_API_KEY=your-deepseek-api-key
 GOOGLE_API_KEY=your-google-api-key
 
 # 数据库
@@ -215,6 +228,7 @@ loom config validate --check-required
 
 # 测试 LLM 连接
 loom config test --provider openai
+loom config test --provider deepseek
 ```
 
 ## 配置最佳实践
@@ -259,6 +273,10 @@ llm_providers:
     enabled: true
     model: gpt-3.5-turbo  # 使用便宜模型
     
+  deepseek:
+    enabled: true
+    model: deepseek-chat  # 中文优化模型
+    
   ollama:
     enabled: true  # 启用本地模型
     
@@ -280,6 +298,9 @@ llm_providers:
     
   anthropic:
     enabled: true  # 启用备用提供商
+    
+  deepseek:
+    enabled: true  # 启用DeepSeek作为成本优化选项
     
 session:
   auto_save_interval: 10  # 减少保存频率
@@ -313,6 +334,7 @@ loom config reset
 ```bash
 # 检查环境变量
 echo $OPENAI_API_KEY
+echo $DEEPSEEK_API_KEY
 
 # 重新加载环境变量
 source .env  # Linux/Mac

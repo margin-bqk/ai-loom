@@ -95,11 +95,29 @@ llm_providers:
     enable_batching: false
     enable_caching: true
     cache_ttl: 600
+  deepseek:
+    type: deepseek
+    api_key: ''
+    base_url: https://api.deepseek.com
+    model: deepseek-chat
+    thinking_enabled: false
+    temperature: 1.0
+    max_tokens: 4096
+    timeout: 60  # DeepSeek可能需要更长的超时时间
+    max_retries: 3
+    retry_delay: 2.0
+    fallback_enabled: true
+    enabled: true
+    connection_pool_size: 5
+    enable_batching: false
+    enable_caching: true
+    cache_ttl: 300
 provider_selection:
   default_provider: openai
   fallback_order:
   - openai
   - anthropic
+  - deepseek  # 新增
   - google
   - ollama
   - azure
@@ -120,6 +138,14 @@ provider_selection:
       preferred_provider: openai
       preferred_model: gpt-3.5-turbo
       fallback_to: ollama
+    chinese_content:
+      preferred_provider: deepseek
+      preferred_model: deepseek-chat
+      fallback_to: openai
+    reasoning_tasks:
+      preferred_provider: deepseek
+      preferred_model: deepseek-reasoner
+      fallback_to: anthropic
   auto_switch:
     enabled: true
     health_check_interval: 60

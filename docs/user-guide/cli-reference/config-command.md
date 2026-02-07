@@ -227,6 +227,9 @@ loom config test [OPTIONS]
 # 测试 OpenAI 连接
 loom config test --provider openai
 
+# 测试 DeepSeek 连接
+loom config test --provider deepseek
+
 # 测试所有提供商
 loom config test --all
 
@@ -238,6 +241,9 @@ loom config test --memory
 
 # 详细测试
 loom config test --all --verbose
+
+# 测试 DeepSeek 推理模式
+loom config test --provider deepseek --verbose --timeout 60
 ```
 
 **测试输出示例**:
@@ -247,6 +253,14 @@ Testing OpenAI provider...
   ✓ Model available: gpt-3.5-turbo
   ✓ Authentication valid
   ✓ Response time: 1.2s
+
+Testing DeepSeek provider...
+  ✓ Connection successful (350ms)
+  ✓ Model available: deepseek-chat
+  ✓ Authentication valid
+  ✓ Response time: 1.5s
+  ✓ 128K context supported
+  ✓ Reasoning mode available
 
 Testing database connection...
   ✓ SQLite database accessible
@@ -391,6 +405,13 @@ loom config diff --source1 current --source2 default --only-different
 - `llm.{provider}.enable_caching` - 是否启用缓存
 - `llm.{provider}.cache_ttl` - 缓存生存时间（秒）
 
+### DeepSeek 特定配置键
+- `llm.deepseek.base_url` - API基础URL（默认: https://api.deepseek.com）
+- `llm.deepseek.thinking_enabled` - 是否启用推理模式（布尔值）
+- `llm.deepseek.connection_pool_size` - 连接池大小
+- `llm.deepseek.fallback_enabled` - 是否启用故障转移
+- `llm.deepseek.enable_batching` - 是否启用批处理
+
 ### 会话配置键
 - `session.default_max_turns` - 默认最大回合数
 - `session.auto_save_interval` - 自动保存间隔（回合数）
@@ -456,7 +477,34 @@ loom config export --file production_backup.yaml
 loom config test --all --timeout 60
 ```
 
-### 示例 3：故障排除配置
+### 示例 3：配置 DeepSeek 提供商
+
+```bash
+# 设置 DeepSeek 配置
+loom config set --global llm.deepseek.enabled true
+loom config set --global llm.deepseek.api_key "${DEEPSEEK_API_KEY}"
+loom config set --global llm.deepseek.model "deepseek-chat"
+loom config set --global llm.deepseek.thinking_enabled false
+loom config set --global llm.deepseek.temperature 1.0
+loom config set --global llm.deepseek.max_tokens 4096
+loom config set --global llm.deepseek.timeout 60
+
+# 配置推理模式（使用 deepseek-reasoner 模型）
+loom config set --local llm.deepseek.model "deepseek-reasoner"
+loom config set --local llm.deepseek.thinking_enabled true
+loom config set --local llm.deepseek.max_tokens 32000
+
+# 验证配置
+loom config validate --check-required
+
+# 测试 DeepSeek 连接
+loom config test --provider deepseek --verbose --timeout 60
+
+# 查看 DeepSeek 配置
+loom config show --section llm.deepseek
+```
+
+### 示例 5：故障排除配置
 
 ```bash
 # 查看当前配置
@@ -467,10 +515,14 @@ loom config validate --check-connections
 
 # 测试特定功能
 loom config test --provider openai --verbose
+loom config test --provider deepseek --verbose
 
 # 重置有问题的配置
 loom config unset llm.openai.api_key
 loom config set llm.openai.api_key "${OPENAI_API_KEY}"
+
+loom config unset llm.deepseek.api_key
+loom config set llm.deepseek.api_key "${DEEPSEEK_API_KEY}"
 
 # 比较与默认配置的差异
 loom config diff --source1 current --source2 default --only-different

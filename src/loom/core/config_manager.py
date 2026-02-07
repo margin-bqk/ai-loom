@@ -55,7 +55,7 @@ class ProviderSelectionConfig(BaseModel):
 
     default_provider: str = "openai"
     fallback_order: List[str] = Field(
-        default_factory=lambda: ["openai", "anthropic", "ollama"]
+        default_factory=lambda: ["openai", "anthropic", "deepseek", "ollama"]
     )
 
     # 基于会话类型的Provider选择
@@ -453,7 +453,15 @@ class ConfigManager:
         key_manager = get_key_manager()
 
         # LLM API密钥覆盖（从KeyManager获取）
-        provider_names = ["openai", "anthropic", "google", "azure", "ollama", "local"]
+        provider_names = [
+            "openai",
+            "anthropic",
+            "google",
+            "azure",
+            "ollama",
+            "local",
+            "deepseek",
+        ]
         for provider_name in provider_names:
             # 首先尝试从KeyManager获取密钥
             api_key = key_manager.get_key(provider_name)
