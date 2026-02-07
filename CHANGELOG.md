@@ -5,6 +5,29 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 并且本项目遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [0.10.1] - 2026-02-07
+
+### 新增
+- **项目清理工具**：创建自动化清理脚本 `scripts/tools/cleanup_project.py`
+- **目录重组**：scripts目录按功能重组为子目录结构
+- **清理文档**：生成详细的清理报告和计划文档
+- **VSCode标签检查工具**：`scripts/tools/check_vscode_tabs.py`
+
+### 变更
+- **根目录清理**：移除所有临时测试文件和调试文件
+- **scripts目录重组**：创建 deploy/, test_utils/, verification/, tools/, setup/, debug/ 子目录
+- **文件组织优化**：合并重复脚本，保留最新版本
+- **项目结构标准化**：确保目录结构符合Python项目最佳实践
+
+### 修复
+- **空目录清理**：删除空目录 `-p/`
+- **数据库文件验证**：确认数据库文件完整性
+- **VSCode标签残留**：识别并报告不存在的文件标签
+
+### 安全
+- 清理工具包含安全机制，防止误删重要文件
+- 重要配置文件受到保护
+
 ## [0.10.0] - 2026-01-12
 
 ### 新增

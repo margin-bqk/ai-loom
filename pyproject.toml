@@ -1,6 +1,6 @@
 [project]
 name = "loom"
-version = "0.10.0"
+version = "0.10.1"
 description = "Language-Oriented Open Mythos - A non‑carrying narrative engine based on Markdown rules"
 readme = "README.md"
 authors = [
