@@ -68,7 +68,7 @@ updated: 2025-01-02
             f.write(content)
             temp_path = Path(f.name)
 
-        canon = MarkdownCanon(temp_path, content)
+        canon = MarkdownCanon(temp_path, raw_content=content)
 
         yield canon
 
@@ -104,7 +104,7 @@ requires: ["base_rules"]
             f.write(content)
             temp_path = Path(f.name)
 
-        canon = AdvancedMarkdownCanon(temp_path, content)
+        canon = AdvancedMarkdownCanon(temp_path, raw_content=content)
 
         yield canon
 
@@ -288,7 +288,7 @@ author: Test Author 2
             temp_path2 = Path(f.name)
 
         try:
-            canon2 = MarkdownCanon(temp_path2, content2)
+            canon2 = MarkdownCanon(temp_path2, raw_content=content2)
             canons = [sample_canon, canon2]
 
             reports = validator.validate_multiple(canons)
@@ -317,7 +317,7 @@ author: Test Author 2
             temp_path2 = Path(f.name)
 
         try:
-            new_canon = MarkdownCanon(temp_path2, modified_content)
+            new_canon = MarkdownCanon(temp_path2, raw_content=modified_content)
             changes = validator.compare_versions(sample_canon, new_canon)
 
             assert isinstance(changes, dict)

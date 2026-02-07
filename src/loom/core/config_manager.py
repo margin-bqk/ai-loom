@@ -655,7 +655,7 @@ class ConfigManager:
         # 隐藏敏感信息
         if "llm_providers" in snapshot:
             for provider in snapshot["llm_providers"].values():
-                if "api_key" in provider and provider["api_key"]:
+                if "api_key" in provider:
                     provider["api_key"] = "***REDACTED***"
 
         return snapshot

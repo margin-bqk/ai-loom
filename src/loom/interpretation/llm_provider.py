@@ -791,12 +791,20 @@ class DeepSeekProvider(LLMProvider):
                 if key in kwargs:
                     payload[key] = kwargs[key]
 
-            async with session.post(
+            # 处理异步上下文管理器
+            post_result = session.post(
                 f"{self.base_url}/chat/completions",
                 json=payload,
                 headers=headers,
                 timeout=self.timeout,
-            ) as response:
+            )
+
+            # 检查是否是协程（模拟对象可能返回协程）
+            if asyncio.iscoroutine(post_result):
+                post_result = await post_result
+
+            # 现在 post_result 应该是异步上下文管理器
+            async with post_result as response:
                 if response.status != 200:
                     error_text = await response.text()
                     logger.error(
@@ -899,7 +907,10 @@ class ProviderManager:
         elif self.default_provider:
             providers_to_try.append(self.default_provider)
 
-        providers_to_try.extend(self.fallback_order)
+        # 添加回退顺序，但避免重复添加已经在列表中的provider
+        for provider_name in self.fallback_order:
+            if provider_name not in providers_to_try:
+                providers_to_try.append(provider_name)
 
         last_error = None
         for provider_name in providers_to_try:

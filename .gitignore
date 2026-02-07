@@ -228,3 +228,5 @@ config/development.yaml
 # Test output
 test_output/
 coverage_html/
+benchmark_results/
+test_failures_*.md

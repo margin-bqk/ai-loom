@@ -394,7 +394,10 @@ class TestDeepSeekMockAPI:
         }
 
         mock_session = AsyncMock()
-        mock_session.post.return_value.__aenter__.return_value = mock_response
+        # 创建异步上下文管理器模拟对象
+        mock_context = AsyncMock()
+        mock_context.__aenter__ = AsyncMock(return_value=mock_response)
+        mock_session.post.return_value = mock_context
 
         with patch.object(provider, "get_session", return_value=mock_session):
             with patch.object(provider, "release_session") as mock_release:
@@ -445,7 +448,10 @@ class TestDeepSeekMockAPI:
         }
 
         mock_session = AsyncMock()
-        mock_session.post.return_value.__aenter__.return_value = mock_response
+        # 创建异步上下文管理器模拟对象
+        mock_context = AsyncMock()
+        mock_context.__aenter__ = AsyncMock(return_value=mock_response)
+        mock_session.post.return_value = mock_context
 
         with patch.object(provider, "get_session", return_value=mock_session):
             with patch.object(provider, "release_session"):
@@ -468,7 +474,10 @@ class TestDeepSeekMockAPI:
         mock_response.text.return_value = "Invalid API key"
 
         mock_session = AsyncMock()
-        mock_session.post.return_value.__aenter__.return_value = mock_response
+        # 创建异步上下文管理器模拟对象
+        mock_context = AsyncMock()
+        mock_context.__aenter__ = AsyncMock(return_value=mock_response)
+        mock_session.post.return_value = mock_context
 
         with patch.object(provider, "get_session", return_value=mock_session):
             with patch.object(provider, "release_session"):
@@ -502,7 +511,10 @@ class TestDeepSeekMockAPI:
         }
 
         mock_session = AsyncMock()
-        mock_session.post.return_value.__aenter__.return_value = mock_response
+        # 创建异步上下文管理器模拟对象
+        mock_context = AsyncMock()
+        mock_context.__aenter__ = AsyncMock(return_value=mock_response)
+        mock_session.post.return_value = mock_context
 
         with patch.object(provider, "get_session", return_value=mock_session):
             with patch.object(provider, "release_session"):

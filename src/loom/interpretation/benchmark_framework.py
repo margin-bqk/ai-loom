@@ -16,6 +16,7 @@ from enum import Enum
 import hashlib
 from pathlib import Path
 import yaml
+from collections import defaultdict
 
 from ..utils.logging_config import get_logger
 

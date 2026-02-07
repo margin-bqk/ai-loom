@@ -1,8 +1,8 @@
 llm_providers:
   openai:
     type: openai
-    api_key: ''
-    base_url: https://api.openai.com/v1
+    api_key: test-api-key-12345
+    base_url: null
     model: gpt-3.5-turbo
     temperature: 0.7
     max_tokens: 1000
@@ -15,137 +15,14 @@ llm_providers:
     enable_batching: false
     enable_caching: true
     cache_ttl: 300
-  anthropic:
-    type: anthropic
-    api_key: ''
-    base_url: https://api.anthropic.com/v1
-    model: claude-3-haiku-20240307
-    temperature: 0.7
-    max_tokens: 1000
-    timeout: 30
-    max_retries: 3
-    retry_delay: 1.0
-    fallback_enabled: true
-    enabled: true
-    connection_pool_size: 5
-    enable_batching: false
-    enable_caching: true
-    cache_ttl: 300
-  google:
-    type: google
-    api_key: ''
-    base_url: https://generativelanguage.googleapis.com/v1beta
-    model: gemini-pro
-    temperature: 0.7
-    max_tokens: 1000
-    timeout: 30
-    max_retries: 3
-    retry_delay: 1.0
-    fallback_enabled: true
-    enabled: false
-    connection_pool_size: 5
-    enable_batching: false
-    enable_caching: true
-    cache_ttl: 300
-  azure:
-    type: azure
-    api_key: ''
-    base_url: ''
-    model: gpt-35-turbo
-    temperature: 0.7
-    max_tokens: 1000
-    timeout: 30
-    max_retries: 3
-    retry_delay: 1.0
-    fallback_enabled: true
-    enabled: false
-    connection_pool_size: 5
-    enable_batching: false
-    enable_caching: true
-    cache_ttl: 300
-  ollama:
-    type: ollama
-    api_key: null
-    base_url: http://localhost:11434/api
-    model: llama2
-    temperature: 0.7
-    max_tokens: 1000
-    timeout: 60
-    max_retries: 2
-    retry_delay: 2.0
-    fallback_enabled: true
-    enabled: true
-    connection_pool_size: 3
-    enable_batching: true
-    enable_caching: true
-    cache_ttl: 600
-  lm_studio:
-    type: local
-    api_key: null
-    base_url: http://localhost:1234/v1
-    model: local-model
-    temperature: 0.7
-    max_tokens: 1000
-    timeout: 120
-    max_retries: 2
-    retry_delay: 2.0
-    fallback_enabled: true
-    enabled: false
-    connection_pool_size: 2
-    enable_batching: false
-    enable_caching: true
-    cache_ttl: 600
-  deepseek:
-    type: deepseek
-    api_key: ''
-    base_url: https://api.deepseek.com
-    model: deepseek-chat
-    thinking_enabled: false
-    temperature: 1.0
-    max_tokens: 4096
-    timeout: 60  # DeepSeek可能需要更长的超时时间
-    max_retries: 3
-    retry_delay: 2.0
-    fallback_enabled: true
-    enabled: true
-    connection_pool_size: 5
-    enable_batching: false
-    enable_caching: true
-    cache_ttl: 300
 provider_selection:
   default_provider: openai
   fallback_order:
   - openai
   - anthropic
-  - deepseek  # 新增
-  - google
+  - deepseek
   - ollama
-  - azure
-  session_type_mapping:
-    creative_writing:
-      preferred_provider: openai
-      preferred_model: gpt-4
-      fallback_to: anthropic
-    world_building:
-      preferred_provider: anthropic
-      preferred_model: claude-3-sonnet
-      fallback_to: openai
-    code_generation:
-      preferred_provider: ollama
-      preferred_model: codellama
-      fallback_to: openai
-    quick_chat:
-      preferred_provider: openai
-      preferred_model: gpt-3.5-turbo
-      fallback_to: ollama
-    chinese_content:
-      preferred_provider: deepseek
-      preferred_model: deepseek-chat
-      fallback_to: openai
-    reasoning_tasks:
-      preferred_provider: deepseek
-      preferred_model: deepseek-reasoner
-      fallback_to: anthropic
+  session_type_mapping: {}
   auto_switch:
     enabled: true
     health_check_interval: 60
@@ -158,15 +35,6 @@ provider_selection:
     alert_threshold: 0.8
     auto_switch_to_cheaper: true
     token_counting: true
-    optimization_strategies:
-    - name: use_cheaper_model_for_long_context
-      enabled: true
-      threshold_tokens: 2000
-    - name: cache_frequent_queries
-      enabled: true
-      ttl_minutes: 60
-    - name: batch_small_requests
-      enabled: false
 memory:
   backend: sqlite
   db_path: ./data/loom_memory.db
@@ -197,11 +65,6 @@ narrative:
   archive_interval_turns: 50
   max_archive_versions: 10
   export_format: markdown
-max_concurrent_turns: 3
-log_level: DEBUG
-data_dir: ./data
-cache_enabled: true
-cache_ttl_minutes: 60
 performance:
   max_prompt_length: 8000
   max_memories_per_prompt: 10
@@ -217,4 +80,9 @@ monitoring:
   metrics_port: 9090
   enable_tracing: false
   log_retention_days: 30
-plugins: null
+max_concurrent_turns: 3
+log_level: INFO
+data_dir: ./data
+cache_enabled: true
+cache_ttl_minutes: 60
+plugins: {}

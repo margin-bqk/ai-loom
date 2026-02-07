@@ -67,6 +67,19 @@ class VectorStoreConfig:
     enable_metadata_indexing: bool = True
     enable_hybrid_search: bool = False  # 混合搜索（向量+关键词）
 
+    def __post_init__(self):
+        """后初始化处理，将字符串转换为枚举值"""
+        # 如果backend是字符串，转换为VectorStoreBackend枚举
+        if isinstance(self.backend, str):
+            try:
+                self.backend = VectorStoreBackend(self.backend.lower())
+            except ValueError:
+                # 如果无法转换，使用默认值
+                self.backend = VectorStoreBackend.CHROMADB
+                logger.warning(
+                    f"Unsupported backend string: {self.backend}, using default: {self.backend}"
+                )
+
 
 @dataclass
 class VectorSearchResult:
@@ -242,10 +255,16 @@ class VectorMemoryStore:
         """初始化内存存储（用于测试）"""
         self.memory_store = {}
         self.embeddings = {}
+        # 对于内存后端，使用虚拟嵌入模型
+        self.embedding_model = "dummy"
         logger.info("Initialized in-memory vector store")
 
     def _get_embedding_model(self):
         """获取嵌入模型（延迟加载）"""
+        # 对于内存后端，使用虚拟嵌入
+        if self.config.backend == VectorStoreBackend.MEMORY:
+            return None
+
         if self.embedding_model is not None:
             return self.embedding_model
 
@@ -379,6 +398,19 @@ class VectorMemoryStore:
         except Exception as e:
             logger.error(f"Failed to generate embedding: {e}")
             raise RetrievalError(f"Embedding generation failed: {e}")
+
+    def _summarize_content(self, content: Any) -> str:
+        """摘要内容"""
+        import json
+
+        if isinstance(content, str):
+            if len(content) > 100:
+                return content[:100] + "..."
+            return content
+        elif isinstance(content, dict):
+            return json.dumps(content, ensure_ascii=False)[:100] + "..."
+        else:
+            return str(content)[:100] + "..."
 
     def _entity_to_text(self, entity: MemoryEntity) -> str:
         """将记忆实体转换为文本表示
@@ -577,4 +609,102 @@ class VectorMemoryStore:
             RetrievalError: 搜索失败
         """
         if not self.enabled:
-            raise Retrie
+            raise RetrievalError("VectorMemoryStore is disabled")
+
+        try:
+            # 获取查询嵌入
+            query_embedding = await self.get_embedding(query)
+
+            # 根据后端类型执行搜索
+            if self.config.backend == VectorStoreBackend.CHROMADB:
+                if not self.collection:
+                    return []
+
+                # ChromaDB搜索
+                results = self.collection.query(
+                    query_embeddings=[query_embedding],
+                    n_results=limit,
+                    where=filters,
+                    include=["metadatas", "distances"],
+                )
+
+                if results and results["ids"]:
+                    entity_ids = results["ids"][0]
+                    distances = results["distances"][0]
+                    # 将距离转换为相似度分数（距离越小，相似度越高）
+                    similarities = [(1.0 / (1.0 + d)) for d in distances]
+                    return list(zip(entity_ids, similarities))
+                return []
+
+            elif self.config.backend == VectorStoreBackend.MEMORY:
+                # 内存后端：简单文本匹配
+                results = []
+                for entity_id, entity_data in self.memory_store.items():
+                    # 简单文本匹配（实际实现应使用嵌入相似度）
+                    text = entity_data.get("text", "")
+                    if query.lower() in text.lower():
+                        # 简单相似度分数
+                        similarity = 0.8
+                        results.append((entity_id, similarity))
+
+                # 按相似度排序
+                results.sort(key=lambda x: x[1], reverse=True)
+                return results[:limit]
+
+            else:
+                # 其他后端
+                logger.warning(
+                    f"Search not implemented for backend: {self.config.backend}"
+                )
+                return []
+
+        except Exception as e:
+            logger.error(f"Semantic search failed: {e}")
+            raise RetrievalError(f"Semantic search failed: {e}")
+
+    async def delete_entity(self, entity_id: str) -> bool:
+        """删除实体
+
+        Args:
+            entity_id: 实体ID
+
+        Returns:
+            是否成功删除
+
+        Raises:
+            StorageError: 删除失败
+        """
+        if not self.enabled:
+            raise StorageError("VectorMemoryStore is disabled")
+
+        try:
+            if self.config.backend == VectorStoreBackend.CHROMADB:
+                if self.collection:
+                    self.collection.delete(ids=[entity_id])
+
+            elif self.config.backend == VectorStoreBackend.QDRANT:
+                if self.client:
+                    self.client.delete(
+                        collection_name=self.config.collection_name,
+                        points_selector=entity_id,
+                    )
+
+            elif self.config.backend == VectorStoreBackend.FAISS:
+                if entity_id in self.id_to_index:
+                    idx = self.id_to_index[entity_id]
+                    # FAISS不支持删除，标记为无效
+                    del self.id_to_index[entity_id]
+                    del self.index_to_id[idx]
+
+            elif self.config.backend == VectorStoreBackend.MEMORY:
+                if entity_id in self.memory_store:
+                    del self.memory_store[entity_id]
+                if entity_id in self.embeddings:
+                    del self.embeddings[entity_id]
+
+            logger.debug(f"Deleted entity {entity_id} from vector store")
+            return True
+
+        except Exception as e:
+            logger.error(f"Failed to delete entity {entity_id}: {e}")
+            raise StorageError(f"Failed to delete entity: {e}")

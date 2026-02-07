@@ -64,6 +64,30 @@ class SummaryConfig:
     llm_model: str = "gpt-3.5-turbo"
     temperature: float = 0.3
 
+    def __post_init__(self):
+        """后初始化处理，将字符串转换为枚举值"""
+        # 如果summary_strategy是字符串，转换为SummaryStrategy枚举
+        if isinstance(self.summary_strategy, str):
+            try:
+                self.summary_strategy = SummaryStrategy(self.summary_strategy.lower())
+            except ValueError:
+                # 如果无法转换，使用默认值
+                self.summary_strategy = SummaryStrategy.TIME_BASED
+                logger.warning(
+                    f"Unsupported summary strategy string: {self.summary_strategy}, using default: {self.summary_strategy}"
+                )
+
+        # 如果summary_format是字符串，转换为SummaryFormat枚举
+        if isinstance(self.summary_format, str):
+            try:
+                self.summary_format = SummaryFormat(self.summary_format.lower())
+            except ValueError:
+                # 如果无法转换，使用默认值
+                self.summary_format = SummaryFormat.TEXT
+                logger.warning(
+                    f"Unsupported summary format string: {self.summary_format}, using default: {self.summary_format}"
+                )
+
 
 @dataclass
 class EnhancedMemorySummary:

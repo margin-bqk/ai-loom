@@ -196,6 +196,45 @@ class RuleValidator:
         """验证结构"""
         issues = []
 
+        # 类型检查：确保canon是MarkdownCanon对象
+        # 首先检查是否是字符串，因为字符串可能被错误地传递
+        if isinstance(canon, str):
+            # 如果canon是字符串，记录错误
+            issue = ValidationIssue(
+                issue_type=ValidationType.STRUCTURE,
+                severity=ValidationSeverity.ERROR,
+                description=f"Invalid canon type: expected MarkdownCanon, got string: {canon[:50]}...",
+                location="global",
+                suggestion="Ensure a valid MarkdownCanon object is passed to the validator, not a string",
+            )
+            issues.append(issue)
+            return issues
+
+        if not isinstance(canon, MarkdownCanon):
+            # 如果canon是其他类型，记录错误
+            issue = ValidationIssue(
+                issue_type=ValidationType.STRUCTURE,
+                severity=ValidationSeverity.ERROR,
+                description=f"Invalid canon type: expected MarkdownCanon, got {type(canon).__name__}",
+                location="global",
+                suggestion="Ensure a valid MarkdownCanon object is passed to the validator",
+            )
+            issues.append(issue)
+            return issues
+
+        # 检查sections是否是字典
+        if not isinstance(canon.sections, dict):
+            # 如果sections不是字典，记录错误
+            issue = ValidationIssue(
+                issue_type=ValidationType.STRUCTURE,
+                severity=ValidationSeverity.ERROR,
+                description=f"Invalid sections type in canon: expected dict, got {type(canon.sections).__name__}",
+                location="global",
+                suggestion="Ensure MarkdownCanon object is properly initialized with sections dictionary",
+            )
+            issues.append(issue)
+            return issues
+
         # 检查章节非空
         for section_name, section in canon.sections.items():
             if not section.content.strip():

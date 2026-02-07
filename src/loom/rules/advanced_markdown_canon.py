@@ -70,7 +70,8 @@ class AdvancedMarkdownCanon(MarkdownCanon):
     """高级Markdown规则解析器"""
 
     def __init__(self, path: Path, raw_content: str = ""):
-        super().__init__(path, raw_content)
+        # 正确调用父类初始化，传递所有参数
+        super().__init__(path=path, raw_content=raw_content)
         self.references: Dict[str, List[Reference]] = {}  # 章节名 -> 引用列表
         self.dependencies: List[Dependency] = []  # 依赖关系
         self.nested_sections: Dict[str, List[str]] = {}  # 父章节 -> 子章节列表
