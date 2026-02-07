@@ -80,12 +80,12 @@ class RuleHotLoader:
     def __init__(self, config: Optional[Dict[str, Any]] = None):
         self.config = config or {}
         self.watched_paths: Set[Path] = set()
-        self.file_watchers: Dict[str, Observer] = {}
+        self.file_watchers: Dict[str, Any] = {}  # type: ignore[valid-type]
         self.callbacks: List[Callable] = []
         self.canon_cache: Dict[str, CanonVersion] = {}  # 路径 -> 最新版本
         self.version_history: Dict[str, List[CanonVersion]] = {}  # 路径 -> 版本历史
         self.sessions: Dict[str, SessionState] = {}  # 会话ID -> 会话状态
-        self.validator = RuleValidator(config.get("validator_config", {}))
+        self.validator = RuleValidator(self.config.get("validator_config", {}))
 
         # 性能统计
         self.stats = {
@@ -151,17 +151,25 @@ class RuleHotLoader:
             logger.error(f"Failed to stop watching {path}: {e}")
             return False
 
-    def register_callback(self, callback: Callable[[FileChange, MarkdownCanon], None]):
+    def register_callback(
+        self, callback: Callable[[FileChange, MarkdownCanon], None]
+    ) -> None:
         """注册变化回调"""
         self.callbacks.append(callback)
         logger.debug(
             f"Registered change callback: {callback.__name__ if hasattr(callback, '__name__') else 'anonymous'}"
         )
 
-    def _handle_file_change(self, event: FileSystemEvent):
+    def _handle_file_change(self, event: FileSystemEvent) -> None:
         """处理文件变化"""
         try:
-            path = Path(event.src_path)
+            # event.src_path 可能是 bytes，需要转换为 str
+            src_path = (
+                event.src_path.decode("utf-8")
+                if isinstance(event.src_path, bytes)
+                else event.src_path
+            )
+            path = Path(src_path)
 
             # 确定变化类型
             if event.event_type == "created":
@@ -235,9 +243,9 @@ class RuleHotLoader:
 
             # 创建规则集对象
             if self.config.get("use_advanced_parser", True):
-                canon = AdvancedMarkdownCanon(path, content)
+                canon = AdvancedMarkdownCanon(path, raw_content=content)
             else:
-                canon = MarkdownCanon(path, content)
+                canon = MarkdownCanon(path, raw_content=content)
 
             # 验证规则
             validation_report = self.validator.validate_sync(canon)
@@ -548,18 +556,43 @@ class CanonFileHandler(FileSystemEventHandler):
     def __init__(self, hot_loader: RuleHotLoader):
         self.hot_loader = hot_loader
 
-    def on_modified(self, event: FileSystemEvent):
-        if not event.is_directory and event.src_path.endswith(".md"):
-            self.hot_loader._handle_file_change(event)
+    def on_modified(self, event: FileSystemEvent) -> None:
+        if not event.is_directory:
+            # 处理可能的 bytes 类型
+            src_path = (
+                event.src_path.decode("utf-8")
+                if isinstance(event.src_path, bytes)
+                else event.src_path
+            )
+            if src_path.endswith(".md"):
+                self.hot_loader._handle_file_change(event)
 
-    def on_created(self, event: FileSystemEvent):
-        if not event.is_directory and event.src_path.endswith(".md"):
-            self.hot_loader._handle_file_change(event)
+    def on_created(self, event: FileSystemEvent) -> None:
+        if not event.is_directory:
+            src_path = (
+                event.src_path.decode("utf-8")
+                if isinstance(event.src_path, bytes)
+                else event.src_path
+            )
+            if src_path.endswith(".md"):
+                self.hot_loader._handle_file_change(event)
 
-    def on_deleted(self, event: FileSystemEvent):
-        if not event.is_directory and event.src_path.endswith(".md"):
-            self.hot_loader._handle_file_change(event)
+    def on_deleted(self, event: FileSystemEvent) -> None:
+        if not event.is_directory:
+            src_path = (
+                event.src_path.decode("utf-8")
+                if isinstance(event.src_path, bytes)
+                else event.src_path
+            )
+            if src_path.endswith(".md"):
+                self.hot_loader._handle_file_change(event)
 
-    def on_moved(self, event: FileSystemEvent):
-        if not event.is_directory and event.src_path.endswith(".md"):
-            self.hot_loader._handle_file_change(event)
+    def on_moved(self, event: FileSystemEvent) -> None:
+        if not event.is_directory:
+            src_path = (
+                event.src_path.decode("utf-8")
+                if isinstance(event.src_path, bytes)
+                else event.src_path
+            )
+            if src_path.endswith(".md"):
+                self.hot_loader._handle_file_change(event)

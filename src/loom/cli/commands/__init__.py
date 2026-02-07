@@ -9,7 +9,6 @@ CLI 命令模块
 - export: 数据导出
 - dev: 开发工具
 - init: 项目初始化
-- status: 系统状态
 """
 
 import typer
@@ -22,7 +21,6 @@ from . import config
 from . import export
 from . import dev
 from . import init
-from . import status
 
 # 导出各命令的 Typer 应用
-__all__ = ["run", "session", "rules", "config", "export", "dev", "init", "status"]
+__all__ = ["run", "session", "rules", "config", "export", "dev", "init"]

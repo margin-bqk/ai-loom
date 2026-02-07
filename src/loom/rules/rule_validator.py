@@ -137,7 +137,18 @@ class RuleValidator:
     def _load_validation_rules(self) -> Dict[str, Any]:
         """加载验证规则"""
         return {
-            "required_sections": ["world", "世界观", "World", "tone", "基调", "Tone"],
+            "required_sections": [
+                "world",
+                "世界观",
+                "World",
+                "世界设定",
+                "World Setting",
+                "tone",
+                "基调",
+                "Tone",
+                "叙事基调",
+                "Story Tone",
+            ],
             "required_metadata": ["version", "author"],
             "section_min_length": 50,  # 章节最小长度（字符）
             "max_section_depth": 4,  # 最大嵌套深度

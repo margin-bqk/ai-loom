@@ -22,17 +22,12 @@ loom run interactive [OPTIONS]
 ```
 
 **选项**:
-- `--canon, -c PATH`: 规则文件路径 [必需]
+- `--canon, -c PATH`: 规则文件路径 [默认: "./canon/default.md"]
 - `--name, -n TEXT`: 会话名称 [默认: "New Session"]
-- `--provider, -p TEXT`: LLM 提供商 (openai, anthropic, google, ollama)
-- `--model TEXT`: 特定模型名称
+- `--provider, -p TEXT`: LLM 提供商
 - `--max-turns, -m INTEGER`: 最大回合数
 - `--output, -o PATH`: 输出文件路径
 - `--verbose, -v`: 详细输出
-- `--debug-reasoning`: 显示推理过程
-- `--monitor-performance`: 显示性能监控
-- `--no-save`: 不保存会话
-- `--dry-run`: 预览运行，不实际执行
 - `--help`: 显示帮助信息
 
 **示例**:
@@ -46,43 +41,25 @@ loom run interactive \
   --name "奇幻冒险" \
   --provider openai
 
-# 使用特定模型
-loom run interactive \
-  --canon templates/rules/sci_fi_basic.md \
-  --provider openai \
-  --model "gpt-4-turbo"
-
 # 限制回合数并保存输出
 loom run interactive \
   --canon my_rules.md \
   --max-turns 10 \
   --output session_log.txt
 
-# 详细模式，显示推理过程
+# 详细模式
 loom run interactive \
   --canon templates/rules/fantasy_basic.md \
-  --verbose \
-  --debug-reasoning
-
-# 性能监控模式
-loom run interactive \
-  --canon templates/rules/fantasy_basic.md \
-  --monitor-performance
+  --verbose
 ```
 
 **交互模式命令**:
 在交互式会话中，您可以输入以下特殊命令：
 
 - `help` - 显示可用命令
-- `exit` 或 `quit` - 退出会话
+- `quit` - 退出会话
 - `save` - 手动保存会话
-- `history` - 查看会话历史
 - `status` - 查看会话状态
-- `!edit [描述]` - 编辑世界状态
-- `!retcon [修正]` - 修正之前的叙述
-- `!ooc [注释]` - 添加 OOC 注释
-- `!config [键] [值]` - 修改会话配置
-- `!export [格式]` - 导出当前会话
 
 ### 2. `batch` - 批处理运行
 
@@ -90,177 +67,58 @@ loom run interactive \
 
 **语法**:
 ```bash
-loom run batch [OPTIONS]
+loom run batch INPUT_FILE [OPTIONS]
 ```
 
+**参数**:
+- `INPUT_FILE`: 输入文件路径（JSON或文本格式）
+
 **选项**:
-- `--canon, -c PATH`: 规则文件路径 [必需]
-- `--input, -i PATH`: 输入文件路径 [必需]
+- `--canon, -c PATH`: 规则文件路径 [默认: "./canon/default.md"]
+- `--name, -n TEXT`: 会话名称
 - `--output, -o PATH`: 输出文件路径
-- `--name, -n TEXT`: 会话名称 [默认: "Batch Session"]
-- `--provider, -p TEXT`: LLM 提供商
-- `--max-turns, -m INTEGER`: 每行输入的最大回合数
-- `--parallel INTEGER`: 并行处理数 [默认: 1]
-- `--format TEXT`: 输入文件格式 (text, json, csv) [默认: text]
 - `--verbose, -v`: 详细输出
 - `--help`: 显示帮助信息
 
 **示例**:
 ```bash
 # 基础批处理运行
-loom run batch \
-  --canon templates/rules/fantasy_basic.md \
-  --input actions.txt \
-  --output results.txt
+loom run batch actions.txt --canon templates/rules/fantasy_basic.md
 
-# 并行处理
-loom run batch \
+# 指定会话名称和输出文件
+loom run batch prompts.txt \
+  --canon templates/rules/fantasy_basic.md \
+  --name "批处理测试" \
+  --output results.json
+
+# 详细模式
+loom run batch data.json \
   --canon my_rules.md \
-  --input scenarios.csv \
-  --output outcomes.json \
-  --parallel 4 \
-  --format csv
-
-# 限制每行输入的回合数
-loom run batch \
-  --canon templates/rules/fantasy_basic.md \
-  --input prompts.txt \
-  --max-turns 3
-
-# JSON 格式输入
-loom run batch \
-  --canon templates/rules/fantasy_basic.md \
-  --input data.json \
-  --format json \
-  --output responses.json
+  --verbose
 ```
 
 **输入文件格式**:
 
-1. **文本格式** (`--format text`):
+1. **文本格式**: 每行一个输入
    ```
    第一行输入
    第二行输入
    第三行输入
    ```
 
-2. **JSON 格式** (`--format json`):
+2. **JSON 格式**: JSON数组格式
    ```json
    [
-     {"input": "第一行输入", "context": "额外上下文"},
-     {"input": "第二行输入", "context": "更多上下文"}
+     "第一行输入",
+     "第二行输入",
+     "第三行输入"
    ]
    ```
 
-3. **CSV 格式** (`--format csv`):
-   ```csv
-   input,context
-   "第一行输入","额外上下文"
-   "第二行输入","更多上下文"
-   ```
-
-### 3. `continue` - 继续现有会话
-
-继续之前保存的会话。
-
-**语法**:
-```bash
-loom run continue [OPTIONS]
-```
-
-**选项**:
-- `--session-id TEXT`: 会话 ID
-- `--session-name TEXT`: 会话名称
-- `--max-turns, -m INTEGER`: 额外最大回合数
-- `--output, -o PATH`: 输出文件路径
-- `--verbose, -v`: 详细输出
-- `--help`: 显示帮助信息
-
-**示例**:
-```bash
-# 通过会话 ID 继续
-loom run continue --session-id "abc123-def456"
-
-# 通过会话名称继续
-loom run continue --session-name "奇幻冒险"
-
-# 继续并限制额外回合数
-loom run continue \
-  --session-name "奇幻冒险" \
-  --max-turns 5 \
-  --output continued_session.txt
-```
-
-### 4. `script` - 运行脚本
-
-运行预定义的脚本或场景。
-
-**语法**:
-```bash
-loom run script [OPTIONS] SCRIPT_NAME
-```
-
-**选项**:
-- `--canon, -c PATH`: 规则文件路径
-- `--params TEXT`: 脚本参数 (JSON 格式)
-- `--output, -o PATH`: 输出文件路径
-- `--verbose, -v`: 详细输出
-- `--help`: 显示帮助信息
-
-**参数**:
-- `SCRIPT_NAME`: 脚本名称或路径
-
-**示例**:
-```bash
-# 运行内置脚本
-loom run script "character_creation"
-
-# 运行自定义脚本
-loom run script ./my_script.py
-
-# 带参数的脚本
-loom run script "world_building" \
-  --params '{"theme": "fantasy", "complexity": "medium"}'
-
-# 指定规则文件
-loom run script "combat_scenario" \
-  --canon templates/rules/fantasy_basic.md \
-  --output combat_log.txt
-```
-
-### 5. `test` - 测试运行
-
-运行测试场景，验证规则和配置。
-
-**语法**:
-```bash
-loom run test [OPTIONS]
-```
-
-**选项**:
-- `--canon, -c PATH`: 规则文件路径 [必需]
-- `--scenario TEXT`: 测试场景名称
-- `--iterations INTEGER`: 测试迭代次数 [默认: 1]
-- `--output, -o PATH`: 输出文件路径
-- `--verbose, -v`: 详细输出
-- `--help`: 显示帮助信息
-
-**示例**:
-```bash
-# 基础测试
-loom run test --canon templates/rules/fantasy_basic.md
-
-# 特定场景测试
-loom run test \
-  --canon my_rules.md \
-  --scenario "combat_test"
-
-# 多次迭代测试
-loom run test \
-  --canon templates/rules/fantasy_basic.md \
-  --iterations 10 \
-  --output test_results.json
-```
+**输出格式**:
+- 如果指定 `--output` 选项，结果将保存到指定文件
+- 支持文本格式（.txt）和JSON格式（.json）
+- 如果不指定输出文件，结果将显示在控制台
 
 ## 通用选项
 
@@ -339,7 +197,6 @@ loom run interactive \
   --canon my_fantasy_rules.md \
   --name "龙之谷冒险" \
   --provider openai \
-  --model "gpt-4" \
   --max-turns 20 \
   --verbose
 ```
@@ -357,29 +214,23 @@ cat > test_inputs.txt << 'EOF'
 EOF
 
 # 运行批处理测试
-loom run batch \
+loom run batch test_inputs.txt \
   --canon templates/rules/fantasy_basic.md \
-  --input test_inputs.txt \
-  --output test_results.txt \
   --name "规则测试" \
-  --max-turns 3 \
-  --parallel 2
+  --output test_results.json
 
 # 查看结果
-cat test_results.txt
+cat test_results.json
 ```
 
-### 示例 3：继续复杂会话
+### 示例 3：使用会话命令管理会话
 
 ```bash
 # 查看现有会话
 loom session list
 
-# 继续会话
-loom run continue \
-  --session-name "龙之谷冒险" \
-  --max-turns 10 \
-  --output continued_adventure.txt
+# 查看会话详情
+loom session show --session-name "龙之谷冒险"
 
 # 导出会话历史
 loom export markdown \
@@ -387,104 +238,44 @@ loom export markdown \
   --output adventure_history.md
 ```
 
-### 示例 4：性能测试
-
-```bash
-# 创建性能测试脚本
-cat > perf_test.py << 'EOF'
-import asyncio
-import time
-from loom.core.session_manager import SessionManager
-
-async def run_performance_test():
-    start_time = time.time()
-    
-    # 初始化
-    session_manager = SessionManager()
-    session = await session_manager.create_session(
-        name="性能测试",
-        canon_path="templates/rules/fantasy_basic.md"
-    )
-    
-    # 执行多个行动
-    actions = [
-        "测试行动1",
-        "测试行动2", 
-        "测试行动3"
-    ]
-    
-    for i, action in enumerate(actions, 1):
-        print(f"执行行动 {i}...")
-        response = await session.execute_action(action)
-        print(f"响应长度: {len(response)} 字符")
-    
-    # 计算性能指标
-    end_time = time.time()
-    total_time = end_time - start_time
-    
-    print(f"\n性能统计:")
-    print(f"总时间: {total_time:.2f}秒")
-    print(f"平均响应时间: {total_time/len(actions):.2f}秒/行动")
-    
-    await session.save()
-
-asyncio.run(run_performance_test())
-EOF
-
-# 运行性能测试
-python perf_test.py
-```
-
 ## 高级功能
 
-### 1. 自定义提示模板
+### 1. 使用详细日志进行调试
 
 ```bash
-# 创建自定义提示模板
-cat > custom_prompt.txt << 'EOF'
-你是一个专业的奇幻叙事者。
-
-当前世界: {{world_name}}
-当前场景: {{current_scene}}
-玩家角色: {{player_character}}
-
-请根据以上信息，以生动、详细的方式回应玩家的行动。
-保持角色一致性，推动故事发展。
-
-玩家行动: {{player_action}}
-EOF
-
-# 使用自定义提示运行
+# 启用详细日志
 loom run interactive \
   --canon templates/rules/fantasy_basic.md \
-  --prompt-template custom_prompt.txt
+  --verbose
+
+# 查看会话日志
+tail -f logs/loom.log
 ```
 
-### 2. 记忆系统集成
+### 2. 配置LLM提供商
 
 ```bash
-# 启用详细记忆日志
-loom run interactive \
-  --canon templates/rules/fantasy_basic.md \
-  --verbose \
-  --debug-memory
+# 设置默认LLM提供商
+loom config set session_defaults.default_llm_provider openai
 
-# 查看记忆摘要
-loom session show --session-name "测试会话" --include-memory
+# 设置API密钥
+loom config set llm.openai.api_key "your-api-key"
+
+# 测试配置
+loom config test
 ```
 
-### 3. 多提供商故障转移
+### 3. 管理会话数据
 
 ```bash
-# 配置故障转移
-loom config set llm.openai.fallback_enabled true
-loom config set llm.openai.fallback_provider anthropic
+# 查看所有会话
+loom session list
 
-# 运行会话，自动故障转移
-loom run interactive \
-  --canon templates/rules/fantasy_basic.md \
-  --provider openai \
-  --fallback-enabled
+# 导出会话数据
+loom export markdown --session-name "测试会话" --output session_export.md
+
+# 清理旧会话
+loom session delete --older-than 7d
 ```
 
 ## 故障排除
@@ -497,44 +288,43 @@ loom run interactive \
 loom rules validate --file templates/rules/fantasy_basic.md
 
 # 检查提供商连接
-loom config test --provider openai
+loom config test
 
 # 查看详细日志
-loom run interactive --verbose --log-level DEBUG
+loom run interactive --verbose
 ```
 
 #### 2. 响应时间过长
 ```bash
-# 减少最大令牌数
-loom config set llm.openai.max_tokens 500
+# 减少最大回合数
+loom run interactive --max-turns 5
 
-# 启用缓存
-loom config set llm.openai.enable_caching true
-
-# 使用更快的模型
-loom run interactive --provider openai --model "gpt-3.5-turbo"
+# 使用更简单的规则文件
+loom run interactive --canon templates/rules/fantasy_basic.md
 ```
 
-#### 3. 记忆问题
+#### 3. 批处理文件读取失败
 ```bash
-# 检查记忆系统
-loom config test --memory
+# 检查输入文件格式
+cat input.txt
 
-# 调整记忆容量
-loom config set session.memory.short_term_capacity 50
-loom config set session.memory.long_term_capacity 500
+# 使用正确的批处理语法
+loom run batch input.txt --canon templates/rules/fantasy_basic.md
 
-# 清理记忆缓存
-rm -rf ./data/memory_cache
+# 检查文件编码
+file -i input.txt
 ```
 
-#### 4. 输出格式问题
+#### 4. 输出文件写入失败
 ```bash
-# 检查输出编码
-loom run batch --input test.txt --output test.out --encoding utf-8
+# 检查输出目录权限
+ls -la output/
 
-# 验证输出格式
-python -c "print(open('test.out', 'r', encoding='utf-8').read()[:100])"
+# 使用绝对路径
+loom run batch input.txt --output /tmp/results.json
+
+# 检查磁盘空间
+df -h .
 ```
 
 ## 最佳实践
@@ -545,9 +335,9 @@ python -c "print(open('test.out', 'r', encoding='utf-8').read()[:100])"
 - 使用有意义的输出文件名
 
 ### 2. 性能优化
-- 批处理时使用适当的并行度
-- 启用缓存减少 API 调用
-- 监控资源使用情况
+- 批处理时合理控制输入数量
+- 使用适当的最大回合数限制
+- 监控会话资源使用情况
 
 ### 3. 错误处理
 - 使用 `--verbose` 模式调试问题
