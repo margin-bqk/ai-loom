@@ -123,10 +123,12 @@ class AdvancedMarkdownCanon(MarkdownCanon):
             # 提取交叉引用 [@section_name]
             cross_ref_pattern = r"\[@([^\]]+)\]"
             for match in re.finditer(cross_ref_pattern, section.content):
-                target = match.group(1)
+                target_text = match.group(1)
+                # 尝试将引用文本映射到完整的章节名称
+                target_section = self._resolve_reference_target(target_text)
                 ref = Reference(
                     source_section=section_name,
-                    target=target,
+                    target=target_section,
                     reference_type=ReferenceType.CROSS_REFERENCE,
                     line_number=self._find_line_number(section.content, match.start()),
                 )
@@ -167,6 +169,33 @@ class AdvancedMarkdownCanon(MarkdownCanon):
     def _find_line_number(self, content: str, position: int) -> int:
         """查找字符串位置对应的行号"""
         return content[:position].count("\n") + 1
+
+    def _resolve_reference_target(self, target_text: str) -> str:
+        """将引用文本解析为完整的章节名称
+
+        例如：'角色设定' -> '角色设定 (Characters)'
+        """
+        # 首先检查是否有完全匹配的章节
+        if target_text in self.sections:
+            return target_text
+
+        # 尝试部分匹配：检查引用文本是否是章节名称的一部分
+        for section_name in self.sections.keys():
+            if target_text in section_name:
+                return section_name
+
+        # 尝试模糊匹配：检查引用文本是否与章节名称的主要部分匹配
+        # 例如：移除括号和英文部分后进行比较
+        for section_name in self.sections.keys():
+            # 提取中文部分（假设括号前的内容）
+            chinese_part = (
+                section_name.split(" (")[0] if " (" in section_name else section_name
+            )
+            if target_text == chinese_part:
+                return section_name
+
+        # 如果没有找到匹配，返回原始文本
+        return target_text
 
     def _analyze_nested_sections(self):
         """分析嵌套章节结构"""

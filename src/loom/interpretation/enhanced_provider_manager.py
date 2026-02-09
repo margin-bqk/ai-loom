@@ -287,11 +287,11 @@ class ProviderLoadBalancer:
         if priority == ProviderPriority.COST:
             return self._select_by_cost(available_providers)
         elif priority == ProviderPriority.SPEED:
-            return self._select_by_speed(available_providers, health_monitor)
+            return await self._select_by_speed(available_providers, health_monitor)
         elif priority == ProviderPriority.QUALITY:
-            return self._select_by_quality(available_providers, health_monitor)
+            return await self._select_by_quality(available_providers, health_monitor)
         else:  # BALANCED
-            return self._select_balanced(available_providers, health_monitor)
+            return await self._select_balanced(available_providers, health_monitor)
 
     def _select_by_cost(self, providers: List[str]) -> str:
         """成本优先选择"""
@@ -299,7 +299,7 @@ class ProviderLoadBalancer:
         # 实际实现应考虑每个Provider的成本模型
         return providers[0]
 
-    def _select_by_speed(
+    async def _select_by_speed(
         self, providers: List[str], health_monitor: Optional[ProviderHealthMonitor]
     ) -> str:
         """速度优先选择"""
@@ -311,7 +311,7 @@ class ProviderLoadBalancer:
         fastest_latency = float("inf")
 
         for name in providers:
-            health = asyncio.run(health_monitor.get_provider_health(name))
+            health = await health_monitor.get_provider_health(name)
             latency = health.get("metrics", {}).get("avg_latency", float("inf"))
             if latency < fastest_latency:
                 fastest_latency = latency
@@ -319,7 +319,7 @@ class ProviderLoadBalancer:
 
         return fastest_provider
 
-    def _select_by_quality(
+    async def _select_by_quality(
         self, providers: List[str], health_monitor: Optional[ProviderHealthMonitor]
     ) -> str:
         """质量优先选择"""
@@ -331,7 +331,7 @@ class ProviderLoadBalancer:
         best_success_rate = 0.0
 
         for name in providers:
-            health = asyncio.run(health_monitor.get_provider_health(name))
+            health = await health_monitor.get_provider_health(name)
             success_rate = health.get("metrics", {}).get("success_rate", 0.0)
             if success_rate > best_success_rate:
                 best_success_rate = success_rate
@@ -339,7 +339,7 @@ class ProviderLoadBalancer:
 
         return best_provider
 
-    def _select_balanced(
+    async def _select_balanced(
         self, providers: List[str], health_monitor: Optional[ProviderHealthMonitor]
     ) -> str:
         """平衡策略选择"""
@@ -355,7 +355,7 @@ class ProviderLoadBalancer:
             score = self.weights.get(name, 1.0)
 
             if health_monitor:
-                health = asyncio.run(health_monitor.get_provider_health(name))
+                health = await health_monitor.get_provider_health(name)
                 success_rate = health.get("metrics", {}).get("success_rate", 0.5)
                 avg_latency = health.get("metrics", {}).get("avg_latency", 1.0)
 
@@ -448,7 +448,7 @@ class EnhancedProviderManager(ProviderManager):
 
     async def register_provider(self, name: str, provider: LLMProvider):
         """注册Provider"""
-        await super().register_provider(name, provider)
+        super().register_provider(name, provider)
 
         # 启动健康监控
         await self.health_monitor.monitor_provider(name, provider)

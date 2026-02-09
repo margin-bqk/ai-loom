@@ -95,7 +95,7 @@ class TestCLIConfigDeepSeekSupport:
 
             # 测试所有启用的提供商
             results = []
-            with patch("src.loom.cli.commands.config.Console") as MockConsole:
+            with patch("rich.console.Console") as MockConsole:
                 mock_console = MagicMock()
                 MockConsole.return_value = mock_console
 

@@ -11,7 +11,7 @@ import subprocess
 import platform
 from typing import Dict, List, Optional, Any, AsyncGenerator
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from enum import Enum
 import aiohttp
 from aiohttp import ClientSession, ClientTimeout
@@ -270,10 +270,10 @@ class LocalModelManager:
         """从模型名提取大小信息"""
         import re
 
-        # 匹配常见的模型大小模式
+        # 匹配常见的模型大小模式（更具体的模式先匹配）
         patterns = [
-            r"(\d+B)",  # 7B, 13B, 70B
-            r"(\d+\.\d+B)",  # 1.5B, 3.5B
+            r"(\d+\.\d+[Bb])",  # 1.5B, 3.5B, 1.5b
+            r"(\d+[Bb])",  # 7B, 13B, 70B, 7b, 13b
             r"(\d+[Mm])",  # 500M, 1.5M
             r"(\d+[Gg])",  # 1.5G
         ]
@@ -281,7 +281,8 @@ class LocalModelManager:
         for pattern in patterns:
             match = re.search(pattern, model_name)
             if match:
-                return match.group(1)
+                # 返回大写形式
+                return match.group(1).upper()
 
         return None
 
@@ -292,17 +293,18 @@ class LocalModelManager:
             return None
 
         try:
-            if size_str.endswith("B"):
-                # 如 7B, 13B
-                value = float(size_str[:-1])
+            size_str_upper = size_str.upper()
+            if size_str_upper.endswith("B"):
+                # 如 7B, 13B, 1.5B
+                value = float(size_str_upper[:-1])
                 return int(value * 1_000_000_000)
-            elif size_str.endswith("M"):
+            elif size_str_upper.endswith("M"):
                 # 如 500M
-                value = float(size_str[:-1])
+                value = float(size_str_upper[:-1])
                 return int(value * 1_000_000)
-            elif size_str.endswith("G"):
+            elif size_str_upper.endswith("G"):
                 # 如 1.5G
-                value = float(size_str[:-1])
+                value = float(size_str_upper[:-1])
                 return int(value * 1_000_000_000)
         except (ValueError, AttributeError):
             pass
@@ -443,7 +445,7 @@ class LocalModelManager:
                 if info.last_used:
                     # 最近使用过的模型有加分
                     hours_since_use = (
-                        datetime.now() - info.last_used
+                        datetime.now(timezone.utc) - info.last_used
                     ).total_seconds() / 3600
                     if hours_since_use < 24:
                         score += 0.3 * (1 - hours_since_use / 24)
@@ -483,13 +485,18 @@ class LocalModelProvider(LocalProvider):
         self.model_manager = LocalModelManager(config)
         self.performance_monitoring = config.get("performance_monitoring", True)
         self.auto_model_selection = config.get("auto_model_selection", True)
-
-        # 启动模型管理器
-        asyncio.create_task(self.model_manager.start())
+        self._started = False
 
         logger.info(
-            f"Initialized enhanced local model provider with auto-discovery: {self.auto_discovery_enabled}"
+            f"Initialized enhanced local model provider with auto-discovery: {self.model_manager.auto_discovery_enabled}"
         )
+
+    async def start(self):
+        """启动模型管理器（异步）"""
+        if not self._started:
+            await self.model_manager.start()
+            self._started = True
+            logger.info("Local model provider started")
 
     async def _generate_impl(self, prompt: str, **kwargs) -> LLMResponse:
         """生成文本的具体实现（增强版）"""

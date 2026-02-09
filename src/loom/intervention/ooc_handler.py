@@ -68,8 +68,18 @@ class OOCHandler:
         ]
         self.intent_keywords = {
             "clarification": ["意思是", "解释", "说明", "澄清", "什么意思", "意味着"],
-            "intent": ["想要", "希望", "意图", "打算", "计划", "目标", "目的"],
-            "feedback": ["喜欢", "不喜欢", "建议", "反馈", "评价", "批评", "表扬"],
+            "intent": ["想要", "希望", "意图", "打算", "计划", "目标", "目的", "应该"],
+            "feedback": [
+                "喜欢",
+                "不喜欢",
+                "建议",
+                "反馈",
+                "评价",
+                "批评",
+                "表扬",
+                "太快",
+                "太慢",
+            ],
             "meta": ["注释", "备注", "注意", "提醒", "记录", "标记"],
             "question": ["?", "？", "为什么", "如何", "怎么", "何时", "哪里"],
             "correction": ["错误", "不对", "更正", "修改", "纠正", "应该是"],
@@ -231,8 +241,10 @@ class OOCHandler:
             content_lower = comment.content.lower()
 
             # 如果包含问号或明确请求回应
-            if "?" in comment.content or any(
-                word in content_lower for word in ["回答", "回应", "请回复"]
+            if (
+                "?" in comment.content
+                or "？" in comment.content
+                or any(word in content_lower for word in ["回答", "回应", "请回复"])
             ):
                 return True
 
@@ -248,7 +260,7 @@ class OOCHandler:
         for comment in ooc_comments:
             content_lower = comment.content.lower()
 
-            if "?" in comment.content:
+            if "?" in comment.content or "？" in comment.content:
                 # 对于问题，生成简单回应
                 responses.append(f"关于'{comment.content}'：已收到，将在叙事中考虑。")
             elif any(word in content_lower for word in ["谢谢", "感谢"]):

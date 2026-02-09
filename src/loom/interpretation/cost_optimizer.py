@@ -250,7 +250,10 @@ class CostOptimizer:
         pricing = self.pricing_configs.get(provider_name)
         if not pricing:
             # 使用默认定价
-            pricing = ProviderPricing(provider_name="default")
+            pricing = ProviderPricing(
+                provider_name="default",
+                model_pricing={"default": {"input": 0.0015, "output": 0.0020}},
+            )
 
         # 获取使用量
         usage = response.usage or {}

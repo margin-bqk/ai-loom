@@ -40,7 +40,13 @@ class MockLLMProvider(LLMProvider):
     """模拟LLM Provider用于测试"""
 
     def __init__(self, name="test_provider", success=True, latency=0.1):
-        config = {"name": name, "type": "mock", "model": "test-model", "enabled": True}
+        config = {
+            "name": name,
+            "type": "mock",
+            "model": "test-model",
+            "enabled": True,
+            "fallback_enabled": False,
+        }
         super().__init__(config)
         self._success = success
         self._latency = latency
@@ -146,7 +152,11 @@ class TestEnhancedProviderManager:
             "Test prompt", priority=ProviderPriority.BALANCED
         )
 
-        assert response.content == "Mock response from provider1"
+        # 负载均衡器可能选择任一provider，两者都是有效的
+        assert response.content in [
+            "Mock response from provider1",
+            "Mock response from provider2",
+        ]
         assert response.model == "test-model"
 
     @pytest.mark.asyncio
@@ -349,9 +359,11 @@ class TestLocalModelProvider:
         }
 
     @pytest.fixture
-    def local_provider(self, local_provider_config):
+    async def local_provider(self, local_provider_config):
         """创建LocalModelProvider实例"""
-        return LocalModelProvider(local_provider_config)
+        provider = LocalModelProvider(local_provider_config)
+        await provider.start()
+        return provider
 
     @pytest.fixture
     def mock_model_info(self):
@@ -467,7 +479,8 @@ class TestIntegration:
 
         # 验证成本记录
         assert len(cost_optimizer.cost_history) == 1
-        assert cost_optimizer.provider_costs["test_integration"] > 0
+        # 使用注册的provider名称 "integrated"
+        assert cost_optimizer.provider_costs["integrated"] > 0
 
     @pytest.mark.asyncio
     async def test_local_provider_with_model_manager(self):

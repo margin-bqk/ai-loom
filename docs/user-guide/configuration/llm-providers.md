@@ -4,6 +4,57 @@
 
 LOOM 支持多种 LLM（大语言模型）提供商，包括 OpenAI、Anthropic、DeepSeek、Google Gemini 和本地模型（Ollama）。本文档详细介绍每个提供商的配置方法、功能特性和使用建议。
 
+## 配置结构
+
+LOOM 使用两种配置文件来管理 LLM 提供商配置：
+
+### 1. 主配置文件 (`default_config.yaml`)
+包含运行时配置，使用扁平结构：
+
+```yaml
+llm_providers:
+  openai:
+    type: openai
+    api_key: ${OPENAI_API_KEY:}
+    model: gpt-3.5-turbo
+    temperature: 0.7
+    max_tokens: 1000
+    timeout: 30
+    # ... 其他配置选项
+```
+
+### 2. 详细配置文件 (`llm_providers.yaml`)
+包含详细的提供商信息，使用嵌套结构：
+
+```yaml
+providers:
+  openai:
+    display_name: "OpenAI GPT"
+    models:
+      - name: "gpt-4"
+        description: "GPT-4 最新版本"
+        max_tokens: 8192
+        cost_per_1k_input: 0.03
+        cost_per_1k_output: 0.06
+    capabilities:
+      - "function_calling"
+      - "json_mode"
+      - "streaming"
+    rate_limits:
+      requests_per_minute: 60
+      tokens_per_minute: 90000
+
+# 提供商选择策略
+selection_strategy:
+  default: "openai"
+  fallback_order:
+    - "openai"
+    - "anthropic"
+    - "deepseek"
+    - "gemini"
+    - "ollama"
+```
+
 ## 支持的提供商
 
 ### 1. OpenAI GPT 系列
@@ -22,21 +73,64 @@ LOOM 支持多种 LLM（大语言模型）提供商，包括 OpenAI、Anthropic�
 - 流式响应
 - 多轮对话
 
-#### 配置示例
+#### 主配置文件示例
 ```yaml
-openai:
-  type: openai
-  enabled: true
-  api_key: ${OPENAI_API_KEY:}
-  model: gpt-3.5-turbo
-  temperature: 0.7
-  max_tokens: 1000
-  timeout: 30
+llm_providers:
+  openai:
+    type: openai
+    enabled: true
+    api_key: ${OPENAI_API_KEY:}
+    model: gpt-3.5-turbo
+    temperature: 0.7
+    max_tokens: 1000
+    timeout: 30
+    max_retries: 3
+    retry_delay: 1.0
+    fallback_enabled: true
+    connection_pool_size: 5
+    enable_caching: true
+    cache_ttl: 300
+```
+
+#### 详细配置文件示例
+```yaml
+providers:
+  openai:
+    display_name: "OpenAI GPT"
+    models:
+      - name: "gpt-4"
+        description: "GPT-4 最新版本"
+        max_tokens: 8192
+        cost_per_1k_input: 0.03
+        cost_per_1k_output: 0.06
+        
+      - name: "gpt-4-turbo"
+        description: "GPT-4 Turbo"
+        max_tokens: 4096
+        cost_per_1k_input: 0.01
+        cost_per_1k_output: 0.03
+        
+      - name: "gpt-3.5-turbo"
+        description: "GPT-3.5 Turbo (默认)"
+        max_tokens: 4096
+        cost_per_1k_input: 0.0015
+        cost_per_1k_output: 0.002
+
+    capabilities:
+      - "function_calling"
+      - "json_mode"
+      - "streaming"
+
+    rate_limits:
+      requests_per_minute: 60
+      tokens_per_minute: 90000
 ```
 
 #### 环境变量
 ```bash
 export OPENAI_API_KEY="sk-your-key-here"
+export OPENAI_BASE_URL="https://api.openai.com/v1"  # 可选
+export OPENAI_MODEL="gpt-4-turbo-preview"  # 可选
 ```
 
 ### 2. Anthropic Claude 系列
@@ -55,20 +149,56 @@ export OPENAI_API_KEY="sk-your-key-here"
 - 长上下文支持
 - 结构化输出
 
-#### 配置示例
+#### 主配置文件示例
 ```yaml
-anthropic:
-  type: anthropic
-  enabled: true
-  api_key: ${ANTHROPIC_API_KEY:}
-  model: claude-3-haiku-20240307
-  temperature: 1.0
-  max_tokens: 4096
+llm_providers:
+  anthropic:
+    type: anthropic
+    enabled: true
+    api_key: ${ANTHROPIC_API_KEY:}
+    model: claude-3-haiku-20240307
+    temperature: 1.0
+    max_tokens: 4096
+    timeout: 30
+```
+
+#### 详细配置文件示例
+```yaml
+providers:
+  anthropic:
+    display_name: "Anthropic Claude"
+    models:
+      - name: "claude-3-opus-20240229"
+        description: "Claude 3 Opus (最强)"
+        max_tokens: 4096
+        cost_per_1k_input: 0.015
+        cost_per_1k_output: 0.075
+        
+      - name: "claude-3-sonnet-20240229"
+        description: "Claude 3 Sonnet (平衡)"
+        max_tokens: 4096
+        cost_per_1k_input: 0.003
+        cost_per_1k_output: 0.015
+        
+      - name: "claude-3-haiku-20240307"
+        description: "Claude 3 Haiku (快速)"
+        max_tokens: 4096
+        cost_per_1k_input: 0.00025
+        cost_per_1k_output: 0.00125
+
+    capabilities:
+      - "tool_use"
+      - "vision"
+
+    rate_limits:
+      requests_per_minute: 100
+      tokens_per_minute: 100000
 ```
 
 #### 环境变量
 ```bash
 export ANTHROPIC_API_KEY="your-anthropic-key"
+export ANTHROPIC_MODEL="claude-3-opus-20240229"
 ```
 
 ### 3. DeepSeek 系列
@@ -87,18 +217,55 @@ export ANTHROPIC_API_KEY="your-anthropic-key"
 - **128K 上下文**：超长上下文支持
 - **中文优化**：对中文内容有更好的理解和生成能力
 
-#### 配置示例
+#### 主配置文件示例
 ```yaml
-deepseek:
-  type: deepseek
-  enabled: true
-  api_key: ${DEEPSEEK_API_KEY:}
-  base_url: https://api.deepseek.com
-  model: deepseek-chat
-  thinking_enabled: false  # 是否启用推理模式
-  temperature: 1.0
-  max_tokens: 4096
-  timeout: 60  # DeepSeek可能需要更长的超时时间
+llm_providers:
+  deepseek:
+    type: deepseek
+    enabled: true
+    api_key: ${DEEPSEEK_API_KEY:}
+    base_url: https://api.deepseek.com
+    model: deepseek-chat
+    thinking_enabled: false  # 是否启用推理模式
+    temperature: 1.0
+    max_tokens: 4096
+    timeout: 60  # DeepSeek可能需要更长的超时时间
+```
+
+#### 详细配置文件示例
+```yaml
+providers:
+  deepseek:
+    display_name: "DeepSeek"
+    models:
+      - name: "deepseek-chat"
+        description: "DeepSeek Chat (非推理模式)"
+        max_tokens: 4096
+        context_length: 128000
+        cost_per_1k_input: 0.00028
+        cost_per_1k_output: 0.00042
+        
+      - name: "deepseek-reasoner"
+        description: "DeepSeek Reasoner (推理模式)"
+        max_tokens: 32000
+        context_length: 128000
+        cost_per_1k_input: 0.00028
+        cost_per_1k_output: 0.00042
+        features: ["reasoning_mode"]
+
+    capabilities:
+      - "reasoning_mode"
+      - "json_output"
+      - "tool_calls"
+      - "128k_context"
+
+    rate_limits:
+      requests_per_minute: "unlimited"  # DeepSeek不限制速率
+      tokens_per_minute: "unlimited"
+
+    requirements:
+      - "API key from platform.deepseek.com"
+      - "Internet connection"
 ```
 
 #### 环境变量
@@ -137,18 +304,42 @@ deepseek:
 - 函数调用
 - 长上下文支持
 
-#### 配置示例
+#### 主配置文件示例
 ```yaml
-gemini:
-  type: gemini
-  enabled: false  # 默认禁用
-  api_key: ${GOOGLE_API_KEY:}
-  model: gemini-pro
+llm_providers:
+  gemini:
+    type: gemini
+    enabled: false  # 默认禁用
+    api_key: ${GOOGLE_API_KEY:}
+    model: gemini-pro
+    timeout: 30
+```
+
+#### 详细配置文件示例
+```yaml
+providers:
+  gemini:
+    display_name: "Google Gemini"
+    models:
+      - name: "gemini-pro"
+        description: "Gemini Pro"
+        max_tokens: 32768
+        cost_per_1k_input: 0.0005
+        cost_per_1k_output: 0.0015
+
+    capabilities:
+      - "multimodal"
+      - "function_calling"
+
+    rate_limits:
+      requests_per_minute: 60
+      tokens_per_minute: 60000
 ```
 
 #### 环境变量
 ```bash
 export GOOGLE_API_KEY="your-google-key"
+export GOOGLE_MODEL="gemini-pro"
 ```
 
 ### 5. 本地模型 (Ollama)
@@ -166,13 +357,49 @@ export GOOGLE_API_KEY="your-google-key"
 - 零成本（无 API 费用）
 - 完全隐私保护
 
-#### 配置示例
+#### 主配置文件示例
 ```yaml
-ollama:
-  type: ollama
-  enabled: false  # 默认禁用
-  base_url: http://localhost:11434
-  model: llama2
+llm_providers:
+  ollama:
+    type: ollama
+    enabled: false  # 默认禁用
+    base_url: http://localhost:11434
+    model: llama2
+    timeout: 120  # 本地模型可能需要更长时间
+```
+
+#### 详细配置文件示例
+```yaml
+providers:
+  ollama:
+    display_name: "本地模型 (Ollama)"
+    models:
+      - name: "llama2"
+        description: "Llama 2 7B"
+        max_tokens: 4096
+        cost_per_1k_input: 0.0
+        cost_per_1k_output: 0.0
+        
+      - name: "mistral"
+        description: "Mistral 7B"
+        max_tokens: 8192
+        cost_per_1k_input: 0.0
+        cost_per_1k_output: 0.0
+        
+      - name: "codellama"
+        description: "CodeLlama 7B"
+        max_tokens: 4096
+        cost_per_1k_input: 0.0
+        cost_per_1k_output: 0.0
+
+    capabilities:
+      - "local_inference"
+      - "no_internet_required"
+
+    requirements:
+      - "ollama installed"
+      - "8GB+ RAM"
+      - "模型已下载"
 ```
 
 #### 系统要求
@@ -186,42 +413,45 @@ LOOM 支持智能的提供商选择策略，可以根据会话类型、成本、
 
 ### 默认回退顺序
 ```yaml
-fallback_order:
-  - "openai"
-  - "anthropic"
-  - "deepseek"
-  - "gemini"
-  - "ollama"
+selection_strategy:
+  default: "openai"
+  fallback_order:
+    - "openai"
+    - "anthropic"
+    - "deepseek"
+    - "gemini"
+    - "ollama"
 ```
 
 ### 基于会话类型的推荐
 ```yaml
-session_type_mapping:
-  creative_writing:
-    preferred_provider: "openai"
-    preferred_model: "gpt-4"
-    
-  world_building:
-    preferred_provider: "anthropic"
-    preferred_model: "claude-3-sonnet"
-    
-  code_generation:
-    preferred_provider: "ollama"
-    preferred_model: "codellama"
-    
-  quick_chat:
-    preferred_provider: "openai"
-    preferred_model: "gpt-3.5-turbo"
-    
-  chinese_content:
-    preferred_provider: "deepseek"
-    preferred_model: "deepseek-chat"
-    fallback_to: "openai"
-    
-  reasoning_tasks:
-    preferred_provider: "deepseek"
-    preferred_model: "deepseek-reasoner"
-    fallback_to: "anthropic"
+selection_strategy:
+  session_type_mapping:
+    creative_writing:
+      preferred_provider: "openai"
+      preferred_model: "gpt-4"
+      
+    world_building:
+      preferred_provider: "anthropic"
+      preferred_model: "claude-3-sonnet"
+      
+    code_generation:
+      preferred_provider: "ollama"
+      preferred_model: "codellama"
+      
+    quick_chat:
+      preferred_provider: "openai"
+      preferred_model: "gpt-3.5-turbo"
+      
+    chinese_content:
+      preferred_provider: "deepseek"
+      preferred_model: "deepseek-chat"
+      fallback_to: "openai"
+      
+    reasoning_tasks:
+      preferred_provider: "deepseek"
+      preferred_model: "deepseek-reasoner"
+      fallback_to: "anthropic"
 ```
 
 ### 成本优化策略
@@ -230,6 +460,7 @@ cost_control:
   monthly_budget: 50.0  # 美元
   alert_threshold: 0.8  # 预算使用80%时告警
   auto_switch_to_cheaper: true
+  token_counting: true
   
   optimization_strategies:
     - name: "use_cheaper_model_for_long_context"
@@ -330,6 +561,7 @@ azure_openai:
 ## 下一步
 
 配置完成后，您可以：
+
 1. **验证配置**：运行 `loom config validate --check-connections`
 2. **测试提供商**：运行 `loom config test --all`
 3. **开始使用**：查看 [快速开始指南](../quick-start/basic-configuration.md)
