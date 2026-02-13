@@ -6,18 +6,19 @@
 """
 
 import asyncio
-import time
-import threading
 import gc
+import statistics
+import threading
+import time
 import tracemalloc
-from typing import Dict, List, Optional, Any, Tuple, Callable
+from collections import defaultdict, deque
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import statistics
-from collections import defaultdict, deque
-import psutil
+from typing import Any, Callable, Dict, List, Optional, Tuple
+
 import objgraph
+import psutil
 
 from ..utils.logging_config import get_logger
 

@@ -4,15 +4,15 @@
 生成记忆摘要，压缩旧记忆，减少记忆膨胀。
 """
 
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any
-from dataclasses import dataclass, field
-import json
 import hashlib
+import json
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional
 
-from .world_memory import MemoryEntity, MemoryEntityType
 from ..interpretation.llm_provider import LLMProvider, LLMResponse
 from ..utils.logging_config import get_logger
+from .world_memory import MemoryEntity, MemoryEntityType
 
 logger = get_logger(__name__)
 

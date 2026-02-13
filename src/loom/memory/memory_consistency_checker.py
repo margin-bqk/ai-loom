@@ -4,21 +4,21 @@
 检查记忆冲突、时间线一致性、实体关系一致性，确保世界记忆的逻辑连贯性。
 """
 
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Tuple
-from dataclasses import dataclass, field
-from enum import Enum
-import json
 import hashlib
+import json
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Dict, List, Optional, Tuple
 
+from ..utils.logging_config import get_logger
+from .interfaces import ConsistencyError
 from .world_memory import (
     MemoryEntity,
     MemoryEntityType,
     MemoryRelation,
     MemoryRelationType,
 )
-from .interfaces import ConsistencyError
-from ..utils.logging_config import get_logger
 
 logger = get_logger(__name__)
 

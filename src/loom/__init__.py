@@ -14,8 +14,8 @@ __version__ = "0.10.0"
 __author__ = "LOOM Team"
 
 from .core import *
-from .rules import *
 from .interpretation import *
-from .memory import *
 from .intervention import *
+from .memory import *
+from .rules import *
 from .utils import *

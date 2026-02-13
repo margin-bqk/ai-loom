@@ -3,26 +3,26 @@
 测试玩家干预接口与核心运行时层、规则层、解释层、世界记忆层的集成
 """
 
-import pytest
 import asyncio
-from unittest.mock import Mock, AsyncMock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
-from src.loom.intervention.player_intervention import (
-    PlayerIntervention,
-    Intervention,
-    InterventionType,
-    InterventionPriority,
-)
-from src.loom.intervention.ooc_handler import OOCHandler
-from src.loom.intervention.world_editor import WorldEditor
-from src.loom.intervention.retcon_handler import RetconHandler
+import pytest
 
+from src.loom.core.prompt_assembler import PromptAssembler
 from src.loom.core.session_manager import SessionManager
 from src.loom.core.turn_scheduler import TurnScheduler
-from src.loom.core.prompt_assembler import PromptAssembler
-from src.loom.rules.rule_loader import RuleLoader
-from src.loom.memory.world_memory import WorldMemory
 from src.loom.interpretation.consistency_checker import ConsistencyChecker
+from src.loom.intervention.ooc_handler import OOCHandler
+from src.loom.intervention.player_intervention import (
+    Intervention,
+    InterventionPriority,
+    InterventionType,
+    PlayerIntervention,
+)
+from src.loom.intervention.retcon_handler import RetconHandler
+from src.loom.intervention.world_editor import WorldEditor
+from src.loom.memory.world_memory import WorldMemory
+from src.loom.rules.rule_loader import RuleLoader
 
 
 class TestInterventionIntegration:

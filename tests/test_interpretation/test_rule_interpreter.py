@@ -2,14 +2,16 @@
 RuleInterpreter单元测试
 """
 
-import pytest
 from pathlib import Path
-from src.loom.rules.markdown_canon import MarkdownCanon
+
+import pytest
+
 from src.loom.interpretation.rule_interpreter import (
-    RuleInterpreter,
     InterpretationResult,
     RuleConstraint,
+    RuleInterpreter,
 )
+from src.loom.rules.markdown_canon import MarkdownCanon
 
 
 class TestRuleInterpreter:

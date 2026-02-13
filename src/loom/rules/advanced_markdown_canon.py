@@ -12,15 +12,15 @@
 设计目标：保持向后兼容性，同时提供增强功能。
 """
 
-import re
 import json
-from pathlib import Path
-from typing import Dict, List, Optional, Any, Set, Tuple
+import re
 from dataclasses import dataclass, field
 from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Set, Tuple
 
-from .markdown_canon import MarkdownCanon, CanonSection, CanonSectionType
 from ..utils.logging_config import get_logger
+from .markdown_canon import CanonSection, CanonSectionType, MarkdownCanon
 
 logger = get_logger(__name__)
 

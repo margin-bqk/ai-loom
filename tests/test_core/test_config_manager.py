@@ -2,13 +2,14 @@
 ConfigManager单元测试
 """
 
-import pytest
 import os
 import tempfile
-import yaml
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
-from src.loom.core.config_manager import ConfigManager, AppConfig, LLMProviderConfig
+import pytest
+import yaml
+
+from src.loom.core.config_manager import AppConfig, ConfigManager, LLMProviderConfig
 
 
 class TestConfigManager:

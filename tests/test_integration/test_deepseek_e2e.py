@@ -11,22 +11,23 @@ DeepSeek端到端测试
 4. 测试配置加载和提供商选择策略
 """
 
-import pytest
 import asyncio
-import tempfile
 import os
-import yaml
-from unittest.mock import AsyncMock, MagicMock, patch
+import tempfile
 from datetime import datetime
+from unittest.mock import AsyncMock, MagicMock, patch
 
-from src.loom.interpretation.llm_provider import (
-    DeepSeekProvider,
-    ProviderManager,
-    LLMProviderFactory,
-    LLMResponse,
-)
+import pytest
+import yaml
+
 from src.loom.core.config_manager import ConfigManager
 from src.loom.core.session_manager import SessionManager
+from src.loom.interpretation.llm_provider import (
+    DeepSeekProvider,
+    LLMProviderFactory,
+    LLMResponse,
+    ProviderManager,
+)
 from src.loom.interpretation.reasoning_pipeline import ReasoningPipeline
 
 

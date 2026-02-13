@@ -6,17 +6,17 @@
 
 import asyncio
 import time
-from typing import Dict, List, Optional, Any, Union
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any, Dict, List, Optional, Union
 
-from .rule_interpreter import RuleInterpreter, InterpretationResult, RuleConstraint
-from .llm_provider import LLMProvider, LLMResponse, ProviderManager
-from .consistency_checker import ConsistencyChecker, ConsistencyReport
-from .reasoning_pipeline import ReasoningContext, ReasoningResult
-from ..utils.logging_config import get_logger
-from ..memory.world_memory import WorldMemory
 from ..memory.interfaces import MemoryEntity
+from ..memory.world_memory import WorldMemory
+from ..utils.logging_config import get_logger
+from .consistency_checker import ConsistencyChecker, ConsistencyReport
+from .llm_provider import LLMProvider, LLMResponse, ProviderManager
+from .reasoning_pipeline import ReasoningContext, ReasoningResult
+from .rule_interpreter import InterpretationResult, RuleConstraint, RuleInterpreter
 
 logger = get_logger(__name__)
 
@@ -253,8 +253,9 @@ class EnhancedReasoningPipeline:
         self, context: ReasoningContext
     ) -> InterpretationResult:
         """深度规则解释"""
-        from ..rules.markdown_canon import MarkdownCanon
         from pathlib import Path
+
+        from ..rules.markdown_canon import MarkdownCanon
 
         # 创建Canon对象
         canon = MarkdownCanon(

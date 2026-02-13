@@ -7,11 +7,12 @@ Markdown规则解析
 """
 
 import re
-import yaml
-from pathlib import Path
-from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass, field
 from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+import yaml
 
 from ..utils.logging_config import get_logger
 

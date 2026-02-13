@@ -14,13 +14,7 @@ CLI 命令模块
 import typer
 
 # 导入各命令模块
-from . import run
-from . import session
-from . import rules
-from . import config
-from . import export
-from . import dev
-from . import init
+from . import config, dev, export, init, rules, run, session
 
 # 导出各命令的 Typer 应用
 __all__ = ["run", "session", "rules", "config", "export", "dev", "init"]

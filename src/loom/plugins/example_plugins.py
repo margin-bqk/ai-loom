@@ -4,9 +4,11 @@
 """
 
 import json
+from typing import Any, Dict, List
+
 import yaml
-from typing import Dict, List, Any
-from . import RulePlugin, MemoryPlugin, ExportPlugin
+
+from . import ExportPlugin, MemoryPlugin, RulePlugin
 
 
 class MarkdownRuleFormatter(RulePlugin):

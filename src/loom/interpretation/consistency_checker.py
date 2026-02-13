@@ -5,11 +5,11 @@
 """
 
 import re
-from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional
 
-from .rule_interpreter import RuleConstraint
 from ..utils.logging_config import get_logger
+from .rule_interpreter import RuleConstraint
 
 logger = get_logger(__name__)
 

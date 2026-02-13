@@ -9,12 +9,13 @@ import asyncio
 import hashlib
 import json
 from pathlib import Path
-from typing import Dict, Optional, Callable, List, Any, Set
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+from typing import Any, Callable, Dict, List, Optional, Set
 
-from .markdown_canon import MarkdownCanon
+from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
+
 from ..utils.logging_config import get_logger
+from .markdown_canon import MarkdownCanon
 
 logger = get_logger(__name__)
 

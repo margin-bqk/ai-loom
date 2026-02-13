@@ -2,12 +2,14 @@
 RuleLoader单元测试
 """
 
-import pytest
-import tempfile
 import shutil
+import tempfile
 from pathlib import Path
-from src.loom.rules.rule_loader import RuleLoader
+
+import pytest
+
 from src.loom.rules.markdown_canon import MarkdownCanon
+from src.loom.rules.rule_loader import RuleLoader
 
 
 class TestRuleLoader:

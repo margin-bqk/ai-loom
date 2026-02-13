@@ -2,16 +2,17 @@
 PlayerIntervention单元测试
 """
 
-import pytest
 import asyncio
-from unittest.mock import Mock, AsyncMock
+from unittest.mock import AsyncMock, Mock
+
+import pytest
 
 from src.loom.intervention.player_intervention import (
-    PlayerIntervention,
     Intervention,
-    InterventionType,
     InterventionPriority,
     InterventionResult,
+    InterventionType,
+    PlayerIntervention,
 )
 
 

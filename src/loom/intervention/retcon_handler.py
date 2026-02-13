@@ -4,12 +4,12 @@ Retcon处理
 处理追溯性修改（Retcon），管理历史版本和一致性。
 """
 
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Tuple
-from dataclasses import dataclass, field
 import json
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional, Tuple
 
-from ..memory.world_memory import WorldMemory, MemoryEntity
+from ..memory.world_memory import MemoryEntity, WorldMemory
 from ..utils.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -260,8 +260,9 @@ class RetconHandler:
                 errors=["WorldMemory not initialized"],
             )
 
-        from ..memory.world_memory import MemoryEntity, MemoryEntityType
         import uuid
+
+        from ..memory.world_memory import MemoryEntity, MemoryEntityType
 
         memory_id = operation.target_id or str(uuid.uuid4())
         content = operation.changes.get("content", "新增记忆")

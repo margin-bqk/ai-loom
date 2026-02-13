@@ -2,15 +2,16 @@
 SessionManager单元测试
 """
 
-import pytest
 import asyncio
-from unittest.mock import AsyncMock, MagicMock, patch
 from datetime import datetime, timedelta
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 
 from src.loom.core.session_manager import (
-    SessionManager,
     Session,
     SessionConfig,
+    SessionManager,
     SessionStatus,
 )
 

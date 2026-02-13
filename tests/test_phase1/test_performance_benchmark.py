@@ -4,20 +4,21 @@
 测试阶段1重构后的性能表现，确保重构没有引入性能问题。
 """
 
-import pytest
 import asyncio
-import time
 import statistics
+import time
 from datetime import datetime
-from typing import Dict, Any, List
-from unittest.mock import Mock, AsyncMock
+from typing import Any, Dict, List
+from unittest.mock import AsyncMock, Mock
+
+import pytest
 
 from src.loom.core.interfaces import (
-    SessionConfig,
-    Session,
-    SessionStatus,
     NarrativeContext,
     NarrativeInterpretation,
+    Session,
+    SessionConfig,
+    SessionStatus,
 )
 
 
@@ -387,8 +388,8 @@ class TestComparativeBenchmarks:
 
 def run_performance_suite():
     """运行完整的性能测试套件"""
-    import sys
     import io
+    import sys
 
     # 捕获输出
     original_stdout = sys.stdout

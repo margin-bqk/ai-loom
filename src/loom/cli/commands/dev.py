@@ -4,12 +4,13 @@
 支持代码质量检查、测试运行、构建打包等开发工作流。
 """
 
-import typer
+import os
 import subprocess
 import sys
 from pathlib import Path
-from typing import Optional, List
-import os
+from typing import List, Optional
+
+import typer
 
 app = typer.Typer(
     name="dev",
@@ -31,8 +32,8 @@ def lint_code(
     try:
         import black
         import flake8
-        import mypy
         import isort
+        import mypy
     except ImportError:
         typer.echo("开发依赖未安装，请运行: pip install loom[dev]", err=True)
         raise typer.Exit(code=1)
@@ -420,8 +421,8 @@ def clean_project(
             ]
         )
 
-    import shutil
     import glob
+    import shutil
 
     cleaned_count = 0
 

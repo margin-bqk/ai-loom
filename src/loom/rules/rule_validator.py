@@ -12,19 +12,19 @@
 设计目标：提供详细的验证报告和修复建议。
 """
 
-import re
-import json
 import asyncio
-from pathlib import Path
-from typing import Dict, List, Optional, Any, Set, Tuple
+import json
+import re
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Set, Tuple
 
-from .markdown_canon import MarkdownCanon, CanonSectionType
-from .advanced_markdown_canon import AdvancedMarkdownCanon
 from ..interpretation.llm_provider import LLMProvider
 from ..utils.logging_config import get_logger
+from .advanced_markdown_canon import AdvancedMarkdownCanon
+from .markdown_canon import CanonSectionType, MarkdownCanon
 
 logger = get_logger(__name__)
 

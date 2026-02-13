@@ -5,21 +5,22 @@
 EnhancedConsistencyChecker和ReasoningTracker。
 """
 
-import pytest
 import asyncio
-from unittest.mock import Mock, AsyncMock, MagicMock
 from datetime import datetime
+from unittest.mock import AsyncMock, MagicMock, Mock
+
+import pytest
 
 from src.loom.interpretation import (
-    EnhancedReasoningPipeline,
-    EnhancedContextBuilder,
+    ConsistencyCategory,
+    ContextOptimizationStrategy,
+    DecisionImportance,
     EnhancedConsistencyChecker,
-    ReasoningTracker,
+    EnhancedContextBuilder,
+    EnhancedReasoningPipeline,
     ReasoningContext,
     ReasoningStepType,
-    DecisionImportance,
-    ContextOptimizationStrategy,
-    ConsistencyCategory,
+    ReasoningTracker,
 )
 
 

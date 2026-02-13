@@ -6,25 +6,25 @@
 """
 
 import asyncio
-from typing import Optional, Dict, Any, List, Tuple
-from datetime import datetime
 import uuid
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple
 
+from ..utils.logging_config import get_logger
 from .interfaces import (
-    Session,
-    SessionConfig,
-    SessionStatus,
-    NarrativeInterpreter,
-    NarrativeScheduler,
+    NarrativeArchive,
+    NarrativeConsistencyError,
     NarrativeContext,
     NarrativeInterpretation,
-    NarrativeArchive,
+    NarrativeInterpreter,
+    NarrativeScheduler,
+    Session,
+    SessionConfig,
     SessionNotFoundError,
-    NarrativeConsistencyError,
+    SessionStatus,
 )
 from .session_manager import SessionManager as LegacySessionManager
 from .turn_scheduler import TurnScheduler as LegacyTurnScheduler
-from ..utils.logging_config import get_logger
 
 logger = get_logger(__name__)
 
@@ -409,7 +409,7 @@ class NarrativeSchedulerAdapter(NarrativeScheduler):
         completed_turn = await self.legacy_scheduler.wait_for_turn(turn_id, timeout=30)
 
         # 转换为接口格式的TurnResult
-        from .interfaces import TurnResult, Turn
+        from .interfaces import Turn, TurnResult
 
         if completed_turn:
             interface_turn = Turn(

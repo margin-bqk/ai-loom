@@ -4,33 +4,34 @@
 测试EnhancedProviderManager、CostOptimizer和LocalModelProvider。
 """
 
-import pytest
 import asyncio
-from unittest.mock import AsyncMock, MagicMock, patch, Mock
-from datetime import datetime, timedelta
 import json
+from datetime import datetime, timedelta
+from unittest.mock import AsyncMock, MagicMock, Mock, patch
 
-from src.loom.interpretation.llm_provider import LLMProvider, LLMResponse
-from src.loom.interpretation.enhanced_provider_manager import (
-    EnhancedProviderManager,
-    ProviderHealthMonitor,
-    ProviderLoadBalancer,
-    FallbackStrategy,
-    ProviderPriority,
-    ProviderHealth,
-    ProviderMetrics,
-)
+import pytest
+
 from src.loom.interpretation.cost_optimizer import (
-    CostOptimizer,
     BudgetAlertLevel,
-    CostRecord,
     BudgetLimit,
+    CostOptimizer,
+    CostRecord,
     ProviderPricing,
 )
+from src.loom.interpretation.enhanced_provider_manager import (
+    EnhancedProviderManager,
+    FallbackStrategy,
+    ProviderHealth,
+    ProviderHealthMonitor,
+    ProviderLoadBalancer,
+    ProviderMetrics,
+    ProviderPriority,
+)
+from src.loom.interpretation.llm_provider import LLMProvider, LLMResponse
 from src.loom.interpretation.local_model_provider import (
-    LocalModelProvider,
-    LocalModelManager,
     LocalModelInfo,
+    LocalModelManager,
+    LocalModelProvider,
     LocalModelType,
     ModelPerformanceMetrics,
 )

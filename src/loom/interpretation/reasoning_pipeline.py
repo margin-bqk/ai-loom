@@ -5,13 +5,13 @@
 """
 
 import asyncio
-from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional
 
-from .rule_interpreter import RuleInterpreter, InterpretationResult
-from .llm_provider import LLMProvider, LLMResponse, ProviderManager, LLMProviderFactory
-from .consistency_checker import ConsistencyChecker
 from ..utils.logging_config import get_logger
+from .consistency_checker import ConsistencyChecker
+from .llm_provider import LLMProvider, LLMProviderFactory, LLMResponse, ProviderManager
+from .rule_interpreter import InterpretationResult, RuleInterpreter
 
 logger = get_logger(__name__)
 
@@ -166,8 +166,9 @@ class ReasoningPipeline:
         """解释规则"""
         # 这里需要从rules_text创建Canon对象
         # 简化实现：直接使用规则文本
-        from ..rules.markdown_canon import MarkdownCanon
         from pathlib import Path
+
+        from ..rules.markdown_canon import MarkdownCanon
 
         # 创建临时Canon对象
         canon = MarkdownCanon(

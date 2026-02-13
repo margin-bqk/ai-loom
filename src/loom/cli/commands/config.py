@@ -4,13 +4,14 @@
 支持配置查看、编辑、验证、导入导出等操作。
 """
 
-import typer
 import asyncio
-from pathlib import Path
-from typing import Optional, List
 import json
-import yaml
 import os
+from pathlib import Path
+from typing import List, Optional
+
+import typer
+import yaml
 
 from ...core.config_manager import ConfigManager
 from ...utils.logging_config import setup_logging
@@ -78,8 +79,8 @@ async def _show_config_async(section: Optional[str], output_format: str):
             )
         else:  # table
             from rich.console import Console
-            from rich.table import Table
             from rich.panel import Panel
+            from rich.table import Table
 
             console = Console()
 
@@ -548,10 +549,10 @@ async def _test_config_async(
 ):
     """异步测试配置"""
     try:
-        from rich.console import Console
-        from rich.table import Table
-        from rich.panel import Panel
         from rich import box
+        from rich.console import Console
+        from rich.panel import Panel
+        from rich.table import Table
 
         console = Console()
         results = []
@@ -599,8 +600,9 @@ async def _test_config_async(
         # 测试数据库连接
         if test_database:
             try:
-                from ...core.persistence_engine import SQLitePersistence
                 from pathlib import Path
+
+                from ...core.persistence_engine import SQLitePersistence
 
                 # 使用data_dir下的loom.db文件
                 db_path = str(Path(config.data_dir) / "loom.db")

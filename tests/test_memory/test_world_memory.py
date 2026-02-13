@@ -3,24 +3,25 @@
 测试WorldMemory、StructuredStore、VectorStore和Summarizer
 """
 
-import pytest
 import asyncio
-import tempfile
-import os
 import json
+import os
+import tempfile
 from datetime import datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock
 
+import pytest
+
+from src.loom.memory.structured_store import StructuredStore
+from src.loom.memory.summarizer import MemorySummarizer, SummaryConfig
+from src.loom.memory.vector_store import VectorStore
 from src.loom.memory.world_memory import (
-    WorldMemory,
     MemoryEntity,
     MemoryEntityType,
     MemoryRelation,
     MemoryRelationType,
+    WorldMemory,
 )
-from src.loom.memory.structured_store import StructuredStore
-from src.loom.memory.vector_store import VectorStore
-from src.loom.memory.summarizer import MemorySummarizer, SummaryConfig
 
 
 @pytest.fixture

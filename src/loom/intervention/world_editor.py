@@ -4,13 +4,13 @@
 处理玩家对世界状态的直接编辑。
 """
 
-import re
-from typing import Dict, List, Optional, Any, Tuple
-from dataclasses import dataclass, field
 import os
+import re
+from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
 
-from ..memory.world_memory import WorldMemory, MemoryEntity, MemoryEntityType
+from ..memory.world_memory import MemoryEntity, MemoryEntityType, WorldMemory
 from ..rules.rule_loader import RuleLoader
 from ..utils.logging_config import get_logger
 
@@ -233,9 +233,10 @@ class WorldEditor:
             )
 
         # 创建角色实体
-        from ..memory.world_memory import MemoryEntity, MemoryEntityType
         import uuid
         from datetime import datetime
+
+        from ..memory.world_memory import MemoryEntity, MemoryEntityType
 
         character_id = command.target_id or str(uuid.uuid4())
         character_name = command.parameters.get("name", f"角色_{character_id[:8]}")
@@ -351,9 +352,10 @@ class WorldEditor:
                 errors=["WorldMemory not initialized"],
             )
 
-        from ..memory.world_memory import MemoryEntity, MemoryEntityType
         import uuid
         from datetime import datetime
+
+        from ..memory.world_memory import MemoryEntity, MemoryEntityType
 
         fact_id = command.target_id or str(uuid.uuid4())
         fact_content = command.parameters.get(

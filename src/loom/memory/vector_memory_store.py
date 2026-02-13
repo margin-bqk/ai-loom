@@ -13,16 +13,16 @@
 """
 
 import asyncio
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Tuple, Union
-import json
 import hashlib
+import json
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any, Dict, List, Optional, Tuple, Union
 
-from .world_memory import MemoryEntity, MemoryEntityType, MemoryRelation
-from .interfaces import StorageError, RetrievalError
 from ..utils.logging_config import get_logger
+from .interfaces import RetrievalError, StorageError
+from .world_memory import MemoryEntity, MemoryEntityType, MemoryRelation
 
 logger = get_logger(__name__)
 
@@ -322,9 +322,9 @@ class VectorMemoryStore:
     def _create_huggingface_embedder(self):
         """创建HuggingFace嵌入器"""
         try:
-            from transformers import AutoTokenizer, AutoModel
             import torch
             import torch.nn.functional as F
+            from transformers import AutoModel, AutoTokenizer
 
             tokenizer = AutoTokenizer.from_pretrained(self.config.embedding_model)
             model = AutoModel.from_pretrained(self.config.embedding_model)

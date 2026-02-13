@@ -2,14 +2,15 @@
 WorldEditor单元测试
 """
 
-import pytest
 import asyncio
-import tempfile
 import os
-from unittest.mock import Mock, AsyncMock, patch
+import tempfile
 from datetime import datetime
+from unittest.mock import AsyncMock, Mock, patch
 
-from src.loom.intervention.world_editor import WorldEditor, EditCommand, EditResult
+import pytest
+
+from src.loom.intervention.world_editor import EditCommand, EditResult, WorldEditor
 
 
 class TestWorldEditor:

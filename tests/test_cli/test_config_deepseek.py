@@ -7,11 +7,12 @@ CLI配置命令DeepSeek支持测试
 3. 测试配置显示和验证
 """
 
-import pytest
 import asyncio
-from unittest.mock import AsyncMock, MagicMock, patch
-import tempfile
 import os
+import tempfile
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 import yaml
 
 from src.loom.cli.commands.config import _test_config_async

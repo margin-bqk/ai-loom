@@ -4,29 +4,30 @@
 测试BYOK和多Provider支持功能。
 """
 
-import pytest
 import asyncio
-from unittest.mock import AsyncMock, MagicMock, patch
 from datetime import datetime
+from unittest.mock import AsyncMock, MagicMock, patch
 
-from src.loom.interpretation.llm_provider import (
-    LLMProvider,
-    OpenAIProvider,
-    AnthropicProvider,
-    GoogleProvider,
-    AzureProvider,
-    LocalProvider,
-    ProviderManager,
-    LLMProviderFactory,
-    LLMResponse,
-    LLMRequest,
-)
-from src.loom.interpretation.key_manager import KeyManager, APIKeyInfo
+import pytest
+
 from src.loom.interpretation.error_handler import (
-    ErrorHandler,
     ErrorCategory,
-    ErrorSeverity,
+    ErrorHandler,
     ErrorInfo,
+    ErrorSeverity,
+)
+from src.loom.interpretation.key_manager import APIKeyInfo, KeyManager
+from src.loom.interpretation.llm_provider import (
+    AnthropicProvider,
+    AzureProvider,
+    GoogleProvider,
+    LLMProvider,
+    LLMProviderFactory,
+    LLMRequest,
+    LLMResponse,
+    LocalProvider,
+    OpenAIProvider,
+    ProviderManager,
 )
 from src.loom.interpretation.performance_optimizer import PerformanceOptimizer
 

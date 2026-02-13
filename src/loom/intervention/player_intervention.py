@@ -5,9 +5,9 @@
 """
 
 import re
-from enum import Enum, IntEnum
-from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass, field
+from enum import Enum, IntEnum
+from typing import Any, Dict, List, Optional, Tuple
 
 from ..utils.logging_config import get_logger
 

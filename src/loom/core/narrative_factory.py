@@ -5,16 +5,17 @@
 """
 
 from typing import Optional
+
+from ..utils.logging_config import get_logger
 from .interfaces import (
+    NarrativeArchivePersistence,
     NarrativeInterpreter,
     NarrativeScheduler,
-    NarrativeArchivePersistence,
 )
 from .narrative_adapter import NarrativeInterpreterAdapter, NarrativeSchedulerAdapter
+from .persistence_engine import SQLitePersistence
 from .session_manager import SessionManager as LegacySessionManager
 from .turn_scheduler import TurnScheduler as LegacyTurnScheduler
-from .persistence_engine import SQLitePersistence
-from ..utils.logging_config import get_logger
 
 logger = get_logger(__name__)
 

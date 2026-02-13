@@ -9,23 +9,24 @@ RuleHotLoader 单元测试
 5. 变化通知和事件处理
 """
 
-import pytest
+import asyncio
 import tempfile
 import time
-import asyncio
-from pathlib import Path
-from unittest.mock import Mock, patch, MagicMock
 from datetime import datetime, timedelta
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
 
-from src.loom.rules.rule_hot_loader import (
-    RuleHotLoader,
-    FileChange,
-    CanonVersion,
-    SessionState,
-    ChangeType,
-)
-from src.loom.rules.markdown_canon import MarkdownCanon
+import pytest
+
 from src.loom.rules.advanced_markdown_canon import AdvancedMarkdownCanon
+from src.loom.rules.markdown_canon import MarkdownCanon
+from src.loom.rules.rule_hot_loader import (
+    CanonVersion,
+    ChangeType,
+    FileChange,
+    RuleHotLoader,
+    SessionState,
+)
 from src.loom.rules.rule_validator import ValidationReport
 
 

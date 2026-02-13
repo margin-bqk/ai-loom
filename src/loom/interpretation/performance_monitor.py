@@ -6,17 +6,18 @@
 """
 
 import asyncio
-import time
+import json
+import statistics
 import threading
-from typing import Dict, List, Optional, Any, Tuple, Callable
+import time
+from collections import defaultdict, deque
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-import statistics
-from collections import defaultdict, deque
-import json
-import psutil
+from typing import Any, Callable, Dict, List, Optional, Tuple
+
 import prometheus_client
+import psutil
 from prometheus_client import Counter, Gauge, Histogram, Summary
 
 from ..utils.logging_config import get_logger

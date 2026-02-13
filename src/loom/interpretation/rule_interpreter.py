@@ -5,10 +5,10 @@
 """
 
 import re
-from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
+from typing import Any, Dict, List, Optional
 
-from ..rules.markdown_canon import MarkdownCanon, CanonSection
+from ..rules.markdown_canon import CanonSection, MarkdownCanon
 from ..utils.logging_config import get_logger
 
 logger = get_logger(__name__)

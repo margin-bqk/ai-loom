@@ -5,14 +5,15 @@
 """
 
 import asyncio
-import time
 import json
-import subprocess
 import platform
-from typing import Dict, List, Optional, Any, AsyncGenerator
+import subprocess
+import time
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from enum import Enum
+from typing import Any, AsyncGenerator, Dict, List, Optional
+
 import aiohttp
 from aiohttp import ClientSession, ClientTimeout
 

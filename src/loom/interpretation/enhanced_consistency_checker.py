@@ -4,18 +4,18 @@
 实现深度一致性检查，支持叙事一致性、逻辑一致性、时间线一致性检查。
 """
 
-import re
 import asyncio
-from typing import Dict, List, Optional, Any, Union
+import re
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any, Dict, List, Optional, Union
 
-from .consistency_checker import ConsistencyChecker, ConsistencyIssue, ConsistencyReport
-from .rule_interpreter import InterpretationResult, RuleConstraint
-from .reasoning_pipeline import ReasoningContext
-from .llm_provider import LLMProvider, LLMResponse
-from ..utils.logging_config import get_logger
 from ..memory.interfaces import MemoryEntity
+from ..utils.logging_config import get_logger
+from .consistency_checker import ConsistencyChecker, ConsistencyIssue, ConsistencyReport
+from .llm_provider import LLMProvider, LLMResponse
+from .reasoning_pipeline import ReasoningContext
+from .rule_interpreter import InterpretationResult, RuleConstraint
 
 logger = get_logger(__name__)
 

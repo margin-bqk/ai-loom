@@ -11,18 +11,18 @@
 5. 支持多种摘要格式（文本、结构化、时间线）
 """
 
-from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Any, Tuple
-import json
 import hashlib
+import json
 from dataclasses import dataclass, field
+from datetime import datetime, timedelta
 from enum import Enum
+from typing import Any, Dict, List, Optional, Tuple
 
-from .world_memory import MemoryEntity, MemoryEntityType
-from .interfaces import MemorySummarizer as BaseMemorySummarizer
 from ..interpretation.llm_provider import LLMProvider, LLMResponse
-from ..utils.logging_config import get_logger
 from ..utils.async_helpers import async_retry
+from ..utils.logging_config import get_logger
+from .interfaces import MemorySummarizer as BaseMemorySummarizer
+from .world_memory import MemoryEntity, MemoryEntityType
 
 logger = get_logger(__name__)
 

@@ -4,24 +4,25 @@ NarrativeInterpreter接口测试
 测试新的NarrativeInterpreter接口功能，确保接口定义正确且实现符合预期。
 """
 
-import pytest
 import asyncio
-from unittest.mock import Mock, AsyncMock, MagicMock
 from datetime import datetime
-from typing import Dict, Any, List
+from typing import Any, Dict, List
+from unittest.mock import AsyncMock, MagicMock, Mock
+
+import pytest
 
 from src.loom.core.interfaces import (
-    NarrativeInterpreter,
-    NarrativeScheduler,
+    NarrativeArchive,
     NarrativeArchivePersistence,
-    SessionConfig,
-    Session,
-    SessionStatus,
     NarrativeContext,
     NarrativeInterpretation,
-    NarrativeArchive,
-    TurnResult,
+    NarrativeInterpreter,
+    NarrativeScheduler,
+    Session,
+    SessionConfig,
+    SessionStatus,
     Turn,
+    TurnResult,
 )
 
 

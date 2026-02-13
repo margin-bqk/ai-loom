@@ -7,16 +7,17 @@ LLM提供者接口
 """
 
 import asyncio
+import hashlib
 import json
 import time
-import hashlib
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Any, AsyncGenerator, Union
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
+from typing import Any, AsyncGenerator, Dict, List, Optional, Union
+
 import aiohttp
-from aiohttp import ClientSession, ClientTimeout
 import backoff
+from aiohttp import ClientSession, ClientTimeout
 
 from ..utils.logging_config import get_logger
 

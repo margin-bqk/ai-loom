@@ -4,16 +4,17 @@
 支持规则加载、验证、创建、编辑等操作。
 """
 
-import typer
 import asyncio
-from pathlib import Path
-from typing import Optional, List
 import json
-import yaml
 from datetime import datetime
+from pathlib import Path
+from typing import List, Optional
 
-from ...rules.rule_loader import RuleLoader
+import typer
+import yaml
+
 from ...rules.markdown_canon import MarkdownCanon
+from ...rules.rule_loader import RuleLoader
 from ...utils.logging_config import setup_logging
 
 app = typer.Typer(
@@ -98,8 +99,8 @@ async def _load_rules_async(
             typer.echo(yaml.dump(result, allow_unicode=True, default_flow_style=False))
         else:  # table
             from rich.console import Console
-            from rich.table import Table
             from rich.panel import Panel
+            from rich.table import Table
 
             console = Console()
 
@@ -324,8 +325,8 @@ async def _validate_rules_async(
             typer.echo(json.dumps(validation_results, ensure_ascii=False, indent=2))
         else:  # table
             from rich.console import Console
-            from rich.table import Table
             from rich.panel import Panel
+            from rich.table import Table
 
             console = Console()
 
@@ -622,8 +623,8 @@ async def _rules_stats_async(rules_path: Optional[str], output_format: str):
             typer.echo(json.dumps(stats, ensure_ascii=False, indent=2))
         else:  # table
             from rich.console import Console
-            from rich.table import Table
             from rich.panel import Panel
+            from rich.table import Table
 
             console = Console()
 

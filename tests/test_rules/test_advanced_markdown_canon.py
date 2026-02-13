@@ -10,17 +10,18 @@ AdvancedMarkdownCanon 单元测试
 6. 验证功能
 """
 
-import pytest
 import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
+import pytest
+
 from src.loom.rules.advanced_markdown_canon import (
     AdvancedMarkdownCanon,
-    Reference,
     Dependency,
-    ValidationError,
+    Reference,
     ReferenceType,
+    ValidationError,
 )
 from src.loom.rules.markdown_canon import CanonSectionType
 

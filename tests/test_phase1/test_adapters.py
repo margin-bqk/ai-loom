@@ -4,28 +4,29 @@
 测试阶段1重构中创建的适配器，确保向后兼容性和接口适配正确性。
 """
 
-import pytest
 import asyncio
-from unittest.mock import Mock, AsyncMock, MagicMock
 from datetime import datetime
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
+from unittest.mock import AsyncMock, MagicMock, Mock
+
+import pytest
 
 from src.loom.core.interfaces import (
-    SessionManager,
-    TurnScheduler,
-    PersistenceEngine,
-    SessionConfig,
-    Session,
-    SessionStatus,
-    Turn,
-    TurnResult,
-    PromptContext,
-    NarrativeInterpreter,
-    NarrativeScheduler,
+    NarrativeArchive,
     NarrativeArchivePersistence,
     NarrativeContext,
     NarrativeInterpretation,
-    NarrativeArchive,
+    NarrativeInterpreter,
+    NarrativeScheduler,
+    PersistenceEngine,
+    PromptContext,
+    Session,
+    SessionConfig,
+    SessionManager,
+    SessionStatus,
+    Turn,
+    TurnResult,
+    TurnScheduler,
 )
 
 
@@ -523,8 +524,9 @@ class TestBackwardCompatibility:
     @pytest.mark.asyncio
     async def test_session_conversion(self):
         """测试会话数据转换"""
-        from src.loom.core.interfaces import Session, SessionStatus, SessionConfig
         from datetime import datetime
+
+        from src.loom.core.interfaces import Session, SessionConfig, SessionStatus
 
         # 新格式会话
         config = SessionConfig(

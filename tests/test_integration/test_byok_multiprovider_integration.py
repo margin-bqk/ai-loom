@@ -4,27 +4,28 @@ BYOK和多Provider集成测试
 测试增强版LLMProvider与现有组件的集成。
 """
 
-import pytest
 import asyncio
-from unittest.mock import AsyncMock, MagicMock, patch
 import os
 import tempfile
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 import yaml
 
 from src.loom.core.config_manager import ConfigManager
-from src.loom.core.session_manager import SessionManager, SessionConfig
-from src.loom.interpretation.reasoning_pipeline import (
-    ReasoningPipeline,
-    ReasoningContext,
-)
-from src.loom.interpretation.llm_provider import (
-    LLMProviderFactory,
-    ProviderManager,
-    OpenAIProvider,
-    AnthropicProvider,
-    LocalProvider,
-)
+from src.loom.core.session_manager import SessionConfig, SessionManager
 from src.loom.interpretation.key_manager import KeyManager
+from src.loom.interpretation.llm_provider import (
+    AnthropicProvider,
+    LLMProviderFactory,
+    LocalProvider,
+    OpenAIProvider,
+    ProviderManager,
+)
+from src.loom.interpretation.reasoning_pipeline import (
+    ReasoningContext,
+    ReasoningPipeline,
+)
 
 
 class TestBYOKMultiProviderIntegration:

@@ -5,9 +5,9 @@
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass
 from enum import Enum
+from typing import Any, Dict, List, Optional, Tuple
 
 
 class InterventionType(Enum):

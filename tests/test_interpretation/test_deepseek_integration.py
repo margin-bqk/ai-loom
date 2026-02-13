@@ -11,20 +11,21 @@ DeepSeek集成测试
 4. 配置测试：验证配置文件加载
 """
 
-import pytest
 import asyncio
-from unittest.mock import AsyncMock, MagicMock, patch
 from datetime import datetime
+from unittest.mock import AsyncMock, MagicMock, patch
+
+import pytest
 
 from src.loom.interpretation.llm_provider import (
-    LLMProvider,
-    DeepSeekProvider,
-    OpenAIProvider,
     AnthropicProvider,
-    ProviderManager,
+    DeepSeekProvider,
+    LLMProvider,
     LLMProviderFactory,
-    LLMResponse,
     LLMRequest,
+    LLMResponse,
+    OpenAIProvider,
+    ProviderManager,
 )
 
 

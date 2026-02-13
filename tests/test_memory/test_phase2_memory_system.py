@@ -4,28 +4,29 @@
 测试VectorMemoryStore、MemorySummarizer、EnhancedWorldMemory和MemoryConsistencyChecker。
 """
 
-import pytest
 import asyncio
-from datetime import datetime, timedelta
-from unittest.mock import Mock, AsyncMock, patch
 import json
+from datetime import datetime, timedelta
+from unittest.mock import AsyncMock, Mock, patch
 
-from src.loom.memory.vector_memory_store import VectorMemoryStore, VectorStoreBackend
+import pytest
+
+from src.loom.memory.enhanced_world_memory import (
+    EnhancedMemoryConfig,
+    EnhancedWorldMemory,
+)
+from src.loom.memory.memory_consistency_checker import (
+    ConsistencyIssueType,
+    ConsistencySeverity,
+    MemoryConsistencyChecker,
+)
 from src.loom.memory.memory_summarizer import (
     MemorySummarizer,
     SummaryConfig,
-    SummaryStrategy,
     SummaryFormat,
+    SummaryStrategy,
 )
-from src.loom.memory.enhanced_world_memory import (
-    EnhancedWorldMemory,
-    EnhancedMemoryConfig,
-)
-from src.loom.memory.memory_consistency_checker import (
-    MemoryConsistencyChecker,
-    ConsistencyIssueType,
-    ConsistencySeverity,
-)
+from src.loom.memory.vector_memory_store import VectorMemoryStore, VectorStoreBackend
 from src.loom.memory.world_memory import (
     MemoryEntity,
     MemoryEntityType,

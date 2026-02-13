@@ -5,14 +5,14 @@
 """
 
 import re
-from typing import Dict, List, Optional, Any, Union
 from dataclasses import dataclass, field
 from enum import Enum
+from typing import Any, Dict, List, Optional, Union
 
+from ..memory.interfaces import MemoryEntity
+from ..utils.logging_config import get_logger
 from .reasoning_pipeline import ReasoningContext
 from .rule_interpreter import InterpretationResult
-from ..utils.logging_config import get_logger
-from ..memory.interfaces import MemoryEntity
 
 logger = get_logger(__name__)
 

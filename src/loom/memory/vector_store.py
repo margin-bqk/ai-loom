@@ -4,12 +4,12 @@
 提供向量数据库存储接口，支持语义检索。
 """
 
-from typing import Dict, List, Optional, Any, Tuple
 import asyncio
 from datetime import datetime, timedelta
+from typing import Any, Dict, List, Optional, Tuple
 
-from .world_memory import MemoryEntity, MemoryEntityType
 from ..utils.logging_config import get_logger
+from .world_memory import MemoryEntity, MemoryEntityType
 
 logger = get_logger(__name__)
 
@@ -140,9 +140,9 @@ class VectorStore:
     def _get_huggingface_embedding(self, text: str) -> List[float]:
         """获取HuggingFace嵌入"""
         try:
-            from transformers import AutoTokenizer, AutoModel
             import torch
             import torch.nn.functional as F
+            from transformers import AutoModel, AutoTokenizer
 
             if not hasattr(self, "_hf_tokenizer"):
                 self._hf_tokenizer = AutoTokenizer.from_pretrained(self.embedding_model)

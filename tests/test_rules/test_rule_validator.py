@@ -11,13 +11,16 @@ RuleValidator 单元测试
 7. 报告生成
 """
 
-import pytest
-import tempfile
 import json
-from pathlib import Path
-from unittest.mock import Mock, patch, AsyncMock
+import tempfile
 from datetime import datetime
+from pathlib import Path
+from unittest.mock import AsyncMock, Mock, patch
 
+import pytest
+
+from src.loom.rules.advanced_markdown_canon import AdvancedMarkdownCanon
+from src.loom.rules.markdown_canon import CanonSectionType, MarkdownCanon
 from src.loom.rules.rule_validator import (
     RuleValidator,
     ValidationIssue,
@@ -25,8 +28,6 @@ from src.loom.rules.rule_validator import (
     ValidationSeverity,
     ValidationType,
 )
-from src.loom.rules.markdown_canon import MarkdownCanon, CanonSectionType
-from src.loom.rules.advanced_markdown_canon import AdvancedMarkdownCanon
 
 
 class TestRuleValidator:

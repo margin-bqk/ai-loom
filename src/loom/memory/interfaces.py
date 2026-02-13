@@ -4,12 +4,12 @@
 定义世界记忆层的抽象接口，确保记忆存储、检索和管理的解耦。
 """
 
+import uuid
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Any, Set, Tuple
 from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
-import uuid
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 
 class MemoryEntityType(Enum):

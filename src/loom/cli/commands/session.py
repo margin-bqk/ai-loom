@@ -4,15 +4,16 @@
 支持创建、删除、列出、查看会话等操作。
 """
 
-import typer
 import asyncio
-from typing import Optional, List
 import json
 from pathlib import Path
+from typing import List, Optional
 
-from ...core.session_manager import SessionManager, SessionConfig, SessionStatus
+import typer
+
 from ...core.config_manager import ConfigManager
 from ...core.persistence_engine import SQLitePersistence
+from ...core.session_manager import SessionConfig, SessionManager, SessionStatus
 from ...utils.logging_config import setup_logging
 
 app = typer.Typer(
@@ -271,8 +272,8 @@ async def _show_session_async(session_id: str, output_format: str):
             typer.echo(yaml.dump(result, allow_unicode=True, default_flow_style=False))
         else:  # table
             from rich.console import Console
-            from rich.table import Table
             from rich.panel import Panel
+            from rich.table import Table
             from rich.text import Text
 
             console = Console()

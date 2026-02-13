@@ -15,18 +15,19 @@ import asyncio
 import hashlib
 import json
 import time
-from pathlib import Path
-from typing import Dict, List, Optional, Any, Set, Callable, Tuple
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler, FileSystemEvent
+from pathlib import Path
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple
 
-from .markdown_canon import MarkdownCanon
-from .advanced_markdown_canon import AdvancedMarkdownCanon
-from .rule_validator import RuleValidator, ValidationReport
+from watchdog.events import FileSystemEvent, FileSystemEventHandler
+from watchdog.observers import Observer
+
 from ..utils.logging_config import get_logger
+from .advanced_markdown_canon import AdvancedMarkdownCanon
+from .markdown_canon import MarkdownCanon
+from .rule_validator import RuleValidator, ValidationReport
 
 logger = get_logger(__name__)
 

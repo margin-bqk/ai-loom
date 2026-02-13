@@ -2,11 +2,12 @@
 OOCHandler单元测试
 """
 
-import pytest
 import asyncio
-from unittest.mock import Mock, AsyncMock
+from unittest.mock import AsyncMock, Mock
 
-from src.loom.intervention.ooc_handler import OOCHandler, OOCComment, OOCResult
+import pytest
+
+from src.loom.intervention.ooc_handler import OOCComment, OOCHandler, OOCResult
 
 
 class TestOOCHandler:
