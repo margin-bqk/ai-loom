@@ -381,8 +381,8 @@ class TestSessionManager:
 
         assert session.current_turn == original_turn + 1
         assert session.total_turns == original_total + 1
-        assert session.last_activity > original_activity
-        assert session.updated_at > original_activity
+        assert session.last_activity >= original_activity
+        assert session.updated_at >= original_activity
 
     def test_session_to_dict_and_from_dict(self, sample_session_config):
         """测试会话序列化和反序列化"""

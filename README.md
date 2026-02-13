@@ -1,4 +1,4 @@
-![Loom Github Card](asset\LOOM-github-card.png)
+![Loom Github Card](asset/LOOM-github-card.png)
 # LOOM - Language-Oriented Open Mythos
 
 > [!WARNING]

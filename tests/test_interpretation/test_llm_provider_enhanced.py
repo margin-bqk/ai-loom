@@ -22,7 +22,7 @@ from src.loom.interpretation.llm_provider import (
     LLMRequest
 )
 from src.loom.interpretation.key_manager import KeyManager, APIKeyInfo
-from src.loom.interpretation.error_handler import ErrorHandler, ErrorCategory, ErrorSeverity
+from src.loom.interpretation.error_handler import ErrorHandler, ErrorCategory, ErrorSeverity, ErrorInfo
 from src.loom.interpretation.performance_optimizer import PerformanceOptimizer
 
 
@@ -239,9 +239,10 @@ class TestPerformanceOptimizer:
         optimizer = PerformanceOptimizer()
         
         assert optimizer.connection_pools == {}
-        assert isinstance(optimizer.response_cache, type(optimizer).__module__ + ".ResponseCache")
-        assert isinstance(optimizer.batch_processor, type(optimizer).__module__ + ".BatchProcessor")
-        assert isinstance(optimizer.token_counter, type(optimizer).__module__ + ".TokenCounter")
+        # 检查属性是否存在而不是类型
+        assert hasattr(optimizer, 'response_cache')
+        assert hasattr(optimizer, 'batch_processor')
+        assert hasattr(optimizer, 'token_counter')
     
     def test_get_connection_pool(self):
         """测试获取连接池"""

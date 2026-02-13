@@ -69,7 +69,7 @@ class ProviderMetrics:
     @property
     def p95_latency(self) -> float:
         """计算95百分位延迟"""
-        if not self.latency_history:
+        if len(self.latency_history) < 2:
             return 0.0
         return statistics.quantiles(self.latency_history, n=20)[18]  # 95th percentile
 
@@ -513,9 +513,11 @@ class EnhancedProviderManager(ProviderManager):
         except Exception as e:
             # 记录失败
             latency = time.time() - start_time
-            await self.health_monitor.record_failure(selected_provider, str(e))
+            # 如果selected_provider未定义，使用默认值
+            provider_name = selected_provider if 'selected_provider' in locals() else "unknown"
+            await self.health_monitor.record_failure(provider_name, str(e))
 
-            logger.warning(f"Provider {selected_provider} failed: {e}")
+            logger.warning(f"Provider {provider_name} failed: {e}")
 
             # 执行故障转移
             available_providers = list(self.providers.keys())
