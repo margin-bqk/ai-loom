@@ -1,0 +1,450 @@
+{
+  "summary": {
+    "total": 34,
+    "passed": 28,
+    "failed": 5,
+    "warnings": 1,
+    "skipped": 0
+  },
+  "results": [
+    {
+      "category": "现有脚本",
+      "check_name": "脚本导入: verify_components_ascii.py",
+      "status": "PASS",
+      "message": "验证脚本可正常导入: verify_components_ascii.py",
+      "details": {
+        "path": "d:\\Documents\\我的文档\\工作项目\\ai-loom\\scripts\\verification\\verify_components_ascii.py"
+      },
+      "timestamp": "2026-02-13T19:18:45.081610"
+    },
+    {
+      "category": "现有脚本",
+      "check_name": "脚本执行: verify_enhanced_components_simple.py",
+      "status": "FAIL",
+      "message": "验证脚本执行失败: 'gbk' codec can't encode character '\\u2717' in position 0: illegal multibyte sequence",
+      "details": {
+        "path": "d:\\Documents\\我的文档\\工作项目\\ai-loom\\scripts\\verification\\verify_enhanced_components_simple.py",
+        "error": "'gbk' codec can't encode character '\\u2717' in position 0: illegal multibyte sequence"
+      },
+      "timestamp": "2026-02-13T19:18:45.659282"
+    },
+    {
+      "category": "现有脚本",
+      "check_name": "脚本执行: verify_llm_provider_enhancements.py",
+      "status": "FAIL",
+      "message": "验证脚本执行失败: No module named 'aiosqlite'",
+      "details": {
+        "path": "d:\\Documents\\我的文档\\工作项目\\ai-loom\\scripts\\verification\\verify_llm_provider_enhancements.py",
+        "error": "No module named 'aiosqlite'"
+      },
+      "timestamp": "2026-02-13T19:18:45.711979"
+    },
+    {
+      "category": "现有脚本",
+      "check_name": "脚本导入: verify_memory_simple.py",
+      "status": "PASS",
+      "message": "验证脚本可正常导入: verify_memory_simple.py",
+      "details": {
+        "path": "d:\\Documents\\我的文档\\工作项目\\ai-loom\\scripts\\verification\\verify_memory_simple.py"
+      },
+      "timestamp": "2026-02-13T19:18:45.714631"
+    },
+    {
+      "category": "现有脚本",
+      "check_name": "脚本导入: verify_performance_monitoring_simple.py",
+      "status": "PASS",
+      "message": "验证脚本可正常导入: verify_performance_monitoring_simple.py",
+      "details": {
+        "path": "d:\\Documents\\我的文档\\工作项目\\ai-loom\\scripts\\verification\\verify_performance_monitoring_simple.py"
+      },
+      "timestamp": "2026-02-13T19:18:45.716199"
+    },
+    {
+      "category": "现有脚本",
+      "check_name": "脚本执行: verify_rule_simple.py",
+      "status": "FAIL",
+      "message": "验证脚本执行失败: 'gbk' codec can't encode character '\\u274c' in position 0: illegal multibyte sequence",
+      "details": {
+        "path": "d:\\Documents\\我的文档\\工作项目\\ai-loom\\scripts\\verification\\verify_rule_simple.py",
+        "error": "'gbk' codec can't encode character '\\u274c' in position 0: illegal multibyte sequence"
+      },
+      "timestamp": "2026-02-13T19:18:45.719340"
+    },
+    {
+      "category": "现有脚本",
+      "check_name": "脚本导入: verify_runtime.py",
+      "status": "PASS",
+      "message": "验证脚本可正常导入: verify_runtime.py",
+      "details": {
+        "path": "d:\\Documents\\我的文档\\工作项目\\ai-loom\\scripts\\verification\\verify_runtime.py"
+      },
+      "timestamp": "2026-02-13T19:18:45.721491"
+    },
+    {
+      "category": "现有脚本",
+      "check_name": "脚本导入: verify_terminology.py",
+      "status": "PASS",
+      "message": "验证脚本可正常导入: verify_terminology.py",
+      "details": {
+        "path": "d:\\Documents\\我的文档\\工作项目\\ai-loom\\scripts\\verification\\verify_terminology.py"
+      },
+      "timestamp": "2026-02-13T19:18:45.723063"
+    },
+    {
+      "category": "文档代码一致性",
+      "check_name": "CLI命令文档完整性",
+      "status": "WARNING",
+      "message": "有1个实现的CLI命令未在文档中提及",
+      "details": {
+        "missing_commands": [
+          "init"
+        ]
+      },
+      "timestamp": "2026-02-13T19:18:45.724598"
+    },
+    {
+      "category": "文档代码一致性",
+      "check_name": "CLI命令实现完整性",
+      "status": "FAIL",
+      "message": "有18个文档中的CLI命令未实现",
+      "details": {
+        "missing_implementations": [
+          "export-batch",
+          "batch",
+          "--log-file",
+          "--color",
+          "memory",
+          "--help",
+          "world",
+          "--log-level",
+          "plugins",
+          "--continue-on-error",
+          "--verbose",
+          "help",
+          "script",
+          "intervention",
+          "remote",
+          "--debug",
+          "version",
+          "--step-by-step"
+        ]
+      },
+      "timestamp": "2026-02-13T19:18:45.724598"
+    },
+    {
+      "category": "文档代码一致性",
+      "check_name": "配置文件文档",
+      "status": "PASS",
+      "message": "默认配置文件在文档中有说明",
+      "details": {
+        "config_file": "default_config.yaml"
+      },
+      "timestamp": "2026-02-13T19:18:45.732472"
+    },
+    {
+      "category": "文档代码一致性",
+      "check_name": "API文档存在性",
+      "status": "PASS",
+      "message": "API文档存在",
+      "details": {
+        "api_classes": 3,
+        "api_methods": 47,
+        "doc_files": [
+          "api-examples.md",
+          "http-api.md",
+          "python-client.md",
+          "quick-api-start.md"
+        ]
+      },
+      "timestamp": "2026-02-13T19:18:45.732990"
+    },
+    {
+      "category": "Docker配置",
+      "check_name": "Docker Compose结构: docker-compose.yml",
+      "status": "PASS",
+      "message": "Docker Compose文件结构正确",
+      "details": {
+        "file": "docker-compose.yml",
+        "service_count": 6,
+        "services": [
+          "loom",
+          "postgres",
+          "redis",
+          "prometheus",
+          "grafana",
+          "nginx"
+        ]
+      },
+      "timestamp": "2026-02-13T19:18:45.739892"
+    },
+    {
+      "category": "Docker配置",
+      "check_name": "LOOM服务配置: docker-compose.yml",
+      "status": "PASS",
+      "message": "LOOM服务配置正确",
+      "details": {
+        "file": "docker-compose.yml"
+      },
+      "timestamp": "2026-02-13T19:18:45.739892"
+    },
+    {
+      "category": "Docker配置",
+      "check_name": "Docker Compose结构: docker-compose.prod.yml",
+      "status": "PASS",
+      "message": "Docker Compose文件结构正确",
+      "details": {
+        "file": "docker-compose.prod.yml",
+        "service_count": 6,
+        "services": [
+          "loom",
+          "postgres",
+          "redis",
+          "prometheus",
+          "grafana",
+          "nginx"
+        ]
+      },
+      "timestamp": "2026-02-13T19:18:45.750333"
+    },
+    {
+      "category": "Docker配置",
+      "check_name": "LOOM服务配置: docker-compose.prod.yml",
+      "status": "PASS",
+      "message": "LOOM服务配置正确",
+      "details": {
+        "file": "docker-compose.prod.yml"
+      },
+      "timestamp": "2026-02-13T19:18:45.750333"
+    },
+    {
+      "category": "Docker配置",
+      "check_name": "Docker Compose结构: docker-compose.staging.yml",
+      "status": "PASS",
+      "message": "Docker Compose文件结构正确",
+      "details": {
+        "file": "docker-compose.staging.yml",
+        "service_count": 6,
+        "services": [
+          "loom",
+          "postgres",
+          "redis",
+          "prometheus",
+          "grafana",
+          "jaeger"
+        ]
+      },
+      "timestamp": "2026-02-13T19:18:45.760882"
+    },
+    {
+      "category": "Docker配置",
+      "check_name": "LOOM服务配置: docker-compose.staging.yml",
+      "status": "PASS",
+      "message": "LOOM服务配置正确",
+      "details": {
+        "file": "docker-compose.staging.yml"
+      },
+      "timestamp": "2026-02-13T19:18:45.760882"
+    },
+    {
+      "category": "Docker配置",
+      "check_name": "环境变量文件: .env.example",
+      "status": "PASS",
+      "message": "环境变量文件解析成功",
+      "details": {
+        "file": ".env.example",
+        "variable_count": 40
+      },
+      "timestamp": "2026-02-13T19:18:45.760882"
+    },
+    {
+      "category": "Docker配置",
+      "check_name": "环境变量文件: .env.development",
+      "status": "PASS",
+      "message": "环境变量文件解析成功",
+      "details": {
+        "file": ".env.development",
+        "variable_count": 40
+      },
+      "timestamp": "2026-02-13T19:18:45.761405"
+    },
+    {
+      "category": "Docker配置",
+      "check_name": "环境变量文件: .env.staging",
+      "status": "PASS",
+      "message": "环境变量文件解析成功",
+      "details": {
+        "file": ".env.staging",
+        "variable_count": 40
+      },
+      "timestamp": "2026-02-13T19:18:45.761405"
+    },
+    {
+      "category": "Docker配置",
+      "check_name": "环境变量文件: .env.production",
+      "status": "PASS",
+      "message": "环境变量文件解析成功",
+      "details": {
+        "file": ".env.production",
+        "variable_count": 40
+      },
+      "timestamp": "2026-02-13T19:18:45.761918"
+    },
+    {
+      "category": "Docker配置",
+      "check_name": "环境变量一致性",
+      "status": "PASS",
+      "message": "共发现40个不同的环境变量",
+      "details": {
+        "total_unique_variables": 40,
+        "files_checked": [
+          ".env.example",
+          ".env.development",
+          ".env.staging",
+          ".env.production"
+        ]
+      },
+      "timestamp": "2026-02-13T19:18:45.761918"
+    },
+    {
+      "category": "Docker配置",
+      "check_name": "Dockerfile完整性",
+      "status": "PASS",
+      "message": "Dockerfile包含所有必需指令",
+      "details": {
+        "found_instructions": [
+          "FROM",
+          "WORKDIR",
+          "COPY",
+          "RUN",
+          "CMD"
+        ]
+      },
+      "timestamp": "2026-02-13T19:18:45.761918"
+    },
+    {
+      "category": "CLI命令",
+      "check_name": "CLI基本执行",
+      "status": "FAIL",
+      "message": "CLI命令执行失败",
+      "details": {
+        "command": "loom --version",
+        "returncode": 2,
+        "stderr": "Usage: loom [OPTIONS] COMMAND [ARGS]...\nTry 'loom --help' for help.\n+- Error ---------------------------------------------------------------------+\n| No such option: --version                                                   |\n+-----------------------------------------------------------------------------+"
+      },
+      "timestamp": "2026-02-13T19:18:46.633413"
+    },
+    {
+      "category": "CLI命令",
+      "check_name": "帮助命令: loom --help",
+      "status": "PASS",
+      "message": "帮助命令正常",
+      "details": {
+        "command": "loom --help"
+      },
+      "timestamp": "2026-02-13T19:18:47.462764"
+    },
+    {
+      "category": "CLI命令",
+      "check_name": "帮助命令: loom config --help",
+      "status": "PASS",
+      "message": "帮助命令正常",
+      "details": {
+        "command": "loom config --help"
+      },
+      "timestamp": "2026-02-13T19:18:48.306548"
+    },
+    {
+      "category": "CLI命令",
+      "check_name": "帮助命令: loom run --help",
+      "status": "PASS",
+      "message": "帮助命令正常",
+      "details": {
+        "command": "loom run --help"
+      },
+      "timestamp": "2026-02-13T19:18:49.122026"
+    },
+    {
+      "category": "CLI命令",
+      "check_name": "帮助命令: loom session --help",
+      "status": "PASS",
+      "message": "帮助命令正常",
+      "details": {
+        "command": "loom session --help"
+      },
+      "timestamp": "2026-02-13T19:18:49.964723"
+    },
+    {
+      "category": "快速开始指南",
+      "check_name": "快速开始文档完整性",
+      "status": "PASS",
+      "message": "快速开始文档完整",
+      "details": {
+        "found_docs": [
+          "basic-configuration.md",
+          "first-example.md",
+          "install-and-run.md",
+          "verify-installation.md"
+        ],
+        "required_docs": [
+          "install-and-run.md",
+          "basic-configuration.md",
+          "first-example.md"
+        ]
+      },
+      "timestamp": "2026-02-13T19:18:49.964723"
+    },
+    {
+      "category": "快速开始指南",
+      "check_name": "安装命令完整性",
+      "status": "PASS",
+      "message": "安装命令基本完整",
+      "details": {
+        "found_commands": [
+          "pip install -e .",
+          "python -m venv venv",
+          "source venv/bin/activate"
+        ],
+        "total_checked": 3
+      },
+      "timestamp": "2026-02-13T19:18:49.965240"
+    },
+    {
+      "category": "快速开始指南",
+      "check_name": "示例代码存在性",
+      "status": "PASS",
+      "message": "示例代码存在",
+      "details": {
+        "example_count": 5,
+        "examples": [
+          "deepseek_example.py",
+          "player_intervention_example.py",
+          "basic_world.md",
+          "fantasy_setting.md",
+          "sci_fi_world.md"
+        ]
+      },
+      "timestamp": "2026-02-13T19:18:49.965756"
+    },
+    {
+      "category": "快速开始指南",
+      "check_name": "示例代码语法: deepseek_example.py",
+      "status": "PASS",
+      "message": "示例代码语法正确",
+      "details": {
+        "file": "deepseek_example.py"
+      },
+      "timestamp": "2026-02-13T19:18:49.967832"
+    },
+    {
+      "category": "快速开始指南",
+      "check_name": "示例代码语法: player_intervention_example.py",
+      "status": "PASS",
+      "message": "示例代码语法正确",
+      "details": {
+        "file": "player_intervention_example.py"
+      },
+      "timestamp": "2026-02-13T19:18:49.969413"
+    }
+  ],
+  "generated_at": "2026-02-13T19:18:49.969936"
+}
