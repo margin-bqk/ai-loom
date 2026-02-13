@@ -10,7 +10,7 @@ import time
 from datetime import datetime, timedelta
 from unittest.mock import Mock, patch, AsyncMock
 
-from src.loom.interpretation.performance_monitor import (
+from loom.interpretation.performance_monitor import (
     PerformanceMonitor,
     Metric,
     MetricType,
@@ -20,7 +20,7 @@ from src.loom.interpretation.performance_monitor import (
     AlertManager,
     get_performance_monitor,
 )
-from src.loom.interpretation.benchmark_framework import (
+from loom.interpretation.benchmark_framework import (
     BenchmarkFramework,
     BenchmarkConfig,
     BenchmarkResult,
@@ -28,7 +28,7 @@ from src.loom.interpretation.benchmark_framework import (
     BenchmarkStatus,
     get_benchmark_framework,
 )
-from src.loom.interpretation.resource_analyzer import (
+from loom.interpretation.resource_analyzer import (
     ResourceAnalyzer,
     ResourceUsage,
     ResourceType,

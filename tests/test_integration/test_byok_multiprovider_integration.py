@@ -11,20 +11,20 @@ import os
 import tempfile
 import yaml
 
-from src.loom.core.config_manager import ConfigManager
-from src.loom.core.session_manager import SessionManager, SessionConfig
-from src.loom.interpretation.reasoning_pipeline import (
+from loom.core.config_manager import ConfigManager
+from loom.core.session_manager import SessionManager, SessionConfig
+from loom.interpretation.reasoning_pipeline import (
     ReasoningPipeline,
     ReasoningContext,
 )
-from src.loom.interpretation.llm_provider import (
+from loom.interpretation.llm_provider import (
     LLMProviderFactory,
     ProviderManager,
     OpenAIProvider,
     AnthropicProvider,
     LocalProvider,
 )
-from src.loom.interpretation.key_manager import KeyManager
+from loom.interpretation.key_manager import KeyManager
 
 
 class TestBYOKMultiProviderIntegration:

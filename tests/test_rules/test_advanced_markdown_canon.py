@@ -15,14 +15,14 @@ import tempfile
 from pathlib import Path
 from unittest.mock import Mock, patch
 
-from src.loom.rules.advanced_markdown_canon import (
+from loom.rules.advanced_markdown_canon import (
     AdvancedMarkdownCanon,
     Reference,
     Dependency,
     ValidationError,
     ReferenceType,
 )
-from src.loom.rules.markdown_canon import CanonSectionType
+from loom.rules.markdown_canon import CanonSectionType
 
 
 class TestAdvancedMarkdownCanon:

@@ -12,7 +12,7 @@ from datetime import datetime
 from typing import Dict, Any, List
 from unittest.mock import Mock, AsyncMock
 
-from src.loom.core.interfaces import (
+from loom.core.interfaces import (
     SessionConfig,
     Session,
     SessionStatus,

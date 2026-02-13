@@ -8,7 +8,7 @@ import tempfile
 import yaml
 from unittest.mock import patch, MagicMock
 
-from src.loom.core.config_manager import ConfigManager, AppConfig, LLMProviderConfig
+from loom.core.config_manager import ConfigManager, AppConfig, LLMProviderConfig
 
 
 class TestConfigManager:

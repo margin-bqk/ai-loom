@@ -15,6 +15,38 @@ llm_providers:
     enable_batching: false
     enable_caching: true
     cache_ttl: 300
+  ollama:
+    type: ollama
+    api_key: ollama-local
+    base_url: null
+    model: gpt-3.5-turbo
+    temperature: 0.7
+    max_tokens: 1000
+    timeout: 30
+    max_retries: 3
+    retry_delay: 1.0
+    fallback_enabled: true
+    enabled: true
+    connection_pool_size: 5
+    enable_batching: false
+    enable_caching: true
+    cache_ttl: 300
+  deepseek:
+    type: deepseek
+    api_key: sk-21a0d07447a74f82a5632109a557cc96
+    base_url: null
+    model: gpt-3.5-turbo
+    temperature: 0.7
+    max_tokens: 1000
+    timeout: 30
+    max_retries: 3
+    retry_delay: 1.0
+    fallback_enabled: true
+    enabled: true
+    connection_pool_size: 5
+    enable_batching: false
+    enable_caching: true
+    cache_ttl: 300
 provider_selection:
   default_provider: openai
   fallback_order:

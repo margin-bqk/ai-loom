@@ -10,11 +10,11 @@ import os
 from datetime import datetime
 from unittest.mock import AsyncMock, MagicMock
 
-from src.loom.core.config_manager import ConfigManager
-from src.loom.core.session_manager import SessionManager, SessionConfig
-from src.loom.core.persistence_engine import SQLitePersistence
-from src.loom.core.turn_scheduler import TurnScheduler, Turn
-from src.loom.core.prompt_assembler import PromptAssembler, PromptContext
+from loom.core.config_manager import ConfigManager
+from loom.core.session_manager import SessionManager, SessionConfig
+from loom.core.persistence_engine import SQLitePersistence
+from loom.core.turn_scheduler import TurnScheduler, Turn
+from loom.core.prompt_assembler import PromptAssembler, PromptContext
 
 
 class TestCoreRuntimeIntegration:

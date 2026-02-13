@@ -10,7 +10,7 @@ from unittest.mock import Mock, AsyncMock, MagicMock
 from datetime import datetime
 from typing import Dict, Any, List
 
-from src.loom.core.interfaces import (
+from loom.core.interfaces import (
     NarrativeInterpreter,
     NarrativeScheduler,
     NarrativeArchivePersistence,
@@ -414,7 +414,7 @@ class TestInterfaceIntegration:
         mock_scheduler = Mock(spec=NarrativeScheduler)
         
         # 创建真实的NarrativeInterpretation对象
-        from src.loom.core.interfaces import NarrativeInterpretation
+        from loom.core.interfaces import NarrativeInterpretation
         interpretation = NarrativeInterpretation(
             interpretation="测试解释",
             consistency_score=0.6,  # 低于0.7，应该触发事件调度

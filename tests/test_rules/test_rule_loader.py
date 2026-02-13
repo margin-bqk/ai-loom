@@ -6,8 +6,8 @@ import pytest
 import tempfile
 import shutil
 from pathlib import Path
-from src.loom.rules.rule_loader import RuleLoader
-from src.loom.rules.markdown_canon import MarkdownCanon
+from loom.rules.rule_loader import RuleLoader
+from loom.rules.markdown_canon import MarkdownCanon
 
 
 class TestRuleLoader:

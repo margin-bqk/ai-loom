@@ -16,7 +16,7 @@ import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 from datetime import datetime
 
-from src.loom.interpretation.llm_provider import (
+from loom.interpretation.llm_provider import (
     LLMProvider,
     DeepSeekProvider,
     OpenAIProvider,
