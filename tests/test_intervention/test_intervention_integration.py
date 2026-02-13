@@ -7,22 +7,22 @@ import pytest
 import asyncio
 from unittest.mock import Mock, AsyncMock, patch
 
-from loom.intervention.player_intervention import (
+from src.loom.intervention.player_intervention import (
     PlayerIntervention,
     Intervention,
     InterventionType,
     InterventionPriority,
 )
-from loom.intervention.ooc_handler import OOCHandler
-from loom.intervention.world_editor import WorldEditor
-from loom.intervention.retcon_handler import RetconHandler
+from src.loom.intervention.ooc_handler import OOCHandler
+from src.loom.intervention.world_editor import WorldEditor
+from src.loom.intervention.retcon_handler import RetconHandler
 
-from loom.core.session_manager import SessionManager
-from loom.core.turn_scheduler import TurnScheduler
-from loom.core.prompt_assembler import PromptAssembler
-from loom.rules.rule_loader import RuleLoader
-from loom.memory.world_memory import WorldMemory
-from loom.interpretation.consistency_checker import ConsistencyChecker
+from src.loom.core.session_manager import SessionManager
+from src.loom.core.turn_scheduler import TurnScheduler
+from src.loom.core.prompt_assembler import PromptAssembler
+from src.loom.rules.rule_loader import RuleLoader
+from src.loom.memory.world_memory import WorldMemory
+from src.loom.interpretation.consistency_checker import ConsistencyChecker
 
 
 class TestInterventionIntegration:
@@ -286,7 +286,7 @@ class TestInterventionIntegration:
 
         # 步骤4: 与TurnScheduler集成
         # 首先需要创建intervention_results - 使用正确的InterventionResult对象
-        from loom.intervention.player_intervention import InterventionResult
+        from src.loom.intervention.player_intervention import InterventionResult
 
         intervention_results = []
         for intervention in parse_result["interventions"]:

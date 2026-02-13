@@ -11,16 +11,16 @@ import json
 from datetime import datetime, timedelta
 from unittest.mock import AsyncMock, MagicMock
 
-from loom.memory.world_memory import (
+from src.loom.memory.world_memory import (
     WorldMemory,
     MemoryEntity,
     MemoryEntityType,
     MemoryRelation,
     MemoryRelationType,
 )
-from loom.memory.structured_store import StructuredStore
-from loom.memory.vector_store import VectorStore
-from loom.memory.summarizer import MemorySummarizer, SummaryConfig
+from src.loom.memory.structured_store import StructuredStore
+from src.loom.memory.vector_store import VectorStore
+from src.loom.memory.summarizer import MemorySummarizer, SummaryConfig
 
 
 @pytest.fixture
@@ -427,7 +427,7 @@ class TestVectorStore:
     @pytest.mark.asyncio
     async def test_dummy_vector_store(self):
         """测试虚拟向量存储"""
-        from loom.memory.vector_store import DummyVectorStore
+        from src.loom.memory.vector_store import DummyVectorStore
 
         store = DummyVectorStore()
         assert store.enabled == False

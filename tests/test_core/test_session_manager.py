@@ -7,7 +7,7 @@ import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
 from datetime import datetime, timedelta
 
-from loom.core.session_manager import (
+from src.loom.core.session_manager import (
     SessionManager,
     Session,
     SessionConfig,
@@ -158,7 +158,7 @@ class TestSessionManager:
         success = await session_manager.save_session(session)
 
         assert success is True
-        assert session.updated_at >= original_updated_at  # 更新时间应该更新或保持不变
+        assert session.updated_at > original_updated_at  # 更新时间应该更新
 
         # 验证保存被调用
         session_manager.persistence.save_session.assert_called_with(session)
@@ -381,8 +381,8 @@ class TestSessionManager:
 
         assert session.current_turn == original_turn + 1
         assert session.total_turns == original_total + 1
-        assert session.last_activity >= original_activity
-        assert session.updated_at >= original_activity
+        assert session.last_activity > original_activity
+        assert session.updated_at > original_activity
 
     def test_session_to_dict_and_from_dict(self, sample_session_config):
         """测试会话序列化和反序列化"""

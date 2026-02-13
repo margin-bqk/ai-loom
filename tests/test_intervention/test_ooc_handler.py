@@ -6,7 +6,7 @@ import pytest
 import asyncio
 from unittest.mock import Mock, AsyncMock
 
-from loom.intervention.ooc_handler import (
+from src.loom.intervention.ooc_handler import (
     OOCHandler,
     OOCComment,
     OOCResult

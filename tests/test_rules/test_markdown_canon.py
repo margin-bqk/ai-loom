@@ -4,7 +4,7 @@ MarkdownCanon单元测试
 
 import pytest
 from pathlib import Path
-from loom.rules.markdown_canon import (
+from src.loom.rules.markdown_canon import (
     MarkdownCanon, CanonSection, CanonSectionType
 )
 

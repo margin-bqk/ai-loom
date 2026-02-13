@@ -10,8 +10,8 @@ from unittest.mock import AsyncMock, MagicMock, patch, Mock
 from datetime import datetime, timedelta
 import json
 
-from loom.interpretation.llm_provider import LLMProvider, LLMResponse
-from loom.interpretation.enhanced_provider_manager import (
+from src.loom.interpretation.llm_provider import LLMProvider, LLMResponse
+from src.loom.interpretation.enhanced_provider_manager import (
     EnhancedProviderManager,
     ProviderHealthMonitor,
     ProviderLoadBalancer,
@@ -20,14 +20,14 @@ from loom.interpretation.enhanced_provider_manager import (
     ProviderHealth,
     ProviderMetrics,
 )
-from loom.interpretation.cost_optimizer import (
+from src.loom.interpretation.cost_optimizer import (
     CostOptimizer,
     BudgetAlertLevel,
     CostRecord,
     BudgetLimit,
     ProviderPricing,
 )
-from loom.interpretation.local_model_provider import (
+from src.loom.interpretation.local_model_provider import (
     LocalModelProvider,
     LocalModelManager,
     LocalModelInfo,

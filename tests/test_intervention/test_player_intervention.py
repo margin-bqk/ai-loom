@@ -6,7 +6,7 @@ import pytest
 import asyncio
 from unittest.mock import Mock, AsyncMock
 
-from loom.intervention.player_intervention import (
+from src.loom.intervention.player_intervention import (
     PlayerIntervention,
     Intervention,
     InterventionType,

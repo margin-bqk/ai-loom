@@ -19,15 +19,15 @@ import yaml
 from unittest.mock import AsyncMock, MagicMock, patch
 from datetime import datetime
 
-from loom.interpretation.llm_provider import (
+from src.loom.interpretation.llm_provider import (
     DeepSeekProvider,
     ProviderManager,
     LLMProviderFactory,
     LLMResponse,
 )
-from loom.core.config_manager import ConfigManager
-from loom.core.session_manager import SessionManager
-from loom.interpretation.reasoning_pipeline import ReasoningPipeline
+from src.loom.core.config_manager import ConfigManager
+from src.loom.core.session_manager import SessionManager
+from src.loom.interpretation.reasoning_pipeline import ReasoningPipeline
 
 
 def create_async_context_manager(mock_response):

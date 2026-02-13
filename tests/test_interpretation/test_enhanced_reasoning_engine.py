@@ -10,7 +10,7 @@ import asyncio
 from unittest.mock import Mock, AsyncMock, MagicMock
 from datetime import datetime
 
-from loom.interpretation import (
+from src.loom.interpretation import (
     EnhancedReasoningPipeline,
     EnhancedContextBuilder,
     EnhancedConsistencyChecker,

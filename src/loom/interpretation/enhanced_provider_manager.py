@@ -71,8 +71,6 @@ class ProviderMetrics:
         """计算95百分位延迟"""
         if not self.latency_history:
             return 0.0
-        if len(self.latency_history) < 2:
-            return self.latency_history[0] if self.latency_history else 0.0
         return statistics.quantiles(self.latency_history, n=20)[18]  # 95th percentile
 
 
@@ -485,7 +483,6 @@ class EnhancedProviderManager(ProviderManager):
     ) -> LLMResponse:
         """智能故障转移生成"""
         start_time = time.time()
-        selected_provider = None  # 初始化为None，防止UnboundLocalError
 
         try:
             # 1. 选择最佳Provider
@@ -516,11 +513,9 @@ class EnhancedProviderManager(ProviderManager):
         except Exception as e:
             # 记录失败
             latency = time.time() - start_time
-            if selected_provider:
-                await self.health_monitor.record_failure(selected_provider, str(e))
-                logger.warning(f"Provider {selected_provider} failed: {e}")
-            else:
-                logger.warning(f"Failed to select provider: {e}")
+            await self.health_monitor.record_failure(selected_provider, str(e))
+
+            logger.warning(f"Provider {selected_provider} failed: {e}")
 
             # 执行故障转移
             available_providers = list(self.providers.keys())

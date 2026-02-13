@@ -14,9 +14,9 @@ import tempfile
 import os
 import yaml
 
-from loom.cli.commands.config import _test_config_async
-from loom.core.config_manager import ConfigManager
-from loom.interpretation.llm_provider import DeepSeekProvider
+from src.loom.cli.commands.config import _test_config_async
+from src.loom.core.config_manager import ConfigManager
+from src.loom.interpretation.llm_provider import DeepSeekProvider
 
 
 class TestCLIConfigDeepSeekSupport:
@@ -88,7 +88,7 @@ class TestCLIConfigDeepSeekSupport:
         mock_config.data_dir = "./data"
 
         # Mock配置管理器
-        with patch("loom.cli.commands.config.ConfigManager") as MockConfigManager:
+        with patch("src.loom.cli.commands.config.ConfigManager") as MockConfigManager:
             mock_config_manager = MagicMock()
             mock_config_manager.get_config.return_value = mock_config
             MockConfigManager.return_value = mock_config_manager
@@ -202,11 +202,8 @@ class TestCLIConfigDeepSeekSupport:
         provider_no_key = DeepSeekProvider(invalid_config_no_key)
 
         errors = provider_no_key.validate_config()
-        # 至少应该有一个错误
-        assert len(errors) >= 1
-        # 检查是否包含API密钥相关的错误
-        api_key_errors = [e for e in errors if "API" in e or "key" in e]
-        assert len(api_key_errors) > 0
+        assert len(errors) == 1
+        assert "API key" in errors[0]
 
         # 无效配置：缺少模型
         invalid_config_no_model = {
@@ -215,9 +212,8 @@ class TestCLIConfigDeepSeekSupport:
         provider_no_model = DeepSeekProvider(invalid_config_no_model)
 
         errors = provider_no_model.validate_config()
-        # 由于父类设置了默认model="default"，所以不会报错
-        assert len(errors) == 0
-        assert provider_no_model.model == "default"
+        assert len(errors) == 1
+        assert "Model" in errors[0]
 
     def test_config_file_parsing_with_deepseek(self):
         """测试配置文件解析包含DeepSeek"""

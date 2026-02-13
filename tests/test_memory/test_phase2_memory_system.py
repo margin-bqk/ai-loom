@@ -10,23 +10,23 @@ from datetime import datetime, timedelta
 from unittest.mock import Mock, AsyncMock, patch
 import json
 
-from loom.memory.vector_memory_store import VectorMemoryStore, VectorStoreBackend
-from loom.memory.memory_summarizer import (
+from src.loom.memory.vector_memory_store import VectorMemoryStore, VectorStoreBackend
+from src.loom.memory.memory_summarizer import (
     MemorySummarizer,
     SummaryConfig,
     SummaryStrategy,
     SummaryFormat,
 )
-from loom.memory.enhanced_world_memory import (
+from src.loom.memory.enhanced_world_memory import (
     EnhancedWorldMemory,
     EnhancedMemoryConfig,
 )
-from loom.memory.memory_consistency_checker import (
+from src.loom.memory.memory_consistency_checker import (
     MemoryConsistencyChecker,
     ConsistencyIssueType,
     ConsistencySeverity,
 )
-from loom.memory.world_memory import (
+from src.loom.memory.world_memory import (
     MemoryEntity,
     MemoryEntityType,
     MemoryRelation,
@@ -264,7 +264,7 @@ class TestEnhancedWorldMemory:
             entities.append(entity)
 
         # 查询
-        from loom.memory.interfaces import MemoryQuery
+        from src.loom.memory.interfaces import MemoryQuery
 
         query = MemoryQuery(session_id="test_session", limit=10)
         results = await enhanced_memory.query_entities(query)

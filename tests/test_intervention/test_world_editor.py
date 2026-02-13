@@ -9,7 +9,7 @@ import os
 from unittest.mock import Mock, AsyncMock, patch
 from datetime import datetime
 
-from loom.intervention.world_editor import (
+from src.loom.intervention.world_editor import (
     WorldEditor,
     EditCommand,
     EditResult

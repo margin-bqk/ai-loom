@@ -4,8 +4,8 @@ RuleInterpreter单元测试
 
 import pytest
 from pathlib import Path
-from loom.rules.markdown_canon import MarkdownCanon
-from loom.interpretation.rule_interpreter import (
+from src.loom.rules.markdown_canon import MarkdownCanon
+from src.loom.interpretation.rule_interpreter import (
     RuleInterpreter, InterpretationResult, RuleConstraint
 )
 
