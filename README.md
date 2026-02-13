@@ -1,4 +1,8 @@
+![Loom Github Card](asset\LOOM-github-card.png)
 # LOOM - Language-Oriented Open Mythos
+
+> [!WARNING]
+> 
 
 ![Vibe Coding](https://img.shields.io/badge/Vibe-Coding-8B5CF6)
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/)

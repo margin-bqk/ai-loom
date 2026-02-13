@@ -131,7 +131,7 @@ loom run batch data.json \
 - `--cache-dir PATH`: 缓存目录
 - `--temp-dir PATH`: 临时目录
 - `--no-color`: 禁用彩色输出
-- `--version`: 显示版本信息
+- `--version`: 显示版本信息（使用 `loom version` 命令）
 
 ## 运行模式详解
 

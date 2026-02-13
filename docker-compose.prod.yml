@@ -1,0 +1,244 @@
+# LOOM 生产环境 Docker Compose 配置
+# 此配置用于生产环境部署，包含资源限制、安全配置和优化设置
+version: '3.8'
+
+services:
+  # LOOM 主应用 - 生产配置
+  loom:
+    build: .
+    container_name: loom-app-prod
+    ports:
+      - "8000:8000"  # API 端口
+      - "8001:8001"  # 指标导出端口
+    environment:
+      - LOOM_LOG_LEVEL=INFO
+      - LOOM_DATA_DIR=/app/data
+      - LOOM_ENABLE_METRICS=true
+      - LOOM_ENV=production
+      - LOOM_MAX_WORKERS=4
+      - LOOM_WORKER_TIMEOUT=300
+    env_file:
+      - .env.production
+    volumes:
+      - loom_data:/app/data
+      - loom_canon:/app/canon
+      - loom_config:/app/config
+      - loom_logs:/app/logs
+    restart: always
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.path.insert(0, '/app/src'); import loom; print('LOOM health check passed')"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    networks:
+      - loom-network-prod
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  # PostgreSQL 数据库 - 生产配置
+  postgres:
+    image: postgres:15-alpine
+    container_name: loom-postgres-prod
+    environment:
+      - POSTGRES_USER=loom_prod
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-loom_prod_password}
+      - POSTGRES_DB=loom_db_prod
+      - POSTGRES_INITDB_ARGS=--encoding=UTF8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - loom-network-prod
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U loom_prod"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    command: >
+      postgres
+      -c max_connections=100
+      -c shared_buffers=256MB
+      -c effective_cache_size=768MB
+      -c maintenance_work_mem=64MB
+      -c checkpoint_completion_target=0.9
+      -c wal_buffers=16MB
+      -c default_statistics_target=100
+
+  # Redis 缓存 - 生产配置
+  redis:
+    image: redis:7-alpine
+    container_name: loom-redis-prod
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data_prod:/data
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --save 900 1
+      --save 300 10
+      --save 60 10000
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+    networks:
+      - loom-network-prod
+    restart: always
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # Prometheus 监控 - 生产配置
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: loom-prometheus-prod
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./deploy/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data_prod:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=720h'  # 30天保留期
+      - '--web.enable-lifecycle'
+      - '--storage.tsdb.retention.size=10GB'
+    networks:
+      - loom-network-prod
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # Grafana 仪表板 - 生产配置
+  grafana:
+    image: grafana/grafana:latest
+    container_name: loom-grafana-prod
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin_prod}
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel,grafana-clock-panel
+      - GF_SERVER_ROOT_URL=https://loom.example.com/grafana
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+    volumes:
+      - grafana_data_prod:/var/lib/grafana
+      - ./deploy/grafana-dashboards:/etc/grafana/provisioning/dashboards
+      - ./deploy/grafana-datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - loom-network-prod
+    restart: always
+    depends_on:
+      - prometheus
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # Nginx 反向代理 - 生产配置
+  nginx:
+    image: nginx:alpine
+    container_name: loom-nginx-prod
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/nginx-prod.conf:/etc/nginx/nginx.conf
+      - ./deploy/ssl:/etc/nginx/ssl
+      - ./deploy/nginx-logs:/var/log/nginx
+    depends_on:
+      - loom
+    networks:
+      - loom-network-prod
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+
+# 网络配置 - 生产环境
+networks:
+  loom-network-prod:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/16
+          gateway: 172.20.0.1
+
+# 数据卷 - 生产环境（使用命名卷确保数据持久化）
+volumes:
+  loom_data:
+    driver: local
+  loom_canon:
+    driver: local
+  loom_config:
+    driver: local
+  loom_logs:
+    driver: local
+  postgres_data_prod:
+    driver: local
+  redis_data_prod:
+    driver: local
+  prometheus_data_prod:
+    driver: local
+  grafana_data_prod:
+    driver: local
+
+# 生产环境配置说明：
+# 1. 资源限制：为每个服务设置了CPU和内存限制，防止资源耗尽
+# 2. 健康检查：增加了重试次数和启动等待时间，确保服务稳定
+# 3. 数据持久化：使用命名卷确保数据安全
+# 4. 网络隔离：使用独立的生产网络，避免与开发环境冲突
+# 5. 日志配置：限制日志文件大小，防止磁盘空间耗尽
+# 6. 安全配置：使用环境变量文件，避免敏感信息硬编码
+# 7. 监控增强：增加了指标导出端口和更长的数据保留期

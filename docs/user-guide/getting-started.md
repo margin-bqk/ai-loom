@@ -77,10 +77,13 @@ source venv/bin/activate
 pip install -e ".[dev]"
 ```
 
-#### 方法二：使用 pip 安装
+#### 方法二：使用 pip 安装（如果已发布到 PyPI）
 
 ```bash
-pip install loom-narrative
+# 从 PyPI 安装（如果已发布）
+# pip install loom
+
+# 注意：当前版本建议从源码安装以获得最新功能
 ```
 
 #### 方法三：使用 Docker

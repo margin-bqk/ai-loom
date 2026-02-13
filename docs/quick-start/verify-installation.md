@@ -178,30 +178,36 @@ loom config test --all
 
 ## 5. 功能验证
 
-### 5.1 运行单元测试
+### 5.1 运行测试脚本
 
 ```bash
-# 运行核心测试
-python -m pytest tests/test_core/ -v
-
-# 运行规则层测试
-python -m pytest tests/test_rules/ -v
-
-# 运行解释层测试
-python -m pytest tests/test_interpretation/ -v
-```
-
-### 5.2 运行集成测试
-
-```bash
-# 运行简单集成测试
-python scripts/test_runtime_integration.py
+# 运行基础组件测试
+python scripts/test_utils/test_component_imports_fixed.py
 
 # 运行规则解释测试
-python scripts/test_rules_interpretation_simple.py
+python scripts/test_utils/test_rules_interpretation_simple.py
 
-# 运行性能测试
-python scripts/test_rules_interpretation_integration.py
+# 运行运行时集成测试
+python scripts/test_utils/test_runtime_integration.py
+
+# 运行内存集成测试
+python scripts/test_utils/test_memory_integration.py
+```
+
+### 5.2 运行验证脚本
+
+```bash
+# 运行验证脚本检查组件
+python scripts/verification/verify_components_ascii.py
+
+# 运行增强组件验证
+python scripts/verification/verify_enhanced_components_simple.py
+
+# 运行规则验证
+python scripts/verification/verify_rule_simple.py
+
+# 运行运行时验证
+python scripts/verification/verify_runtime.py
 ```
 
 ### 5.3 测试示例项目

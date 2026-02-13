@@ -2,28 +2,59 @@
 
 LOOM 命令行界面提供了完整的系统管理功能，支持会话管理、规则编辑、世界运行等核心操作。
 
+## 0. 状态说明
+
+> **注意**: 本文档描述了LOOM CLI的完整功能集。部分功能在当前版本(v0.10.1)中尚未实现，已用 `[未实现]` 标记。请使用 `loom --help` 查看实际可用的命令。
+
+**当前已实现的命令**:
+- `run` - 运行世界会话
+- `session` - 会话管理
+- `rules` - 规则管理（部分功能）
+- `config` - 配置管理
+- `export` - 数据导出（部分功能）
+- `dev` - 开发工具
+- `init` - 项目初始化
+- `status` - 系统状态
+- `version` - 版本信息
+- `help` - 帮助信息
+
+**计划中的命令** (标记为 `[未实现]`):
+- `world` - 世界管理
+- `memory` - 记忆管理
+- `intervention` - 玩家干预
+- `plugins` - 插件管理
+- `script` - 脚本模式
+- `batch` - 批处理模式
+- `remote` - 远程操作
+
 ## 1. 安装和配置
 
 ### 1.1 安装
 ```bash
-# 从源码安装
+# 从源码安装（推荐用于开发）
 pip install -e .
 
-# 或从 PyPI 安装
-pip install loom-ai
+# 或安装开发版本（包含测试工具）
+pip install -e ".[dev]"
+
+# 从 PyPI 安装（如果已发布）
+# pip install loom
 ```
 
 ### 1.2 配置
 ```bash
-# 初始化配置
-loom config init
-
-# 设置 API 密钥
-loom config set-key openai your_api_key_here
-loom config set-key anthropic your_api_key_here
-
 # 查看当前配置
 loom config show
+
+# 设置配置项
+loom config set llm_providers.openai.api_key "your_api_key_here"
+loom config set llm_providers.anthropic.api_key "your_api_key_here"
+
+# 验证配置
+loom config validate
+
+# 测试 LLM 提供商连接
+loom config test --provider openai
 ```
 
 ## 2. 基本命令
@@ -42,7 +73,7 @@ loom rules --help
 ### 2.2 版本信息
 ```bash
 # 查看版本
-loom --version
+loom version
 
 # 查看系统信息
 loom dev info
@@ -103,43 +134,47 @@ loom session export session_id_here --format yaml --output session.yaml
 
 ## 4. 规则管理
 
-### 4.1 规则创建和编辑
+### 4.1 规则加载和查看
 ```bash
-# 创建新规则文件
-loom rules new --name "奇幻世界基础规则" --template fantasy
+# 加载规则集
+loom rules load --canon fantasy_basic --format table
 
-# 编辑规则
-loom rules edit rules/fantasy_basic.md
+# 列出所有规则集
+loom rules list --recursive --format table
 
-# 从模板创建
-loom rules create-from-template --template templates/rules/fantasy_basic.md --output my_rules.md
+# 查看规则详情
+loom rules load --canon fantasy_basic --format json
 ```
 
 ### 4.2 规则验证
 ```bash
-# 验证单个规则文件
-loom rules validate rules/fantasy_basic.md
+# 验证单个规则集
+loom rules validate --canon fantasy_basic
 
-# 验证目录下所有规则
-loom rules validate-all rules/
+# 验证所有规则集
+loom rules validate
 
-# 检查规则一致性
-loom rules check-consistency rules/fantasy_basic.md rules/magic_rules.md
+# 尝试自动修复问题
+loom rules validate --canon fantasy_basic --fix
 ```
 
-### 4.3 规则应用
+### 4.3 规则创建
 ```bash
-# 应用规则到会话
-loom rules apply session_id_here --rules rules/fantasy_basic.md
+# 创建新规则集
+loom rules create --name "奇幻世界基础规则" --template fantasy
 
-# 查看已应用的规则
-loom rules list-applied session_id_here
+# 使用特定模板创建
+loom rules create --name "科幻世界规则" --template scifi
 
-# 移除规则
-loom rules remove session_id_here --rule-name "魔法消耗规则"
+# 强制覆盖现有文件
+loom rules create --name "我的规则" --template default --force
 ```
 
-## 5. 世界管理
+### 4.4 注意事项
+- 当前版本仅支持上述命令，更多功能（如规则编辑、应用、移除）计划在后续版本中实现
+- 使用 `loom rules --help` 查看完整的参数说明
+
+## 5. 世界管理 [未实现]
 
 ### 5.1 世界创建和配置
 ```bash
@@ -177,7 +212,7 @@ loom world add-location fantasy_world --name "法师塔" --type "建筑"
 loom world update fantasy_world --description "一个充满魔法与冒险的奇幻世界"
 ```
 
-## 6. 记忆管理
+## 6. 记忆管理 [未实现]
 
 ### 6.1 记忆查询
 ```bash
@@ -212,7 +247,7 @@ loom memory export session_id_here --format json --output memories.json
 loom memory summarize session_id_here --output summary.md
 ```
 
-## 7. 玩家干预
+## 7. 玩家干预 [未实现]
 
 ### 7.1 干预操作
 ```bash
@@ -240,32 +275,41 @@ loom intervention impact session_id_here --intervention-id intervention_id_here
 
 ## 8. 数据导出
 
-### 8.1 导出格式
+### 8.1 导出单个会话
 ```bash
 # 导出为 JSON（默认）
-loom export session_id_here --format json
-
-# 导出为 Markdown
-loom export session_id_here --format markdown
+loom export session session_id_here --format json
 
 # 导出为 YAML
-loom export session_id_here --format yaml
+loom export session session_id_here --format yaml
 
 # 导出为 CSV
-loom export session_id_here --format csv
+loom export session session_id_here --format csv
 
-# 导出为 PDF（需要额外依赖）
-loom export session_id_here --format pdf
+# 包含记忆数据
+loom export session session_id_here --format json --include-memory
+
+# 指定输出文件
+loom export session session_id_here --output my_session.json
 ```
 
-### 8.2 批量导出
+### 8.2 导出所有会话
 ```bash
-# 导出多个会话
-loom export-batch --sessions session1 session2 session3 --format json --output-dir exports/
+# 导出所有会话为 JSON
+loom export sessions --output sessions_export.json
 
-# 导出世界所有会话
-loom export-world fantasy_world --format markdown --output-dir world_exports/
+# 按状态过滤导出
+loom export sessions --status active --format yaml
+
+# 导出为 CSV 格式
+loom export sessions --format csv --output sessions.csv
 ```
+
+### 8.3 注意事项
+- 当前版本支持 JSON、YAML、CSV 格式
+- Markdown 和 PDF 格式计划在后续版本中实现
+- 批量导出功能 (`export-batch`, `export-world`) 尚未实现
+- 使用 `loom export --help` 查看完整的参数说明
 
 ## 9. 开发工具
 
@@ -311,7 +355,7 @@ loom dev backup --output backup_$(date +%Y%m%d).zip
 loom dev restore --file backup_20241230.zip
 ```
 
-## 10. 插件管理
+## 10. 插件管理 [未实现]
 
 ### 10.1 插件操作
 ```bash
@@ -341,9 +385,9 @@ loom plugins test plugin_name
 loom plugins package plugin_name --output my_plugin.zip
 ```
 
-## 11. 高级功能
+## 11. 高级功能 [未实现]
 
-### 11.1 脚本模式
+### 11.1 脚本模式 [未实现]
 ```bash
 # 运行脚本文件
 loom script run scripts/my_script.loom
@@ -355,7 +399,7 @@ loom script new --name adventure_script --template basic
 loom script debug scripts/my_script.loom --step-by-step
 ```
 
-### 11.2 批处理模式
+### 11.2 批处理模式 [未实现]
 ```bash
 # 从文件读取命令
 loom batch --file commands.txt
@@ -367,7 +411,7 @@ loom batch --interactive
 loom batch --file jobs.txt --parallel 4
 ```
 
-### 11.3 远程操作
+### 11.3 远程操作 [未实现]
 ```bash
 # 连接到远程服务器
 loom remote connect --url http://remote-server:8000 --api-key your_key
@@ -542,4 +586,4 @@ loom dev known-issues
 
 ---
 
-*本指南将持续更新。使用 `loom --version` 查看当前版本，使用 `loom help` 获取最新命令信息。*
+*本指南将持续更新。使用 `loom version` 查看当前版本，使用 `loom help` 获取最新命令信息。*

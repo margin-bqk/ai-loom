@@ -405,10 +405,13 @@ class ConfigManager:
     def _find_config_file(self) -> str:
         """查找配置文件"""
         possible_paths = [
+            # 1. 用户配置文件（主目录）
+            "~/.loom/config.yaml",
+            # 2. 项目配置文件
             "./config/default_config.yaml",
             "./config/config.yaml",
             "./config.yaml",
-            "~/.loom/config.yaml",
+            # 3. 系统配置文件
             "/etc/loom/config.yaml",
         ]
 

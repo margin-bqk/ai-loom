@@ -118,8 +118,8 @@
 
 6. **更新Docker镜像**
    ```bash
-   docker build -t loom-ai/loom:v0.10.0 .
-   docker push loom-ai/loom:v0.10.0
+   docker build -t loom/loom:v0.10.0 .
+   docker push loom/loom:v0.10.0
    ```
 
 7. **更新部署配置**

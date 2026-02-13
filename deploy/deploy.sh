@@ -35,6 +35,16 @@ case $ENV in
         ;;
 esac
 
+# 验证 Docker Compose 文件是否存在
+if [ ! -f "$COMPOSE_FILE" ]; then
+    echo -e "${RED}错误: Docker Compose 文件 '$COMPOSE_FILE' 不存在${NC}"
+    echo "请确保已创建相应的配置文件:"
+    echo "  - 开发环境: docker-compose.yml"
+    echo "  - 生产环境: docker-compose.prod.yml"
+    echo "  - 预发布环境: docker-compose.staging.yml"
+    exit 1
+fi
+
 # 检查环境文件
 if [ ! -f "$ENV_FILE" ]; then
     echo -e "${YELLOW}警告: 环境文件 $ENV_FILE 不存在${NC}"
@@ -110,10 +120,29 @@ if [ "$ACTION" = "up" ] || [ "$ACTION" = "restart" ] || [ "$ACTION" = "update" ]
     
     echo ""
     echo -e "${YELLOW}访问地址:${NC}"
-    echo "  LOOM Web UI: http://localhost:8000"
-    echo "  API 文档: http://localhost:8000/api/docs"
-    echo "  Prometheus: http://localhost:9090"
-    echo "  Grafana: http://localhost:3000 (admin/admin)"
+    case $ENV in
+        development|dev)
+            echo "  LOOM Web UI: http://localhost:8000"
+            echo "  API 文档: http://localhost:8000/api/docs"
+            echo "  Prometheus: http://localhost:9090"
+            echo "  Grafana: http://localhost:3000 (admin/admin)"
+            ;;
+        production|prod)
+            echo "  LOOM Web UI: http://localhost:8000"
+            echo "  API 文档: http://localhost:8000/api/docs"
+            echo "  Prometheus: http://localhost:9090"
+            echo "  Grafana: http://localhost:3000 (admin/使用环境变量配置的密码)"
+            echo "  指标导出: http://localhost:8001/metrics"
+            ;;
+        staging)
+            echo "  LOOM Web UI: http://localhost:8080"
+            echo "  API 文档: http://localhost:8080/api/docs"
+            echo "  Prometheus: http://localhost:9091"
+            echo "  Grafana: http://localhost:3001 (admin/admin_staging)"
+            echo "  Jaeger 追踪: http://localhost:16686"
+            echo "  指标导出: http://localhost:8081/metrics"
+            ;;
+    esac
     
     echo ""
     echo -e "${YELLOW}查看日志:${NC}"

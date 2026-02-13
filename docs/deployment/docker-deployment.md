@@ -105,6 +105,123 @@ OPENAI_API_KEY=your-openai-api-key
 ANTHROPIC_API_KEY=your-anthropic-api-key
 ```
 
+## 多环境部署
+
+LOOM 支持多环境部署，为不同环境提供专门的 Docker Compose 配置文件：
+
+### 1. 环境配置文件
+
+| 环境 | Docker Compose 文件 | 环境变量文件 | 用途 |
+|------|---------------------|--------------|------|
+| **开发环境** | `docker-compose.yml` | `.env.development` | 本地开发和测试 |
+| **预发布环境** | `docker-compose.staging.yml` | `.env.staging` | 集成测试和验证 |
+| **生产环境** | `docker-compose.prod.yml` | `.env.production` | 线上生产部署 |
+
+### 2. 使用部署脚本
+
+使用 `deploy/deploy.sh` 脚本简化多环境部署：
+
+```bash
+# 启动开发环境
+./deploy/deploy.sh development up
+
+# 启动生产环境
+./deploy/deploy.sh production up
+
+# 启动预发布环境
+./deploy/deploy.sh staging up
+
+# 停止环境
+./deploy/deploy.sh production down
+
+# 查看日志
+./deploy/deploy.sh staging logs
+
+# 构建镜像
+./deploy/deploy.sh development build
+
+# 查看状态
+./deploy/deploy.sh production status
+
+# 更新服务
+./deploy/deploy.sh production update
+
+# 备份数据
+./deploy/deploy.sh production backup
+```
+
+### 3. 环境配置差异
+
+#### 开发环境 (`docker-compose.yml`)
+- 使用本地目录挂载，便于开发调试
+- 资源限制较宽松
+- 启用详细日志
+- 端口映射：8000:8000
+
+#### 预发布环境 (`docker-compose.staging.yml`)
+- 中等资源限制
+- 包含 Jaeger 分布式追踪
+- 启用调试端点
+- 端口映射：8080:8000（避免与开发环境冲突）
+- 7天数据保留期
+
+#### 生产环境 (`docker-compose.prod.yml`)
+- 严格的资源限制和健康检查
+- 使用命名卷确保数据持久化
+- 增强的安全配置
+- 30天数据保留期
+- 独立的网络配置
+
+### 4. 手动部署命令
+
+如果不使用部署脚本，可以手动指定配置文件：
+
+```bash
+# 开发环境
+docker-compose -f docker-compose.yml --env-file .env.development up -d
+
+# 生产环境
+docker-compose -f docker-compose.prod.yml --env-file .env.production up -d
+
+# 预发布环境
+docker-compose -f docker-compose.staging.yml --env-file .env.staging up -d
+```
+
+### 5. 环境切换最佳实践
+
+1. **开发到预发布**: 在预发布环境验证开发成果
+2. **预发布到生产**: 通过预发布环境进行完整测试
+3. **生产回滚**: 使用备份和回滚脚本
+4. **数据迁移**: 使用导出/导入功能迁移数据
+
+### 6. 环境特定配置示例
+
+#### 生产环境 PostgreSQL 配置
+```yaml
+# docker-compose.prod.yml 中的 PostgreSQL 配置
+postgres:
+  command: >
+    postgres
+    -c max_connections=100
+    -c shared_buffers=256MB
+    -c effective_cache_size=768MB
+    -c maintenance_work_mem=64MB
+```
+
+#### 预发布环境 Redis 配置
+```yaml
+# docker-compose.staging.yml 中的 Redis 配置
+redis:
+  command: >
+    redis-server
+    --appendonly yes
+    --appendfsync everysec
+    --save 900 1
+    --save 300 10
+    --maxmemory 256mb
+    --maxmemory-policy allkeys-lru
+```
+
 ## Dockerfile 详解
 
 LOOM 使用多阶段构建优化镜像大小：

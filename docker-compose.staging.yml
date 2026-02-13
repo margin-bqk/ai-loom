@@ -1,0 +1,229 @@
+# LOOM 预发布环境 Docker Compose 配置
+# 此配置用于预发布环境（staging），用于测试和验证生产配置
+version: '3.8'
+
+services:
+  # LOOM 主应用 - 预发布配置
+  loom:
+    build: .
+    container_name: loom-app-staging
+    ports:
+      - "8080:8000"  # 使用不同端口避免冲突
+      - "8081:8001"  # 指标导出端口
+    environment:
+      - LOOM_LOG_LEVEL=INFO
+      - LOOM_DATA_DIR=/app/data
+      - LOOM_ENABLE_METRICS=true
+      - LOOM_ENV=staging
+      - LOOM_MAX_WORKERS=2
+      - LOOM_WORKER_TIMEOUT=180
+      - LOOM_ENABLE_DEBUG_ENDPOINTS=true  # 预发布环境启用调试端点
+    env_file:
+      - .env.staging
+    volumes:
+      - ./data:/app/data
+      - ./canon:/app/canon
+      - ./config:/app/config
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import sys; sys.path.insert(0, '/app/src'); import loom; print('LOOM staging health check passed')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - loom-network-staging
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "20m"  # 预发布环境允许更大日志
+        max-file: "5"
+
+  # PostgreSQL 数据库 - 预发布配置
+  postgres:
+    image: postgres:15-alpine
+    container_name: loom-postgres-staging
+    environment:
+      - POSTGRES_USER=loom_staging
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-loom_staging_password}
+      - POSTGRES_DB=loom_db_staging
+      - POSTGRES_INITDB_ARGS=--encoding=UTF8 --lc-collate=C --lc-ctype=C
+    volumes:
+      - postgres_data_staging:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"  # 使用不同端口避免与开发环境冲突
+    networks:
+      - loom-network-staging
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U loom_staging"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+    command: >
+      postgres
+      -c max_connections=50
+      -c shared_buffers=128MB
+      -c effective_cache_size=384MB
+
+  # Redis 缓存 - 预发布配置
+  redis:
+    image: redis:7-alpine
+    container_name: loom-redis-staging
+    ports:
+      - "6380:6379"  # 使用不同端口
+    volumes:
+      - redis_data_staging:/data
+    command: >
+      redis-server
+      --appendonly yes
+      --appendfsync everysec
+      --save 900 1
+      --save 300 10
+      --maxmemory 256mb
+      --maxmemory-policy allkeys-lru
+    networks:
+      - loom-network-staging
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  # Prometheus 监控 - 预发布配置
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: loom-prometheus-staging
+    ports:
+      - "9091:9090"  # 使用不同端口
+    volumes:
+      - ./deploy/prometheus-staging.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data_staging:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=168h'  # 7天保留期
+      - '--web.enable-lifecycle'
+    networks:
+      - loom-network-staging
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  # Grafana 仪表板 - 预发布配置
+  grafana:
+    image: grafana/grafana:latest
+    container_name: loom-grafana-staging
+    ports:
+      - "3001:3000"  # 使用不同端口
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin_staging}
+      - GF_INSTALL_PLUGINS=grafana-piechart-panel
+      - GF_SERVER_ROOT_URL=http://staging.loom.example.com/grafana
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true  # 预发布环境允许匿名访问
+    volumes:
+      - grafana_data_staging:/var/lib/grafana
+      - ./deploy/grafana-dashboards:/etc/grafana/provisioning/dashboards
+      - ./deploy/grafana-datasources:/etc/grafana/provisioning/datasources
+    networks:
+      - loom-network-staging
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+  # Jaeger 分布式追踪（预发布环境专用）
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: loom-jaeger-staging
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "14268:14268"  # 接收器端口
+      - "14250:14250"  # gRPC端口
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+      - LOG_LEVEL=debug
+    networks:
+      - loom-network-staging
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+
+# 网络配置 - 预发布环境
+networks:
+  loom-network-staging:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.21.0.0/16
+          gateway: 172.21.0.1
+
+# 数据卷 - 预发布环境
+volumes:
+  postgres_data_staging:
+    driver: local
+  redis_data_staging:
+    driver: local
+  prometheus_data_staging:
+    driver: local
+  grafana_data_staging:
+    driver: local
+
+# 预发布环境配置说明：
+# 1. 端口映射：使用不同端口避免与开发和生产环境冲突
+# 2. 资源限制：中等资源限制，介于开发和生产之间
+# 3. 调试功能：启用了调试端点和更详细的日志
+# 4. 监控增强：包含Jaeger分布式追踪，便于调试性能问题
+# 5. 数据保留：较短的保留期，节省存储空间
+# 6. 网络隔离：独立的网络，避免环境间干扰
+# 7. 安全宽松：允许匿名访问和调试功能，便于测试

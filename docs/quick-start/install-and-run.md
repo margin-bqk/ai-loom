@@ -63,19 +63,59 @@ cp .env.example .env
 # 需要至少配置一个 LLM 提供商
 ```
 
-`.env` 文件示例：
+`.env` 文件示例（基于 `.env.example`）：
 ```env
-# OpenAI API 配置
+# ====================
+# LLM 提供商配置（至少配置一个）
+# ====================
+
+# OpenAI
 OPENAI_API_KEY=sk-your-openai-api-key-here
+OPENAI_MODEL=gpt-4-turbo-preview
 
-# Anthropic API 配置
+# Anthropic
 ANTHROPIC_API_KEY=your-anthropic-api-key-here
+ANTHROPIC_MODEL=claude-3-opus-20240229
 
-# Google Gemini API 配置
+# Google Gemini
 GOOGLE_API_KEY=your-google-api-key-here
+GOOGLE_MODEL=gemini-pro
 
-# 本地模型配置（Ollama）
+# Ollama (本地运行)
 OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama2
+
+# ====================
+# 基础配置
+# ====================
+
+# 日志级别
+LOG_LEVEL=INFO
+
+# 数据库路径（SQLite）
+DATABASE_URL=sqlite+aiosqlite:///loom.db
+
+# 会话存储路径
+SESSION_STORAGE_PATH=./sessions
+
+# 性能配置
+REQUEST_TIMEOUT=30
+MAX_RETRIES=3
+```
+
+### 5. 验证环境配置
+
+配置完成后，验证环境变量是否正确加载：
+
+```bash
+# 验证配置语法
+loom config validate
+
+# 测试 OpenAI 连接（如果已配置）
+loom config test --provider openai
+
+# 查看当前配置
+loom config show --section llm
 ```
 
 ## 验证安装
@@ -177,6 +217,46 @@ pip install chromadb
 
 # 或者使用 SQLite 内存模式（无需额外安装）
 # 在配置中设置 memory.vector_store.enabled = false
+```
+
+#### 5. "command not found: loom" 错误
+- **原因**: LOOM 未正确安装或不在 PATH 中
+- **解决方案**:
+```bash
+# 确保在虚拟环境中
+source venv/bin/activate  # Linux/Mac
+venv\Scripts\Activate.ps1  # Windows PowerShell
+
+# 重新安装 LOOM
+pip install -e .
+```
+
+#### 6. 配置验证失败
+- **原因**: 配置文件语法错误或缺少必要配置
+- **解决方案**:
+```bash
+# 验证配置语法
+loom config validate
+
+# 检查配置详情
+loom config show
+
+# 重新生成默认配置
+loom config reset --default
+```
+
+#### 7. LLM 提供商连接失败
+- **原因**: API 密钥无效、网络问题或提供商服务不可用
+- **解决方案**:
+```bash
+# 测试特定提供商连接
+loom config test --provider openai
+
+# 检查环境变量
+echo $OPENAI_API_KEY
+
+# 尝试使用备用提供商
+loom config set llm_providers.default_provider "anthropic"
 ```
 
 ## 下一步

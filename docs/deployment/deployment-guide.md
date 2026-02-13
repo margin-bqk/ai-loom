@@ -54,6 +54,14 @@ ANTHROPIC_API_KEY=sk-ant-...
 DATABASE_URL=sqlite:///loom.db
 ```
 
+#### 环境特定配置
+对于多环境部署，LOOM 支持以下环境特定文件：
+- **开发环境**: `.env.development` 或 `.env.dev`
+- **生产环境**: `.env.production` 或 `.env.prod`
+- **预发布环境**: `.env.staging`
+
+部署脚本 `deploy/deploy.sh` 会根据指定的环境自动加载对应的环境文件。如果环境文件不存在，脚本会自动从 `.env.example` 创建。
+
 ### 2.3 启动服务
 ```bash
 # 启动 Web UI
@@ -148,21 +156,21 @@ services:
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
-      - DATABASE_URL=postgresql://postgres:password@db:5432/loom
+      - DATABASE_URL=postgresql://postgres:password@postgres:5432/loom
       - REDIS_URL=redis://redis:6379/0
     volumes:
       - ./data:/app/data
       - ./config:/app/config
       - ./logs:/app/logs
     depends_on:
-      - db
+      - postgres
       - redis
     networks:
       - loom-network
 
-  db:
+  postgres:
     image: postgres:15-alpine
-    container_name: loom-db
+    container_name: loom-postgres
     restart: unless-stopped
     environment:
       - POSTGRES_USER=postgres
