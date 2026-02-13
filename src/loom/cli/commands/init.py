@@ -21,13 +21,15 @@ app = typer.Typer(
 @app.command()
 def init_project(
     path: str = typer.Argument(".", help="项目路径"),
-    force: bool = typer.Option(False, "--force", "-f", help="强制初始化（覆盖现有文件）"),
+    force: bool = typer.Option(
+        False, "--force", "-f", help="强制初始化（覆盖现有文件）"
+    ),
 ):
     """初始化LOOM项目"""
     project_dir = Path(path).resolve()
-    
+
     typer.echo(f"初始化LOOM项目于: {project_dir}")
-    
+
     # 检查目录是否非空
     if project_dir.exists() and any(project_dir.iterdir()):
         if not force:
@@ -35,7 +37,7 @@ def init_project(
             raise typer.Exit(code=1)
         else:
             typer.echo("警告: 目录非空，强制初始化")
-    
+
     # 创建目录结构
     directories = [
         "canon",
@@ -46,33 +48,33 @@ def init_project(
         "logs",
         "src/loom",
         "tests",
-        "scripts"
+        "scripts",
     ]
-    
+
     for directory in directories:
         dir_path = project_dir / directory
         dir_path.mkdir(parents=True, exist_ok=True)
         typer.echo(f"创建目录: {directory}")
-    
+
     # 创建配置文件
     _create_config_files(project_dir)
-    
+
     # 创建示例规则
     _create_example_canons(project_dir)
-    
+
     # 创建示例代码
     _create_example_code(project_dir)
-    
+
     # 创建文档
     _create_documentation(project_dir)
-    
+
     # 创建Git忽略文件
     _create_gitignore(project_dir)
-    
+
     # 创建README
     _create_readme(project_dir)
-    
-    typer.echo("\n" + "="*50)
+
+    typer.echo("\n" + "=" * 50)
     typer.echo("✅ LOOM 项目初始化完成")
     typer.echo(f"项目目录: {project_dir}")
     typer.echo("\n下一步:")
@@ -85,7 +87,7 @@ def init_project(
 def _create_config_files(project_dir: Path):
     """创建配置文件"""
     config_dir = project_dir / "config"
-    
+
     # 1. 默认配置
     default_config = {
         "llm_providers": {
@@ -95,7 +97,7 @@ def _create_config_files(project_dir: Path):
                 "temperature": 0.7,
                 "max_tokens": 1000,
                 "timeout": 30,
-                "max_retries": 3
+                "max_retries": 3,
             },
             "anthropic": {
                 "type": "anthropic",
@@ -104,8 +106,8 @@ def _create_config_files(project_dir: Path):
                 "max_tokens": 1000,
                 "timeout": 30,
                 "max_retries": 3,
-                "enabled": False
-            }
+                "enabled": False,
+            },
         },
         "provider_selection": {
             "default_provider": "openai",
@@ -113,16 +115,16 @@ def _create_config_files(project_dir: Path):
             "session_type_mapping": {
                 "default": {
                     "preferred_provider": "openai",
-                    "preferred_model": "gpt-3.5-turbo"
+                    "preferred_model": "gpt-3.5-turbo",
                 }
-            }
+            },
         },
         "memory": {
             "backend": "sqlite",
             "db_path": "./data/loom_memory.db",
             "vector_store_enabled": False,
             "max_memories_per_session": 1000,
-            "auto_summarize": True
+            "auto_summarize": True,
         },
         "session_defaults": {
             "default_canon_path": "./canon",
@@ -130,7 +132,7 @@ def _create_config_files(project_dir: Path):
             "max_turns": None,
             "auto_save_interval": 5,
             "intervention_allowed": True,
-            "retcon_allowed": True
+            "retcon_allowed": True,
         },
         "max_concurrent_turns": 3,
         "log_level": "INFO",
@@ -141,26 +143,26 @@ def _create_config_files(project_dir: Path):
             "max_prompt_length": 8000,
             "max_memories_per_prompt": 10,
             "enable_response_caching": True,
-            "cache_size_mb": 100
+            "cache_size_mb": 100,
         },
         "security": {
             "allow_file_system_access": True,
             "max_session_duration_hours": 24,
             "intervention_rate_limit": 10,
-            "require_justification_for_retcon": True
+            "require_justification_for_retcon": True,
         },
         "monitoring": {
             "enable_metrics": True,
             "metrics_port": 9090,
             "enable_tracing": False,
-            "log_retention_days": 30
-        }
+            "log_retention_days": 30,
+        },
     }
-    
-    with open(config_dir / "default_config.yaml", 'w', encoding='utf-8') as f:
+
+    with open(config_dir / "default_config.yaml", "w", encoding="utf-8") as f:
         yaml.dump(default_config, f, allow_unicode=True, default_flow_style=False)
     typer.echo("创建配置文件: config/default_config.yaml")
-    
+
     # 2. LLM提供商配置
     llm_providers_config = {
         "openai": {
@@ -171,7 +173,7 @@ def _create_config_files(project_dir: Path):
             "max_tokens": 1000,
             "timeout": 30,
             "max_retries": 3,
-            "fallback_enabled": True
+            "fallback_enabled": True,
         },
         "anthropic": {
             "type": "anthropic",
@@ -181,7 +183,7 @@ def _create_config_files(project_dir: Path):
             "max_tokens": 1000,
             "timeout": 30,
             "max_retries": 3,
-            "fallback_enabled": True
+            "fallback_enabled": True,
         },
         "ollama": {
             "type": "ollama",
@@ -191,14 +193,14 @@ def _create_config_files(project_dir: Path):
             "max_tokens": 1000,
             "timeout": 60,
             "max_retries": 3,
-            "enabled": False
-        }
+            "enabled": False,
+        },
     }
-    
-    with open(config_dir / "llm_providers.yaml", 'w', encoding='utf-8') as f:
+
+    with open(config_dir / "llm_providers.yaml", "w", encoding="utf-8") as f:
         yaml.dump(llm_providers_config, f, allow_unicode=True, default_flow_style=False)
     typer.echo("创建配置文件: config/llm_providers.yaml")
-    
+
     # 3. 环境变量示例
     env_example = """# LOOM 环境变量配置
 # 复制此文件为 .env 并填写实际值
@@ -217,8 +219,8 @@ LOOM_MAX_CONCURRENT_TURNS=3
 LOOM_DEV_MODE=false
 LOOM_ENABLE_METRICS=true
 """
-    
-    with open(project_dir / ".env.example", 'w', encoding='utf-8') as f:
+
+    with open(project_dir / ".env.example", "w", encoding="utf-8") as f:
         f.write(env_example)
     typer.echo("创建环境变量示例: .env.example")
 
@@ -226,7 +228,7 @@ LOOM_ENABLE_METRICS=true
 def _create_example_canons(project_dir: Path):
     """创建示例规则"""
     canon_dir = project_dir / "canon"
-    
+
     # 1. 默认规则
     default_canon = """# 世界观设定(World)
 
@@ -305,11 +307,11 @@ created: {date}
 genre: fantasy
 tags: [fantasy, medieval, magic, adventure]
 """.format(date=datetime.now().strftime("%Y-%m-%d"))
-    
-    with open(canon_dir / "default.md", 'w', encoding='utf-8') as f:
+
+    with open(canon_dir / "default.md", "w", encoding="utf-8") as f:
         f.write(default_canon)
     typer.echo("创建示例规则: canon/default.md")
-    
+
     # 2. 科幻规则示例
     scifi_canon = """# 世界观设定(World)
 
@@ -337,8 +339,8 @@ author: LOOM Team
 created: {date}
 genre: scifi
 """.format(date=datetime.now().strftime("%Y-%m-%d"))
-    
-    with open(canon_dir / "scifi_example.md", 'w', encoding='utf-8') as f:
+
+    with open(canon_dir / "scifi_example.md", "w", encoding="utf-8") as f:
         f.write(scifi_canon)
     typer.echo("创建示例规则: canon/scifi_example.md")
 
@@ -346,7 +348,7 @@ genre: scifi
 def _create_example_code(project_dir: Path):
     """创建示例代码"""
     examples_dir = project_dir / "examples"
-    
+
     # 1. 基本世界示例
     basic_world = """# LOOM 基本世界示例
 
@@ -389,10 +391,10 @@ python examples/player_intervention_example.py
 
 ## 更多示例
 查看 examples/ 目录中的其他示例文件。"""
-    
-    with open(examples_dir / "basic_world.md", 'w', encoding='utf-8') as f:
+
+    with open(examples_dir / "basic_world.md", "w", encoding="utf-8") as f:
         f.write(basic_world)
-    
+
     # 2. 玩家干预示例
     player_intervention_code = '''"""
 玩家干预示例
@@ -478,8 +480,10 @@ async def main():
 if __name__ == "__main__":
     asyncio.run(main())
 '''
-    
-    with open(examples_dir / "player_intervention_example.py", 'w', encoding='utf-8') as f:
+
+    with open(
+        examples_dir / "player_intervention_example.py", "w", encoding="utf-8"
+    ) as f:
         f.write(player_intervention_code)
     typer.echo("创建示例代码: examples/player_intervention_example.py")
 
@@ -487,7 +491,7 @@ if __name__ == "__main__":
 def _create_documentation(project_dir: Path):
     """创建文档"""
     docs_dir = project_dir / "docs"
-    
+
     # 创建基本文档
     readme_content = """# LOOM 项目文档
 
@@ -546,8 +550,8 @@ def _create_documentation(project_dir: Path):
 - `loom run batch` - 批处理运行
 - `loom run resume` - 恢复会话
 """
-    
-    with open(docs_dir / "README.md", 'w', encoding='utf-8') as f:
+
+    with open(docs_dir / "README.md", "w", encoding="utf-8") as f:
         f.write(readme_content)
     typer.echo("创建文档: docs/README.md")
 
@@ -617,8 +621,8 @@ Thumbs.db
 *.tmp
 *.temp
 """
-    
-    with open(project_dir / ".gitignore", 'w', encoding='utf-8') as f:
+
+    with open(project_dir / ".gitignore", "w", encoding="utf-8") as f:
         f.write(gitignore_content)
     typer.echo("创建Git忽略文件: .gitignore")
 
@@ -680,8 +684,8 @@ LOOM 是一个专为 AI 驱动的角色扮演和互动叙事设计的运行时�
 
 [在此添加许可证信息]
 """
-    
-    with open(project_dir / "README.md", 'w', encoding='utf-8') as f:
+
+    with open(project_dir / "README.md", "w", encoding="utf-8") as f:
         f.write(readme_content)
     typer.echo("创建项目README: README.md")
 

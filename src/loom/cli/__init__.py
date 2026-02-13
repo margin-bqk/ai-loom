@@ -29,37 +29,36 @@ app.add_typer(commands.config.app, name="config", help="配置管理")
 app.add_typer(commands.export.app, name="export", help="数据导出")
 app.add_typer(commands.dev.app, name="dev", help="开发工具")
 
+
 # 添加版本命令
 @app.command("version")
 def version():
     """显示 LOOM 版本"""
     from .. import __version__
+
     typer.echo(f"LOOM v{__version__}")
+
 
 # 添加初始化命令
 @app.command("init")
 def init(
-    path: Optional[str] = typer.Option(
-        ".", "--path", "-p", help="初始化目录路径"
-    ),
-    force: bool = typer.Option(
-        False, "--force", "-f", help="强制覆盖现有配置"
-    )
+    path: Optional[str] = typer.Option(".", "--path", "-p", help="初始化目录路径"),
+    force: bool = typer.Option(False, "--force", "-f", help="强制覆盖现有配置"),
 ):
     """初始化 LOOM 项目"""
     from .commands.init import init_project
+
     init_project(path, force)
+
 
 # 添加状态命令
 @app.command("status")
-def status(
-    verbose: bool = typer.Option(
-        False, "--verbose", "-v", help="显示详细信息"
-    )
-):
+def status(verbose: bool = typer.Option(False, "--verbose", "-v", help="显示详细信息")):
     """显示系统状态"""
     from .commands.status import show_status
+
     show_status(verbose)
+
 
 # 添加帮助命令
 @app.command("help")
@@ -79,10 +78,12 @@ def help_command():
     typer.echo("  loom help       - 显示此帮助")
     typer.echo("\n使用 'loom <command> --help' 获取命令详细帮助。")
 
+
 # 主函数
 def main():
     """CLI 主入口点"""
     app()
+
 
 if __name__ == "__main__":
     main()

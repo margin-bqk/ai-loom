@@ -514,7 +514,9 @@ class EnhancedProviderManager(ProviderManager):
             # 记录失败
             latency = time.time() - start_time
             # 如果selected_provider未定义，使用默认值
-            provider_name = selected_provider if 'selected_provider' in locals() else "unknown"
+            provider_name = (
+                selected_provider if "selected_provider" in locals() else "unknown"
+            )
             await self.health_monitor.record_failure(provider_name, str(e))
 
             logger.warning(f"Provider {provider_name} failed: {e}")
