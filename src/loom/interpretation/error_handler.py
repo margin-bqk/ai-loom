@@ -269,9 +269,9 @@ class ErrorHandler:
             health["circuit_breaker_open"] = circuit_breaker.is_open
             health["failure_count"] = circuit_breaker.failure_count
             if circuit_breaker.opened_at:
-                health["circuit_breaker_opened_at"] = (
-                    circuit_breaker.opened_at.isoformat()
-                )
+                health[
+                    "circuit_breaker_opened_at"
+                ] = circuit_breaker.opened_at.isoformat()
 
         return health
 

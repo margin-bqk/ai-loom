@@ -85,19 +85,19 @@ rule_generation:
   # 基础配置
   default_complexity: medium
   default_type: fantasy
-  
+
   # 奇幻世界配置
   fantasy:
     races: [human, elf, dwarf, orc]
     magic_types: [elemental, divine, nature, arcane]
     locations: [forest, mountain, castle, dungeon]
-  
+
   # 科幻世界配置
   scifi:
     factions: [federation, empire, rebels, aliens]
     tech_levels: [primitive, advanced, futuristic, transcendent]
     locations: [spaceship, planet, station, wormhole]
-  
+
   # 现实世界配置
   modern:
     eras: [ancient, medieval, modern, future]
@@ -467,26 +467,26 @@ test_runner:
     workers: 2
     timeout: 30
     verbose: true
-  
+
   # 单元测试配置
   unit:
     pattern: "test_*.py"
     paths: ["tests/test_*"]
     coverage: true
-  
+
   # 集成测试配置
   integration:
     pattern: "test_*integration*.py"
     paths: ["tests/test_integration", "tests/test_*integration*"]
     requires: ["test-db", "test-redis"]
-  
+
   # 端到端测试配置
   e2e:
     pattern: "test_*e2e*.py"
     paths: ["tests/test_e2e"]
     requires: ["test-llm-mock"]
     timeout: 60
-  
+
   # 性能测试配置
   performance:
     pattern: "test_*performance*.py"

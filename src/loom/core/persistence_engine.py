@@ -141,7 +141,8 @@ class SQLitePersistence(PersistenceEngine):
         """确保表存在"""
         async with self._transaction() as conn:
             # 会话表
-            await conn.execute("""
+            await conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS sessions (
                     id TEXT PRIMARY KEY,
                     name TEXT NOT NULL,
@@ -157,7 +158,8 @@ class SQLitePersistence(PersistenceEngine):
                     version INTEGER DEFAULT 1,
                     stats TEXT DEFAULT '{}'
                 )
-            """)
+            """
+            )
 
             # 创建索引
             await conn.execute(
@@ -168,7 +170,8 @@ class SQLitePersistence(PersistenceEngine):
             )
 
             # 回合表
-            await conn.execute("""
+            await conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS turns (
                     id TEXT PRIMARY KEY,
                     session_id TEXT NOT NULL,
@@ -187,7 +190,8 @@ class SQLitePersistence(PersistenceEngine):
                     FOREIGN KEY (session_id) REFERENCES sessions (id) ON DELETE CASCADE,
                     UNIQUE(session_id, turn_number)
                 )
-            """)
+            """
+            )
 
             await conn.execute(
                 "CREATE INDEX IF NOT EXISTS idx_turns_session ON turns(session_id)"
@@ -197,7 +201,8 @@ class SQLitePersistence(PersistenceEngine):
             )
 
             # 记忆表
-            await conn.execute("""
+            await conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS memories (
                     id TEXT PRIMARY KEY,
                     session_id TEXT NOT NULL,
@@ -210,7 +215,8 @@ class SQLitePersistence(PersistenceEngine):
                     embedding BLOB,
                     FOREIGN KEY (session_id) REFERENCES sessions (id) ON DELETE CASCADE
                 )
-            """)
+            """
+            )
 
             await conn.execute(
                 "CREATE INDEX IF NOT EXISTS idx_memories_session ON memories(session_id)"
@@ -223,7 +229,8 @@ class SQLitePersistence(PersistenceEngine):
             )
 
             # 叙事档案表
-            await conn.execute("""
+            await conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS narrative_archives (
                     id TEXT PRIMARY KEY,
                     session_id TEXT NOT NULL,
@@ -238,10 +245,12 @@ class SQLitePersistence(PersistenceEngine):
                     metadata TEXT NOT NULL,
                     FOREIGN KEY (session_id) REFERENCES sessions (id) ON DELETE CASCADE
                 )
-            """)
+            """
+            )
 
             # 叙事档案版本表
-            await conn.execute("""
+            await conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS archive_versions (
                     id TEXT PRIMARY KEY,
                     archive_id TEXT NOT NULL,
@@ -253,7 +262,8 @@ class SQLitePersistence(PersistenceEngine):
                     FOREIGN KEY (archive_id) REFERENCES narrative_archives (id) ON DELETE CASCADE,
                     UNIQUE(archive_id, version)
                 )
-            """)
+            """
+            )
 
             await conn.execute(
                 "CREATE INDEX IF NOT EXISTS idx_archives_session ON narrative_archives(session_id)"
@@ -266,13 +276,15 @@ class SQLitePersistence(PersistenceEngine):
             )
 
             # 迁移版本表
-            await conn.execute("""
+            await conn.execute(
+                """
                 CREATE TABLE IF NOT EXISTS migrations (
                     version INTEGER PRIMARY KEY,
                     name TEXT NOT NULL,
                     applied_at TEXT NOT NULL
                 )
-            """)
+            """
+            )
 
         logger.info("Database tables ensured")
 
@@ -329,7 +341,7 @@ class SQLitePersistence(PersistenceEngine):
                     metadata TEXT NOT NULL,
                     FOREIGN KEY (session_id) REFERENCES sessions (id) ON DELETE CASCADE
                 );
-                
+
                 CREATE TABLE IF NOT EXISTS archive_versions (
                     id TEXT PRIMARY KEY,
                     archive_id TEXT NOT NULL,
@@ -341,7 +353,7 @@ class SQLitePersistence(PersistenceEngine):
                     FOREIGN KEY (archive_id) REFERENCES narrative_archives (id) ON DELETE CASCADE,
                     UNIQUE(archive_id, version)
                 );
-                
+
                 CREATE INDEX IF NOT EXISTS idx_archives_session ON narrative_archives(session_id);
                 CREATE INDEX IF NOT EXISTS idx_archives_created ON narrative_archives(created_at);
                 CREATE INDEX IF NOT EXISTS idx_archive_versions_archive ON archive_versions(archive_id);
@@ -359,8 +371,8 @@ class SQLitePersistence(PersistenceEngine):
 
                 await conn.execute(
                     """
-                    INSERT OR REPLACE INTO sessions 
-                    (id, name, config, created_at, updated_at, status, current_turn, total_turns, 
+                    INSERT OR REPLACE INTO sessions
+                    (id, name, config, created_at, updated_at, status, current_turn, total_turns,
                      last_activity, state, metadata, version, stats)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
@@ -447,9 +459,9 @@ class SQLitePersistence(PersistenceEngine):
             async with self._transaction() as conn:
                 cursor = await conn.execute(
                     """
-                    SELECT id, name, status, current_turn, total_turns, created_at, last_activity 
-                    FROM sessions 
-                    ORDER BY last_activity DESC 
+                    SELECT id, name, status, current_turn, total_turns, created_at, last_activity
+                    FROM sessions
+                    ORDER BY last_activity DESC
                     LIMIT ? OFFSET ?
                 """,
                     (limit, offset),
@@ -484,9 +496,9 @@ class SQLitePersistence(PersistenceEngine):
 
                 await conn.execute(
                     """
-                    INSERT OR REPLACE INTO turns 
-                    (id, session_id, turn_number, player_input, status, llm_response, 
-                     memories_used, interventions, created_at, started_at, completed_at, 
+                    INSERT OR REPLACE INTO turns
+                    (id, session_id, turn_number, player_input, status, llm_response,
+                     memories_used, interventions, created_at, started_at, completed_at,
                      duration_ms, error, metadata)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
@@ -522,9 +534,9 @@ class SQLitePersistence(PersistenceEngine):
             async with self._transaction() as conn:
                 cursor = await conn.execute(
                     """
-                    SELECT * FROM turns 
-                    WHERE session_id = ? 
-                    ORDER BY turn_number DESC 
+                    SELECT * FROM turns
+                    WHERE session_id = ?
+                    ORDER BY turn_number DESC
                     LIMIT ? OFFSET ?
                 """,
                     (session_id, limit, offset),
@@ -570,7 +582,7 @@ class SQLitePersistence(PersistenceEngine):
 
                 await conn.execute(
                     """
-                    INSERT OR REPLACE INTO memories 
+                    INSERT OR REPLACE INTO memories
                     (id, session_id, type, content, created_at, updated_at, version, metadata, embedding)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
@@ -603,9 +615,9 @@ class SQLitePersistence(PersistenceEngine):
             async with self._transaction() as conn:
                 cursor = await conn.execute(
                     """
-                    SELECT * FROM memories 
-                    WHERE session_id = ? 
-                    ORDER BY created_at DESC 
+                    SELECT * FROM memories
+                    WHERE session_id = ?
+                    ORDER BY created_at DESC
                     LIMIT ? OFFSET ?
                 """,
                     (session_id, limit, offset),
@@ -934,9 +946,7 @@ class SQLitePersistence(PersistenceEngine):
             for character in archive.key_characters:
                 md_content.append(f"### {character.get('name', '未知角色')}")
                 md_content.append(f"- **角色**: {character.get('role', '未知')}")
-                md_content.append(
-                    f"- **描述**: {character.get('description', '无描述')}"
-                )
+                md_content.append(f"- **描述**: {character.get('description', '无描述')}")
                 if "traits" in character:
                     md_content.append(f"- **特质**: {', '.join(character['traits'])}")
                 md_content.append("")

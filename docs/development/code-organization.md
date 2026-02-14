@@ -137,7 +137,7 @@ class MemoryInterface(Protocol):
 
 #### 关键类
 - `SessionManager`: 会话管理器
-- `ConfigManager`: 配置管理器  
+- `ConfigManager`: 配置管理器
 - `PersistenceEngine`: 持久化引擎
 - `TurnScheduler`: 回合调度器
 
@@ -287,18 +287,18 @@ def create_session(
 def process_action(action: str, context: Dict[str, Any]) -> str:
     """
     处理玩家行动并生成响应。
-    
+
     Args:
         action: 玩家行动描述
         context: 当前会话上下文
-        
+
     Returns:
         str: 生成的响应文本
-        
+
     Raises:
         ValidationError: 行动格式无效
         RuntimeError: 处理过程中发生错误
-        
+
     Example:
         >>> response = process_action("我去酒馆", {"location": "城镇"})
         >>> print(response[:50])
@@ -334,7 +334,7 @@ class PersistenceStrategy(Protocol):
 class SQLitePersistence:
     async def save(self, session: Session) -> None:
         # SQLite 实现
-        
+
 class PostgreSQLPersistence:
     async def save(self, session: Session) -> None:
         # PostgreSQL 实现
@@ -368,10 +368,10 @@ class SessionObserver(Protocol):
 class SessionManager:
     def __init__(self):
         self.observers: List[SessionObserver] = []
-    
+
     def add_observer(self, observer: SessionObserver) -> None:
         self.observers.append(observer)
-    
+
     async def notify_observers(self, event: str, **kwargs) -> None:
         for observer in self.observers:
             await getattr(observer, f"on_{event}")(**kwargs)
@@ -386,11 +386,11 @@ class DatabaseConnection:
     def __init__(self, connection_string: str):
         self.connection_string = connection_string
         self.connection = None
-    
+
     async def __aenter__(self):
         self.connection = await connect(self.connection_string)
         return self.connection
-    
+
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if self.connection:
             await self.connection.close()
@@ -407,17 +407,17 @@ class SessionIterator:
     def __init__(self, session_ids: List[str]):
         self.session_ids = session_ids
         self.index = 0
-    
+
     def __aiter__(self):
         return self
-    
+
     async def __anext__(self):
         if self.index >= len(self.session_ids):
             raise StopAsyncIteration
-        
+
         session_id = self.session_ids[self.index]
         self.index += 1
-        
+
         # 异步加载会话
         session = await load_session_async(session_id)
         return session
@@ -440,11 +440,11 @@ async def process_batch(
 ) -> List[Any]:
     """批量处理项目，限制并发数"""
     semaphore = asyncio.Semaphore(max_concurrent)
-    
+
     async def process_with_semaphore(item):
         async with semaphore:
             return await processor(item)
-    
+
     tasks = [process_with_semaphore(item) for item in items]
     return await asyncio.gather(*tasks)
 ```
@@ -485,7 +485,7 @@ async def execute_with_retry(
 ) -> T:
     """带重试的执行"""
     last_exception = None
-    
+
     for attempt in range(max_retries):
         try:
             return await operation()
@@ -494,7 +494,7 @@ async def execute_with_retry(
             if attempt < max_retries - 1:
                 delay = backoff_factor ** attempt
                 await asyncio.sleep(delay)
-    
+
     raise last_exception
 ```
 
@@ -504,17 +504,17 @@ async def execute_with_retry(
 class ErrorContext:
     def __init__(self):
         self.errors: List[Dict[str, Any]] = []
-    
+
     def add_error(self, error: Exception, context: Dict[str, Any]) -> None:
         self.errors.append({
             "error": error,
             "context": context,
             "timestamp": datetime.now()
         })
-    
+
     def has_errors(self) -> bool:
         return len(self.errors) > 0
-    
+
     def get_error_summary(self) -> str:
         return f"发现 {len(self.errors)} 个错误"
 ```
@@ -559,7 +559,7 @@ def sample_rules():
     """示例规则"""
     return """
     # 测试规则
-    
+
     ## 世界设定
     - 世界名称: 测试世界
     - 时代背景: 现代
@@ -577,7 +577,7 @@ async def test_async_operation():
     """测试异步操作"""
     result = await async_operation()
     assert result is not None
-    
+
 @pytest.mark.asyncio
 async def test_concurrent_operations():
     """测试并发操作"""
@@ -597,13 +597,13 @@ from typing import Optional
 class SessionCache:
     def __init__(self):
         self._cache = weakref.WeakValueDictionary()
-    
+
     def get(self, session_id: str) -> Optional[Session]:
         return self._cache.get(session_id)
-    
+
     def set(self, session_id: str, session: Session) -> None:
         self._cache[session_id] = session
-    
+
     def clear(self) -> None:
         self._cache.clear()
 ```
@@ -616,7 +616,7 @@ class LazyLoader:
         self.loader = loader
         self._value = None
         self._loaded = False
-    
+
     @property
     def value(self) -> Any:
         if not self._loaded:

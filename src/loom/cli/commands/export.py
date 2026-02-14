@@ -33,12 +33,8 @@ def export_session(
     output: str = typer.Option(
         None, "--output", "-o", help="输出文件路径（默认：session_{id}.json）"
     ),
-    format: str = typer.Option(
-        "json", "--format", "-f", help="输出格式 (json, yaml, csv)"
-    ),
-    include_memory: bool = typer.Option(
-        False, "--include-memory", "-m", help="包含记忆数据"
-    ),
+    format: str = typer.Option("json", "--format", "-f", help="输出格式 (json, yaml, csv)"),
+    include_memory: bool = typer.Option(False, "--include-memory", "-m", help="包含记忆数据"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="详细输出"),
 ):
     """导出会话数据"""
@@ -135,12 +131,8 @@ async def _get_session_memory(session_id: str, persistence) -> dict:
 
 @app.command("sessions")
 def export_sessions(
-    output: str = typer.Option(
-        "sessions_export.json", "--output", "-o", help="输出文件路径"
-    ),
-    format: str = typer.Option(
-        "json", "--format", "-f", help="输出格式 (json, yaml, csv)"
-    ),
+    output: str = typer.Option("sessions_export.json", "--output", "-o", help="输出文件路径"),
+    format: str = typer.Option("json", "--format", "-f", help="输出格式 (json, yaml, csv)"),
     status: Optional[str] = typer.Option(
         None,
         "--status",

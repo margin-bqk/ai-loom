@@ -26,16 +26,10 @@ app = typer.Typer(
 @app.command("create")
 def create_session(
     name: str = typer.Option(..., "--name", "-n", help="会话名称"),
-    canon: str = typer.Option(
-        "./canon/default.md", "--canon", "-c", help="规则文件路径"
-    ),
+    canon: str = typer.Option("./canon/default.md", "--canon", "-c", help="规则文件路径"),
     provider: Optional[str] = typer.Option(None, "--provider", "-p", help="LLM提供商"),
-    max_turns: Optional[int] = typer.Option(
-        None, "--max-turns", "-m", help="最大回合数"
-    ),
-    output: Optional[str] = typer.Option(
-        None, "--output", "-o", help="输出会话信息文件"
-    ),
+    max_turns: Optional[int] = typer.Option(None, "--max-turns", "-m", help="最大回合数"),
+    output: Optional[str] = typer.Option(None, "--output", "-o", help="输出会话信息文件"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="详细输出"),
 ):
     """创建新会话"""
@@ -286,9 +280,7 @@ async def _show_session_async(session_id: str, output_format: str):
             info_table.add_row("ID", session.id)
             info_table.add_row("名称", session.name)
             info_table.add_row("状态", session.status.value)
-            info_table.add_row(
-                "创建时间", session.created_at.strftime("%Y-%m-%d %H:%M:%S")
-            )
+            info_table.add_row("创建时间", session.created_at.strftime("%Y-%m-%d %H:%M:%S"))
             info_table.add_row(
                 "最后活动", session.last_activity.strftime("%Y-%m-%d %H:%M:%S")
             )
@@ -309,12 +301,8 @@ async def _show_session_async(session_id: str, output_format: str):
                 stats_table.add_column("统计项", style="cyan")
                 stats_table.add_column("值", style="white")
 
-                stats_table.add_row(
-                    "运行时间", f"{stats.get('uptime_hours', 0):.2f} 小时"
-                )
-                stats_table.add_row(
-                    "回合/小时", f"{stats.get('turns_per_hour', 0):.2f}"
-                )
+                stats_table.add_row("运行时间", f"{stats.get('uptime_hours', 0):.2f} 小时")
+                stats_table.add_row("回合/小时", f"{stats.get('turns_per_hour', 0):.2f}")
 
                 console.print(Panel(stats_table, title="统计信息"))
 
@@ -332,9 +320,7 @@ async def _show_session_async(session_id: str, output_format: str):
 @app.command("delete")
 def delete_session(
     session_id: str = typer.Argument(..., help="会话ID"),
-    permanent: bool = typer.Option(
-        False, "--permanent", "-p", help="永久删除（否则归档）"
-    ),
+    permanent: bool = typer.Option(False, "--permanent", "-p", help="永久删除（否则归档）"),
     force: bool = typer.Option(False, "--force", "-f", help="强制删除，不确认"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="详细输出"),
 ):

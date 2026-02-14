@@ -152,17 +152,17 @@
 app:
   name: "loom"
   version: "0.2.0"
-  
+
 # 层配置
 layers:
   core:
     session_timeout: 3600
     auto_save: true
-    
+
   interpretation:
     llm_provider: "openai"
     temperature: 0.7
-    
+
 # 环境特定配置
 environment: "development"
 ```
@@ -183,7 +183,7 @@ environment: "development"
 
 #### 风险1：接口设计不合理
 - **影响**: 后续重构困难，需要重新设计
-- **缓解**: 
+- **缓解**:
   - 设计评审会议
   - 原型验证
   - 小范围试点
@@ -328,7 +328,7 @@ class SessionConfig:
     llm_provider: str = "openai"
     max_turns: Optional[int] = None
     metadata: Dict[str, Any] = None
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """转换为字典"""
         return {
@@ -342,33 +342,33 @@ class SessionConfig:
 
 class RuntimeCore(ABC):
     """运行时核心层接口"""
-    
+
     @abstractmethod
     async def create_session(self, config: SessionConfig) -> str:
         """创建新会话
-        
+
         Args:
             config: 会话配置
-            
+
         Returns:
             会话ID
-            
+
         Raises:
             ConfigurationError: 配置无效时
         """
         pass
-    
+
     @abstractmethod
     async def schedule_turn(self, session_id: str, player_input: str) -> Dict[str, Any]:
         """调度回合
-        
+
         Args:
             session_id: 会话ID
             player_input: 玩家输入
-            
+
         Returns:
             回合结果
-            
+
         Raises:
             SessionNotFoundError: 会话不存在时
             TurnProcessingError: 回合处理失败时
@@ -384,28 +384,28 @@ app:
   name: "loom"
   version: "0.2.0"
   environment: "development"
-  
+
 logging:
   level: "DEBUG"
   format: "json"
-  
+
 layers:
   core:
     session_timeout: 3600
     auto_save: true
     auto_save_interval: 5
-    
+
   interpretation:
     llm_provider: "openai"
     fallback_providers: ["anthropic", "local"]
     temperature: 0.7
     max_tokens: 2000
-    
+
   memory:
     backend: "sqlite"
     vector_backend: "chroma"
     cache_size: 1000
-    
+
 di:
   container: "simple"
   lifecycle: "singleton"
@@ -428,19 +428,19 @@ from src.loom.core.adapters import LegacyRuntimeCoreAdapter
 
 class TestInterfaceCompatibility:
     """接口兼容性测试"""
-    
+
     @pytest.fixture
     def legacy_core(self):
         """传统核心实现"""
         core = Mock()
         core.create_session = AsyncMock(return_value="session-123")
         return core
-    
+
     @pytest.fixture
     def adapter(self, legacy_core):
         """适配器实例"""
         return LegacyRuntimeCoreAdapter(legacy_core)
-    
+
     @pytest.mark.asyncio
     async def test_create_session_compatibility(self, adapter):
         """测试会话创建兼容性"""
@@ -448,15 +448,15 @@ class TestInterfaceCompatibility:
             name="Test Session",
             canon_path="./canon"
         )
-        
+
         session_id = await adapter.create_session(config)
-        
+
         assert session_id == "session-123"
 ```
 
 ---
 
-**计划制定**: 2026-01-12  
-**版本**: 1.0  
-**状态**: 待执行  
+**计划制定**: 2026-01-12
+**版本**: 1.0
+**状态**: 待执行
 **负责人**: [架构负责人姓名]

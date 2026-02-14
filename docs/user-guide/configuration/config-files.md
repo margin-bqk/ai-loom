@@ -72,35 +72,35 @@ provider_selection:
     - deepseek
     - gemini
     - ollama
-  
+
   # 基于会话类型的 Provider 选择
   session_type_mapping:
     creative_writing:
       preferred_provider: openai
       preferred_model: gpt-4
-      
+
     world_building:
       preferred_provider: anthropic
       preferred_model: claude-3-sonnet
-      
+
     code_generation:
       preferred_provider: ollama
       preferred_model: codellama
-      
+
     quick_chat:
       preferred_provider: openai
       preferred_model: gpt-3.5-turbo
-      
+
     chinese_content:
       preferred_provider: deepseek
       preferred_model: deepseek-chat
       fallback_to: openai
-      
+
     reasoning_tasks:
       preferred_provider: deepseek
       preferred_model: deepseek-reasoner
       fallback_to: anthropic
-  
+
   # 成本优化策略
   cost_optimization:
     enabled: true
@@ -215,7 +215,7 @@ selection_strategy:
     - "ollama"
   cost_optimization: true
   latency_optimization: false
-  
+
   # 基于会话类型的模型选择
   session_type_mapping:
     creative_writing:
@@ -229,7 +229,7 @@ cost_control:
   alert_threshold: 0.8
   auto_switch_to_cheaper: true
   token_counting: true
-  
+
   optimization_strategies:
     - name: "use_cheaper_model_for_long_context"
       enabled: true
@@ -243,7 +243,7 @@ monitoring:
   log_all_requests: false
   log_errors_only: true
   metrics_collection_interval: 60
-  
+
   track_metrics:
     - "response_time"
     - "token_usage"
@@ -398,7 +398,7 @@ characters:
     role: "主角"
     description: "年轻的法师学徒，拥有强大的魔法天赋"
     traits: ["好奇", "勇敢", "善良"]
-    
+
   - name: "雷纳德"
     role: "导师"
     description: "经验丰富的老法师，艾莉亚的导师"
@@ -408,7 +408,7 @@ locations:
   - name: "法师塔"
     description: "位于山顶的古老法师塔，雷纳德的居所"
     type: "建筑"
-    
+
   - name: "幽暗森林"
     description: "充满神秘生物和古老魔法的森林"
     type: "自然"
@@ -417,7 +417,7 @@ magic_system:
   magic_types:
     - name: "元素魔法"
       description: "操控火、水、土、风等自然元素"
-      
+
     - name: "奥术魔法"
       description: "纯粹的魔法能量，用于创造和破坏"
 
@@ -426,7 +426,7 @@ rules:
   allow_player_intervention: true
   max_retcon_depth: 3
   memory_retention: "7天"
-  
+
 llm_settings:
   provider: "openai"
   model: "gpt-4"
@@ -663,7 +663,7 @@ from loom.core.config_manager import AppConfig, ConfigManager
 
 class CustomAppConfig(AppConfig):
     """自定义应用配置"""
-    
+
     custom_field: str = "default_value"
     custom_dict: Dict[str, Any] = field(default_factory=dict)
 

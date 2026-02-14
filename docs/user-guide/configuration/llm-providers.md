@@ -59,7 +59,7 @@ selection_strategy:
 
 ### 1. OpenAI GPT 系列
 
-**显示名称**: OpenAI GPT  
+**显示名称**: OpenAI GPT
 **提供商类型**: `openai`
 
 #### 可用模型
@@ -103,13 +103,13 @@ providers:
         max_tokens: 8192
         cost_per_1k_input: 0.03
         cost_per_1k_output: 0.06
-        
+
       - name: "gpt-4-turbo"
         description: "GPT-4 Turbo"
         max_tokens: 4096
         cost_per_1k_input: 0.01
         cost_per_1k_output: 0.03
-        
+
       - name: "gpt-3.5-turbo"
         description: "GPT-3.5 Turbo (默认)"
         max_tokens: 4096
@@ -135,7 +135,7 @@ export OPENAI_MODEL="gpt-4-turbo-preview"  # 可选
 
 ### 2. Anthropic Claude 系列
 
-**显示名称**: Anthropic Claude  
+**显示名称**: Anthropic Claude
 **提供商类型**: `anthropic`
 
 #### 可用模型
@@ -173,13 +173,13 @@ providers:
         max_tokens: 4096
         cost_per_1k_input: 0.015
         cost_per_1k_output: 0.075
-        
+
       - name: "claude-3-sonnet-20240229"
         description: "Claude 3 Sonnet (平衡)"
         max_tokens: 4096
         cost_per_1k_input: 0.003
         cost_per_1k_output: 0.015
-        
+
       - name: "claude-3-haiku-20240307"
         description: "Claude 3 Haiku (快速)"
         max_tokens: 4096
@@ -203,7 +203,7 @@ export ANTHROPIC_MODEL="claude-3-opus-20240229"
 
 ### 3. DeepSeek 系列
 
-**显示名称**: DeepSeek  
+**显示名称**: DeepSeek
 **提供商类型**: `deepseek`
 
 #### 可用模型
@@ -244,7 +244,7 @@ providers:
         context_length: 128000
         cost_per_1k_input: 0.00028
         cost_per_1k_output: 0.00042
-        
+
       - name: "deepseek-reasoner"
         description: "DeepSeek Reasoner (推理模式)"
         max_tokens: 32000
@@ -293,7 +293,7 @@ deepseek:
 
 ### 4. Google Gemini 系列
 
-**显示名称**: Google Gemini  
+**显示名称**: Google Gemini
 **提供商类型**: `gemini`
 
 #### 可用模型
@@ -344,7 +344,7 @@ export GOOGLE_MODEL="gemini-pro"
 
 ### 5. 本地模型 (Ollama)
 
-**显示名称**: 本地模型 (Ollama)  
+**显示名称**: 本地模型 (Ollama)
 **提供商类型**: `ollama`
 
 #### 可用模型
@@ -379,13 +379,13 @@ providers:
         max_tokens: 4096
         cost_per_1k_input: 0.0
         cost_per_1k_output: 0.0
-        
+
       - name: "mistral"
         description: "Mistral 7B"
         max_tokens: 8192
         cost_per_1k_input: 0.0
         cost_per_1k_output: 0.0
-        
+
       - name: "codellama"
         description: "CodeLlama 7B"
         max_tokens: 4096
@@ -430,24 +430,24 @@ selection_strategy:
     creative_writing:
       preferred_provider: "openai"
       preferred_model: "gpt-4"
-      
+
     world_building:
       preferred_provider: "anthropic"
       preferred_model: "claude-3-sonnet"
-      
+
     code_generation:
       preferred_provider: "ollama"
       preferred_model: "codellama"
-      
+
     quick_chat:
       preferred_provider: "openai"
       preferred_model: "gpt-3.5-turbo"
-      
+
     chinese_content:
       preferred_provider: "deepseek"
       preferred_model: "deepseek-chat"
       fallback_to: "openai"
-      
+
     reasoning_tasks:
       preferred_provider: "deepseek"
       preferred_model: "deepseek-reasoner"
@@ -461,12 +461,12 @@ cost_control:
   alert_threshold: 0.8  # 预算使用80%时告警
   auto_switch_to_cheaper: true
   token_counting: true
-  
+
   optimization_strategies:
     - name: "use_cheaper_model_for_long_context"
       enabled: true
       threshold_tokens: 2000
-      
+
     - name: "cache_frequent_queries"
       enabled: true
       ttl_minutes: 60

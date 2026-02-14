@@ -235,9 +235,7 @@ class TestWorldEditor:
 
             editor = WorldEditor(rule_loader=mock_rule_loader)
 
-            result = await editor.create_rule(
-                "新规则", "# 新规则\n\n测试内容", "测试创建"
-            )
+            result = await editor.create_rule("新规则", "# 新规则\n\n测试内容", "测试创建")
 
             assert result.success == True
             assert "创建了新规则文件" in result.narrative_impact

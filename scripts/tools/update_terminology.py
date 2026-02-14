@@ -92,72 +92,75 @@ TERM_MAPPINGS = [
 ]
 
 # 需要处理的文件扩展名
-TEXT_EXTENSIONS = {'.md', '.txt', '.rst', '.py', '.yaml', '.yml', '.json', '.toml'}
+TEXT_EXTENSIONS = {".md", ".txt", ".rst", ".py", ".yaml", ".yml", ".json", ".toml"}
 
 # 需要处理的目录
 TARGET_DIRS = [
-    'docs/',
-    'examples/',
-    'templates/',
-    'src/loom/',
-    'scripts/',
-    'config/',
+    "docs/",
+    "examples/",
+    "templates/",
+    "src/loom/",
+    "scripts/",
+    "config/",
 ]
 
 # 排除的文件和目录
 EXCLUDE_PATTERNS = [
-    '__pycache__',
-    '.git',
-    '.venv',
-    'venv',
-    'node_modules',
-    'dist',
-    'build',
-    '*.pyc',
-    '*.pyo',
-    '*.so',
-    '*.dll',
-    '*.exe',
-    '*.bin',
+    "__pycache__",
+    ".git",
+    ".venv",
+    "venv",
+    "node_modules",
+    "dist",
+    "build",
+    "*.pyc",
+    "*.pyo",
+    "*.so",
+    "*.dll",
+    "*.exe",
+    "*.bin",
 ]
+
 
 def should_process_file(filepath: Path) -> bool:
     """判断是否应该处理该文件"""
     # 检查扩展名
     if filepath.suffix.lower() not in TEXT_EXTENSIONS:
         return False
-    
+
     # 检查排除模式
     filepath_str = str(filepath)
     for pattern in EXCLUDE_PATTERNS:
         if pattern in filepath_str:
             return False
-    
+
     return True
+
 
 def update_file_content(content: str) -> Tuple[str, int]:
     """更新文件内容中的术语"""
     changes = 0
     for old_term, new_term in TERM_MAPPINGS:
         # 使用正则表达式进行单词边界匹配
-        pattern = r'\b' + re.escape(old_term) + r'\b'
+        pattern = r"\b" + re.escape(old_term) + r"\b"
         new_content, count = re.subn(pattern, new_term, content)
         if count > 0:
             content = new_content
             changes += count
-    
+
     return content, changes
+
 
 def process_file(filepath: Path) -> int:
     """处理单个文件"""
     try:
-        with open(filepath, 'r', encoding='utf-8') as f:
+        with open(filepath, "r", encoding="utf-8") as f:
             content = f.read()
-        
+
         new_content, changes = update_file_content(content)
-        
+
         if changes > 0:
-            with open(filepath, 'w', encoding='utf-8') as f:
+            with open(filepath, "w", encoding="utf-8") as f:
                 f.write(new_content)
             print(f"  ✓ {filepath}: 更新了 {changes} 处术语")
             return changes
@@ -168,35 +171,39 @@ def process_file(filepath: Path) -> int:
         print(f"  ✗ {filepath}: 错误 - {e}")
         return 0
 
+
 def process_directory(directory: Path) -> Tuple[int, int]:
     """处理目录中的所有文件"""
     total_files = 0
     total_changes = 0
-    
+
     for root, dirs, files in os.walk(directory):
         # 过滤排除的目录
-        dirs[:] = [d for d in dirs if not any(pattern in d for pattern in EXCLUDE_PATTERNS)]
-        
+        dirs[:] = [
+            d for d in dirs if not any(pattern in d for pattern in EXCLUDE_PATTERNS)
+        ]
+
         for file in files:
             filepath = Path(root) / file
             if should_process_file(filepath):
                 total_files += 1
                 changes = process_file(filepath)
                 total_changes += changes
-    
+
     return total_files, total_changes
+
 
 def main():
     """主函数"""
     print("LOOM项目术语更新工具")
     print("=" * 50)
-    
+
     base_dir = Path.cwd()
     print(f"工作目录: {base_dir}")
-    
+
     total_processed_files = 0
     total_changes_made = 0
-    
+
     for target_dir in TARGET_DIRS:
         target_path = base_dir / target_dir
         if target_path.exists():
@@ -206,7 +213,7 @@ def main():
             total_changes_made += changes
         else:
             print(f"\n跳过不存在的目录: {target_dir}")
-    
+
     # 处理根目录下的文件
     print(f"\n处理根目录文件")
     for file in base_dir.iterdir():
@@ -214,18 +221,19 @@ def main():
             total_processed_files += 1
             changes = process_file(file)
             total_changes_made += changes
-    
+
     print("\n" + "=" * 50)
     print(f"处理完成!")
     print(f"处理文件数: {total_processed_files}")
     print(f"总术语更新数: {total_changes_made}")
-    
+
     # 显示术语映射摘要
     print(f"\n术语映射摘要:")
     for old_term, new_term in TERM_MAPPINGS[:10]:  # 只显示前10个
         print(f"  {old_term} → {new_term}")
     if len(TERM_MAPPINGS) > 10:
         print(f"  ... 还有 {len(TERM_MAPPINGS) - 10} 个映射")
+
 
 if __name__ == "__main__":
     main()

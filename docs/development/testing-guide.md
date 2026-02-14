@@ -100,7 +100,7 @@ testpaths = tests
 python_files = test_*.py
 python_classes = Test*
 python_functions = test_*
-addopts = 
+addopts =
     -v
     --tb=short
     --strict-markers
@@ -160,21 +160,21 @@ tests/
 ```python
 class TestComponentName:
     """组件测试类"""
-    
+
     @pytest.fixture
     def setup_component(self):
         """设置测试组件"""
         pass
-    
+
     def test_basic_functionality(self, setup_component):
         """测试基本功能"""
         pass
-    
+
     @pytest.mark.asyncio
     async def test_async_functionality(self, setup_component):
         """测试异步功能"""
         pass
-    
+
     @pytest.mark.parametrize("input,expected", [
         ("input1", "expected1"),
         ("input2", "expected2"),
@@ -182,7 +182,7 @@ class TestComponentName:
     def test_with_parameters(self, input, expected):
         """参数化测试"""
         pass
-    
+
     def test_error_handling(self):
         """测试错误处理"""
         with pytest.raises(ExpectedError):
@@ -201,7 +201,7 @@ from src.loom.core.config_manager import ConfigManager
 
 class TestConfigManager:
     """ConfigManager测试类"""
-    
+
     @pytest.fixture
     def temp_config_file(self):
         """创建临时配置文件"""
@@ -216,16 +216,16 @@ class TestConfigManager:
             temp_path = f.name
         yield temp_path
         os.unlink(temp_path)
-    
+
     def test_load_config(self, temp_config_file):
         """测试配置加载"""
         config_manager = ConfigManager(config_path=temp_config_file)
         config = config_manager.get_config()
-        
+
         assert config.log_level == "INFO"
         assert "openai" in config.llm_providers
         assert config.llm_providers["openai"].model == "gpt-3.5-turbo"
-    
+
     def test_env_var_override(self, temp_config_file):
         """测试环境变量覆盖"""
         import os
@@ -233,7 +233,7 @@ class TestConfigManager:
             mp.setenv("LOOM_LOG_LEVEL", "DEBUG")
             config_manager = ConfigManager(config_path=temp_config_file)
             config = config_manager.get_config()
-            
+
             assert config.log_level == "DEBUG"
 ```
 
@@ -246,7 +246,7 @@ from src.loom.core.session_manager import SessionManager
 
 class TestSessionManager:
     """SessionManager测试类"""
-    
+
     @pytest.fixture
     async def session_manager(self):
         """创建SessionManager实例"""
@@ -254,7 +254,7 @@ class TestSessionManager:
         await manager.initialize()
         yield manager
         await manager.cleanup()
-    
+
     @pytest.mark.asyncio
     async def test_create_session(self, session_manager):
         """测试创建会话"""
@@ -262,11 +262,11 @@ class TestSessionManager:
             name="测试会话",
             config={"llm_provider": "openai"}
         )
-        
+
         assert session.id is not None
         assert session.name == "测试会话"
         assert session.config["llm_provider"] == "openai"
-    
+
     @pytest.mark.asyncio
     async def test_concurrent_sessions(self, session_manager):
         """测试并发会话创建"""
@@ -277,7 +277,7 @@ class TestSessionManager:
                 config={"llm_provider": "openai"}
             )
             tasks.append(task)
-        
+
         sessions = await asyncio.gather(*tasks)
         assert len(sessions) == 5
         assert all(s.id is not None for s in sessions)
@@ -292,7 +292,7 @@ from src.loom.interpretation.llm_provider import LLMProvider
 
 class TestLLMProvider:
     """LLMProvider测试类"""
-    
+
     @pytest.fixture
     def mock_llm_provider(self):
         """创建Mock LLM提供商"""
@@ -301,14 +301,14 @@ class TestLLMProvider:
         provider.generate_stream = AsyncMock()
         provider.get_cost_estimate = Mock(return_value=0.001)
         return provider
-    
+
     @pytest.mark.asyncio
     async def test_generate_response(self, mock_llm_provider):
         """测试生成响应"""
         response = await mock_llm_provider.generate("测试Prompt")
         assert response == "Mock响应"
         mock_llm_provider.generate.assert_called_once_with("测试Prompt")
-    
+
     @pytest.mark.asyncio
     async def test_cost_estimation(self, mock_llm_provider):
         """测试成本估算"""
@@ -335,43 +335,43 @@ from src.loom.memory.world_memory import WorldMemory
 
 class TestRuleInterpretationIntegration:
     """规则解释集成测试"""
-    
+
     @pytest.fixture
     async def integration_setup(self):
         """集成测试设置"""
         # 加载规则
         rule_loader = RuleLoader()
         canon = rule_loader.load_canon("test_canon")
-        
+
         # 初始化解释器
         interpreter = RuleInterpreter()
-        
+
         # 初始化记忆
         memory = WorldMemory(session_id="test_session")
         await memory.initialize()
-        
+
         yield {
             "rule_loader": rule_loader,
             "interpreter": interpreter,
             "memory": memory,
             "canon": canon
         }
-        
+
         await memory.cleanup()
-    
+
     @pytest.mark.asyncio
     async def test_full_interpretation_flow(self, integration_setup):
         """测试完整解释流程"""
         setup = integration_setup
-        
+
         # 解释规则
         interpretation = setup["interpreter"].interpret(setup["canon"])
-        
+
         # 验证解释结果
         assert interpretation is not None
         assert len(interpretation.constraints) > 0
         assert len(interpretation.key_themes) > 0
-        
+
         # 存储记忆
         memory_entity = {
             "type": "fact",
@@ -379,7 +379,7 @@ class TestRuleInterpretationIntegration:
             "metadata": {"source": "test"}
         }
         await setup["memory"].store_entity(memory_entity)
-        
+
         # 检索记忆
         entities = await setup["memory"].search_entities("测试")
         assert len(entities) > 0
@@ -401,7 +401,7 @@ from src.loom.api.client import LoomClient
 
 class TestFullSession:
     """完整会话端到端测试"""
-    
+
     @pytest.fixture
     async def loom_client(self):
         """创建LOOM客户端"""
@@ -409,7 +409,7 @@ class TestFullSession:
         await client.connect()
         yield client
         await client.disconnect()
-    
+
     @pytest.mark.e2e
     @pytest.mark.asyncio
     async def test_create_and_run_session(self, loom_client):
@@ -423,31 +423,31 @@ class TestFullSession:
                 "model": "gpt-3.5-turbo"
             }
         )
-        
+
         assert session.id is not None
         assert session.status == "created"
-        
+
         # 运行回合
         response = await loom_client.submit_turn(
             session_id=session.id,
             player_input="我观察周围环境"
         )
-        
+
         assert response.turn_id is not None
         assert response.llm_response is not None
         assert len(response.llm_response) > 0
-        
+
         # 获取会话状态
         session_status = await loom_client.get_session_status(session.id)
         assert session_status.current_turn == 1
         assert session_status.status == "active"
-        
+
         # 导出会话
         export_data = await loom_client.export_session(
             session.id,
             format="json"
         )
-        
+
         assert "session" in export_data
         assert "turns" in export_data
         assert len(export_data["turns"]) == 1
@@ -472,13 +472,13 @@ from src.loom.core.turn_scheduler import TurnScheduler
 
 class TestTurnProcessingPerformance:
     """回合处理性能测试"""
-    
+
     @pytest.mark.performance
     @pytest.mark.benchmark
     def test_turn_processing_latency(self, benchmark):
         """测试回合处理延迟"""
         scheduler = TurnScheduler(max_concurrent=3)
-        
+
         def process_turn():
             turn = {
                 "session_id": "test_session",
@@ -487,16 +487,16 @@ class TestTurnProcessingPerformance:
             }
             result = asyncio.run(scheduler.submit_turn(turn))
             return result
-        
+
         # 运行基准测试
         result = benchmark(process_turn)
         assert result is not None
-    
+
     @pytest.mark.performance
     def test_concurrent_turn_processing(self):
         """测试并发回合处理"""
         scheduler = TurnScheduler(max_concurrent=5)
-        
+
         async def submit_multiple_turns():
             tasks = []
             for i in range(10):
@@ -507,15 +507,15 @@ class TestTurnProcessingPerformance:
                 }
                 task = scheduler.submit_turn(turn)
                 tasks.append(task)
-            
+
             results = await asyncio.gather(*tasks)
             return results
-        
+
         # 测量执行时间
         start_time = time.time()
         results = asyncio.run(submit_multiple_turns())
         end_time = time.time()
-        
+
         execution_time = end_time - start_time
         assert len(results) == 10
         assert execution_time < 5.0  # 5秒内完成
@@ -530,7 +530,7 @@ from locust import HttpUser, task, between
 
 class LoomUser(HttpUser):
     wait_time = between(1, 3)
-    
+
     @task
     def create_session(self):
         """创建会话"""
@@ -538,14 +538,14 @@ class LoomUser(HttpUser):
             "name": "负载测试会话",
             "canon": "basic_world.md"
         })
-    
+
     @task(3)
     def submit_turn(self):
         """提交回合"""
         self.client.post("/api/v1/sessions/test_session/turns", json={
             "player_input": "测试输入"
         })
-    
+
     @task
     def get_session_status(self):
         """获取会话状态"""

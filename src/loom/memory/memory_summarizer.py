@@ -141,9 +141,9 @@ class MemorySummarizer(BaseMemorySummarizer):
         self.config = SummaryConfig(**config) if config else SummaryConfig()
 
         # 摘要缓存
-        self.summary_cache: Dict[str, Dict[str, Any]] = (
-            {}
-        )  # cache_key -> {summary, timestamp}
+        self.summary_cache: Dict[
+            str, Dict[str, Any]
+        ] = {}  # cache_key -> {summary, timestamp}
 
         # 重要性评分缓存
         self.importance_cache: Dict[str, ImportanceScore] = {}
@@ -362,10 +362,10 @@ class MemorySummarizer(BaseMemorySummarizer):
 
         try:
             prompt = f"""请优化以下摘要，使其长度大约为{target_len}个字符：
-            
+
             原始摘要：
             {summary.summary_text}
-            
+
             请生成优化后的摘要，保持关键信息不变："""
 
             response = await self.llm_provider.generate(prompt)
@@ -423,10 +423,10 @@ class MemorySummarizer(BaseMemorySummarizer):
         if self.llm_provider:
             try:
                 prompt = f"""请分析以下记忆实体的重要性：
-                
+
                 实体类型：{entity.type.value}
                 内容：{json.dumps(entity.content, ensure_ascii=False)[:200]}
-                
+
                 请简要解释这个实体的重要性："""
 
                 response = await self.llm_provider.generate(prompt)

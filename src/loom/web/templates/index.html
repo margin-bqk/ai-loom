@@ -212,23 +212,23 @@
     <script src="/static/js/sessions.js"></script>
     <script src="/static/js/rules.js"></script>
     <script src="/static/js/websocket.js"></script>
-    
+
     <!-- 初始化脚本 -->
     <script>
         // 页面加载完成后初始化
         document.addEventListener('DOMContentLoaded', function() {
             // 检查 API 状态
             checkApiStatus();
-            
+
             // 加载会话
             loadSessions();
-            
+
             // 加载规则
             loadRules();
-            
+
             // 连接 WebSocket
             connectWebSocket();
-            
+
             // 更新系统状态
             loadSystemStatus();
         });

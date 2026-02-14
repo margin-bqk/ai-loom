@@ -25,25 +25,25 @@ import asyncio
 async def create_session():
     # 创建会话管理器
     session_manager = SessionManager()
-    
+
     # 配置会话
     config = SessionConfig(
         session_type="chinese_content",
         initial_prompt="用中文写一个科幻故事开头",
         max_turns=10
     )
-    
+
     # 创建会话
     session = await session_manager.create_session(config)
     print(f"会话创建成功: {session.session_id}")
-    
+
     # 运行会话
     await session.run()
-    
+
     # 获取响应
     for turn in session.turns:
         print(f"回合 {turn.turn_number}: {turn.response[:100]}...")
-    
+
     return session
 
 # 运行异步函数
@@ -65,22 +65,22 @@ async def use_deepseek():
         "temperature": 1.0,
         "max_tokens": 4096
     }
-    
+
     # 创建提供商
     provider = LLMProviderFactory.create_provider(config)
-    
+
     # 生成文本
     response = await provider.generate(
         "用中文解释量子计算的基本原理",
         temperature=0.8,
         max_tokens=1000
     )
-    
+
     print(f"响应: {response.content}")
     print(f"模型: {response.model}")
     print(f"使用令牌: {response.usage}")
     print(f"成本: ${response.cost:.6f}")
-    
+
     return response
 
 asyncio.run(use_deepseek())
@@ -98,21 +98,21 @@ async def use_deepseek_reasoner():
         "thinking_enabled": True,  # 启用推理模式
         "max_tokens": 32000
     }
-    
+
     provider = LLMProviderFactory.create_provider(config)
-    
+
     # 复杂推理任务
     prompt = """
     问题：如果一只猫从3米高的树上跳下，落地时的速度是多少？
     请展示完整的推理过程。
     """
-    
+
     response = await provider.generate(prompt)
-    
+
     print("=== 推理模式响应 ===")
     print(response.content)
     print(f"推理步骤: {response.metadata.get('thinking_steps', 'N/A')}")
-    
+
     return response
 
 asyncio.run(use_deepseek_reasoner())
@@ -287,13 +287,13 @@ api:
   port: 8000
   workers: 4
   debug: false
-  
+
   authentication:
     enabled: true
     api_keys:
       - "your-secret-key-1"
       - "your-secret-key-2"
-  
+
   cors:
     enabled: true
     origins:
@@ -306,7 +306,7 @@ llm_providers:
     api_key: ${DEEPSEEK_API_KEY:}
     default_model: "deepseek-chat"
     thinking_enabled: false
-    
+
   openai:
     enabled: true
     api_key: ${OPENAI_API_KEY:}
@@ -324,7 +324,7 @@ from loom import SessionManager, SessionConfig
 async def generate_chinese_content():
     """使用 DeepSeek 生成中文内容"""
     session_manager = SessionManager()
-    
+
     config = SessionConfig(
         session_type="chinese_content",
         initial_prompt="""
@@ -337,17 +337,17 @@ async def generate_chinese_content():
         llm_model="deepseek-chat",
         max_turns=1
     )
-    
+
     session = await session_manager.create_session(config)
     await session.run()
-    
+
     response = session.turns[0].response
     print(f"生成内容:\n{response}")
-    
+
     # 保存到文件
     with open("ai_future_chinese.txt", "w", encoding="utf-8") as f:
         f.write(response)
-    
+
     return session
 
 asyncio.run(generate_chinese_content())
@@ -359,22 +359,22 @@ asyncio.run(generate_chinese_content())
 async def solve_reasoning_problem():
     """使用 DeepSeek Reasoner 解决推理问题"""
     from loom.interpretation import LLMProviderFactory
-    
+
     config = {
         "type": "deepseek",
         "api_key": "your-deepseek-api-key",
         "model": "deepseek-reasoner",
         "thinking_enabled": True
     }
-    
+
     provider = LLMProviderFactory.create_provider(config)
-    
+
     problems = [
         "如果所有猫都怕水，而汤姆是一只猫，那么汤姆怕水吗？请推理。",
         "一个篮子里有5个苹果，你拿走了2个，你还剩几个苹果？",
         "解释为什么天空是蓝色的，使用科学原理。"
     ]
-    
+
     for i, problem in enumerate(problems, 1):
         print(f"\n问题 {i}: {problem}")
         response = await provider.generate(problem)
@@ -390,7 +390,7 @@ asyncio.run(solve_reasoning_problem())
 async def batch_process():
     """批量处理多个请求"""
     from loom.interpretation import LLMProviderFactory
-    
+
     config = {
         "type": "deepseek",
         "api_key": "your-deepseek-api-key",
@@ -399,9 +399,9 @@ async def batch_process():
         "batch_size": 5,
         "batch_timeout": 0.5
     }
-    
+
     provider = LLMProviderFactory.create_provider(config)
-    
+
     prompts = [
         "写一句关于春天的诗",
         "翻译'Hello, world!'到中文",
@@ -409,12 +409,12 @@ async def batch_process():
         "解释什么是机器学习",
         "推荐一本好书"
     ]
-    
+
     # 批量生成
     responses = await asyncio.gather(
         *[provider.generate(prompt) for prompt in prompts]
     )
-    
+
     for i, (prompt, response) in enumerate(zip(prompts, responses), 1):
         print(f"{i}. 提示: {prompt}")
         print(f"   响应: {response.content}")
@@ -442,23 +442,23 @@ async def safe_api_call():
             initial_prompt="测试"
         )
         return session
-        
+
     except APIError as e:
         print(f"API 错误: {e.status_code} - {e.message}")
-        
+
         if e.status_code == 401:
             print("认证失败，请检查 API 密钥")
         elif e.status_code == 429:
             print("请求过于频繁，请稍后重试")
         elif e.status_code == 500:
             print("服务器内部错误")
-            
+
         return None
-        
+
     except asyncio.TimeoutError:
         print("请求超时，请检查网络连接或增加超时时间")
         return None
-        
+
     except Exception as e:
         print(f"未知错误: {type(e).__name__}: {e}")
         return None
@@ -471,27 +471,27 @@ asyncio.run(safe_api_call())
 ```python
 async def handle_provider_errors():
     from loom.interpretation import LLMProviderFactory
-    
+
     config = {
         "type": "deepseek",
         "api_key": "invalid-key",  # 无效的密钥
         "model": "deepseek-chat"
     }
-    
+
     try:
         provider = LLMProviderFactory.create_provider(config)
         response = await provider.generate("测试")
-        
+
     except Exception as e:
         print(f"提供商错误: {e}")
-        
+
         # 尝试回退到其他提供商
         fallback_config = {
             "type": "openai",
             "api_key": "valid-openai-key",
             "model": "gpt-3.5-turbo"
         }
-        
+
         fallback_provider = LLMProviderFactory.create_provider(fallback_config)
         response = await fallback_provider.generate("测试")
         print(f"使用回退提供商成功: {response.model}")
@@ -547,10 +547,10 @@ async def monitored_call():
             session_id="test",
             prompt="测试"
         )
-        
+
     metrics.increment_counter("api_calls_total")
     metrics.record_gauge("response_tokens", response.usage.get("total_tokens", 0))
-    
+
     logger.info(f"API调用完成: {response.model}, 令牌: {response.usage}")
 ```
 

@@ -398,10 +398,7 @@ class ReasoningPipeline:
         quality_score += constraints_score * 0.2  # 约束应用占20%
 
         # 检查是否有错误标记
-        if (
-            "[错误]" in result.narrative_response
-            or "[降级响应]" in result.narrative_response
-        ):
+        if "[错误]" in result.narrative_response or "[降级响应]" in result.narrative_response:
             quality_score *= 0.5
 
         return {
@@ -485,9 +482,7 @@ class ReasoningPipeline:
                 if attempt == max_retries:
                     raise
 
-        return (
-            best_result if best_result else await self.process(context)
-        )  # 最后一次尝试
+        return best_result if best_result else await self.process(context)  # 最后一次尝试
 
     def generate_report(self, results: List[ReasoningResult]) -> Dict[str, Any]:
         """生成处理报告"""

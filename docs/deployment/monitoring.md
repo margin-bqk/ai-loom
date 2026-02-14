@@ -109,7 +109,7 @@ groups:
         annotations:
           summary: "LOOM instance is down"
           description: "LOOM instance {{ $labels.instance }} has been down for more than 1 minute."
-      
+
       - alert: HighErrorRate
         expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
         for: 2m
@@ -118,7 +118,7 @@ groups:
         annotations:
           summary: "High error rate on LOOM"
           description: "Error rate is above 5% for the last 5 minutes."
-      
+
       - alert: HighLatency
         expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
         for: 5m
@@ -127,7 +127,7 @@ groups:
         annotations:
           summary: "High latency on LOOM"
           description: "95th percentile latency is above 2 seconds."
-      
+
       - alert: HighMemoryUsage
         expr: process_resident_memory_bytes / 1024 / 1024 > 512
         for: 5m
@@ -584,7 +584,7 @@ class CustomMonitorPlugin(BaseMonitorPlugin):
             'custom_metric': 42,
             'another_metric': {'value': 100, 'labels': {'type': 'test'}}
         }
-    
+
     def check_health(self):
         # 健康检查逻辑
         return {'status': 'healthy', 'details': 'All systems operational'}

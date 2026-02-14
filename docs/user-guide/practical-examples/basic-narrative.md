@@ -54,23 +54,23 @@ world:
   description: |
     一个充满魔法和神秘的中世纪奇幻世界。
     世界由多个王国和城邦组成，魔法是自然力量的一部分。
-  
+
   physical_laws:
     - "魔法是世界的自然力量，存在于所有生物和物体中"
     - "魔法分为元素魔法（火、水、风、土）和奥术魔法（时间、空间、生命）"
     - "魔法使用需要消耗精神力，过度使用会导致魔法衰竭"
     - "物理法则基本遵循现实世界，但允许魔法干预"
-  
+
   major_races:
     - name: "人类"
       description: "适应性强，学习速度快，魔法天赋中等"
-    
+
     - name: "精灵"
       description: "长寿，与自然和谐相处，擅长元素魔法"
-    
+
     - name: "矮人"
       description: "擅长锻造和采矿，对魔法有天然抗性"
-    
+
     - name: "兽人"
       description: "身体强壮，部落文化，有独特的萨满魔法传统"
 
@@ -80,7 +80,7 @@ tone:
     primary: ["冒险", "惊奇", "偶尔的幽默"]
     allowed: ["紧张", "悲伤（短暂）", "胜利的喜悦"]
     avoid: ["彻底的绝望", "无意义的残忍", "过度的恐怖"]
-  
+
   narrative_pacing:
     opening: "中等节奏，建立世界观和角色"
     development: "节奏加快，增加冲突和挑战"
@@ -91,16 +91,16 @@ conflict:
   conflict_types:
     - type: "角色冲突"
       resolution: "通过对话、妥协或角色成长解决"
-    
+
     - type: "物理冲突"
       resolution: "通过战斗、技能或魔法解决"
-    
+
     - type: "道德冲突"
       resolution: "通过价值观讨论和艰难选择解决"
-    
+
     - type: "环境冲突"
       resolution: "通过智慧、团队合作或特殊能力解决"
-  
+
   combat_rules:
     - "战斗应该有叙事意义，避免无意义的暴力"
     - "角色可以受伤，但死亡应该是重要的叙事时刻"
@@ -114,7 +114,7 @@ permissions:
     - "学习魔法和技能（需要合理训练）"
     - "与其他角色建立关系"
     - "影响故事发展方向"
-  
+
   player_cannot:
     - "直接控制其他玩家的角色（除非获得同意）"
     - "违反角色设定的行为（如精灵突然精通矮人锻造）"
@@ -127,7 +127,7 @@ causality:
     - "死亡通常是永久的"
     - "复活魔法极其罕见且代价巨大"
     - "角色死亡应该是重要的叙事事件"
-  
+
   causality_principles:
     - "行动必有后果：角色的选择会影响世界"
     - "一致性原则：事件应该逻辑连贯"
@@ -174,7 +174,7 @@ world.set_tone(
     primary_moods=["冒险", "惊奇", "幽默"],
     pacing={
         "opening": "中等节奏",
-        "development": "加快节奏", 
+        "development": "加快节奏",
         "climax": "快速节奏",
         "ending": "放慢节奏"
     }
@@ -197,10 +197,10 @@ from loom.interpretation import LLMProviderFactory
 
 async def create_basic_session():
     """创建基础叙事会话"""
-    
+
     # 初始化会话管理器
     session_manager = SessionManager()
-    
+
     # 配置 LLM 提供商
     llm_config = {
         "type": "openai",
@@ -209,7 +209,7 @@ async def create_basic_session():
         "temperature": 0.8,
         "max_tokens": 1000
     }
-    
+
     # 创建会话配置
     session_config = SessionConfig(
         session_type="fantasy_adventure",
@@ -223,15 +223,15 @@ async def create_basic_session():
         memory_enabled=True,
         memory_capacity=20
     )
-    
+
     # 创建会话
     session = await session_manager.create_session(session_config)
-    
+
     print(f"会话创建成功!")
     print(f"会话ID: {session.session_id}")
     print(f"会话类型: {session.session_type}")
     print(f"初始提示: {session.initial_prompt[:100]}...")
-    
+
     return session
 
 if __name__ == "__main__":
@@ -247,47 +247,47 @@ from loom import SessionManager
 
 async def interactive_storytelling():
     """交互式叙事示例"""
-    
+
     # 创建会话
     session_manager = SessionManager()
     session = await session_manager.load_session("your_session_id")
-    
+
     print("=== 奇幻冒险故事 ===")
     print("输入 'quit' 退出，'save' 保存会话")
     print("-" * 40)
-    
+
     # 显示初始故事
     if session.turns:
         last_turn = session.turns[-1]
         print(f"[故事讲述者] {last_turn.response}")
-    
+
     # 交互循环
     while True:
         # 获取用户输入
         user_input = input("\n[你] ")
-        
+
         if user_input.lower() == 'quit':
             print("退出故事...")
             break
-        
+
         if user_input.lower() == 'save':
             await session_manager.save_session(session)
             print("会话已保存!")
             continue
-        
+
         # 添加回合
         try:
             turn = await session.add_turn(user_input)
             print(f"\n[故事讲述者] {turn.response}")
-            
+
             # 显示统计信息
             print(f"\n[统计] 回合: {len(session.turns)}, "
                   f"令牌: {turn.usage.get('total_tokens', 0)}, "
                   f"成本: ${turn.cost:.6f}")
-                  
+
         except Exception as e:
             print(f"错误: {e}")
-    
+
     # 保存最终会话
     await session_manager.save_session(session)
     print(f"\n故事结束! 会话已保存为: {session.session_id}")
@@ -318,16 +318,16 @@ from loom.export import NarrativeExporter
 
 class MagicApprenticeAdventure:
     """魔法学徒冒险示例类"""
-    
+
     def __init__(self, api_key: str):
         self.api_key = api_key
         self.session_manager = SessionManager()
         self.world_builder = WorldBuilder()
-        
+
     async def setup_world(self):
         """设置奇幻世界"""
         print("1. 创建奇幻世界...")
-        
+
         # 创建或加载世界
         world_config = Path("examples/full_example/config/world_config.yaml")
         if world_config.exists():
@@ -338,16 +338,16 @@ class MagicApprenticeAdventure:
                 description="魔法与神秘的中世纪奇幻世界",
                 genre="fantasy"
             )
-        
+
         print(f"  世界: {world.name}")
         print(f"  描述: {world.description[:50]}...")
-        
+
         return world
-    
+
     async def create_characters(self):
         """创建角色"""
         print("\n2. 创建角色...")
-        
+
         characters = [
             {
                 "name": "艾莉亚",
@@ -371,16 +371,16 @@ class MagicApprenticeAdventure:
                 "goal": "保护艾莉亚，证明自己的价值"
             }
         ]
-        
+
         for char in characters:
             print(f"  {char['name']} - {char['role']}: {char['description'][:30]}...")
-        
+
         return characters
-    
+
     async def start_adventure(self, world, characters):
         """开始冒险"""
         print("\n3. 开始冒险会话...")
-        
+
         # 创建会话配置
         session_config = SessionConfig(
             session_type="magic_apprentice_adventure",
@@ -394,62 +394,62 @@ class MagicApprenticeAdventure:
             memory_enabled=True,
             memory_capacity=25
         )
-        
+
         # 创建会话
         session = await self.session_manager.create_session(session_config)
-        
+
         print(f"  会话ID: {session.session_id}")
         print(f"  最大回合数: {session_config.max_turns}")
-        
+
         return session
-    
+
     def _create_initial_prompt(self, world, characters):
         """创建初始提示"""
         main_char = next(c for c in characters if c["role"] == "主角")
         mentor = next(c for c in characters if c["role"] == "导师")
         companion = next(c for c in characters if c["role"] == "同伴")
-        
+
         prompt = f"""
         你是一位专业的奇幻故事讲述者，擅长创作成长和冒险故事。
-        
+
         世界设定: {world.name}
         {world.description}
-        
+
         主要角色:
         1. {main_char['name']} - {main_char['description']}
            性格: {main_char['personality']}
            目标: {main_char['goal']}
-        
+
         2. {mentor['name']} - {mentor['description']}
            性格: {mentor['personality']}
            现状: 最近神秘失踪
-        
+
         3. {companion['name']} - {companion['description']}
            性格: {companion['personality']}
            目标: {companion['goal']}
-        
+
         故事开场:
         清晨，{main_char['name']}在魔法学院的图书馆里发现了一本奇怪的古书。
         书封面上有一个她从未见过的符号，书页中夹着一封{mentor['name']}留下的神秘信件。
         信件只有一句话："当月亮变成银色时，到遗忘之塔来找我。危险，但必须来。"
-        
+
         请开始讲述这个故事，描述{main_char['name']}发现古书和信件时的场景，
         以及她决定寻找{mentor['name']}时的内心挣扎。
         保持奇幻冒险的基调，注重细节和氛围营造。
         """
-        
+
         return prompt
-    
+
     async def run_story(self, session):
         """运行故事"""
         print("\n4. 运行交互式故事...")
         print("=" * 60)
-        
+
         # 显示初始故事
         if session.turns:
             last_turn = session.turns[-1]
             print(f"[故事讲述者]\n{last_turn.response}\n")
-        
+
         # 预定义的玩家输入序列（模拟交互）
         player_inputs = [
             "艾莉亚仔细研究古书上的符号，试图辨认它的含义",
@@ -460,36 +460,36 @@ class MagicApprenticeAdventure:
             "在魔法用品店，店主警告他们遗忘之塔的危险性",
             "夜幕降临，艾莉亚和里奥悄悄离开学院，踏上寻找导师的旅程"
         ]
-        
+
         for i, input_text in enumerate(player_inputs, 1):
             print(f"\n[回合 {i}] 玩家: {input_text}")
-            
+
             try:
                 # 添加回合
                 turn = await session.add_turn(input_text)
-                
+
                 print(f"[故事讲述者]\n{turn.response}\n")
                 print(f"[统计] 令牌: {turn.usage.get('total_tokens', 0)}, "
                       f"成本: ${turn.cost:.6f}")
-                
+
                 # 暂停一下，让阅读更自然
                 await asyncio.sleep(1)
-                
+
             except Exception as e:
                 print(f"错误: {e}")
                 break
-        
+
         return session
-    
+
     async def export_story(self, session):
         """导出故事"""
         print("\n5. 导出故事...")
-        
+
         exporter = NarrativeExporter()
-        
+
         # 导出为多种格式
         export_formats = ["markdown", "html", "json"]
-        
+
         for format in export_formats:
             try:
                 output_path = f"magic_apprentice_adventure.{format}"
@@ -497,7 +497,7 @@ class MagicApprenticeAdventure:
                 print(f"  ✓ 导出为 {format}: {output_path}")
             except Exception as e:
                 print(f"  ✗ 导出 {format} 失败: {e}")
-        
+
         # 生成统计报告
         stats = {
             "session_id": session.session_id,
@@ -508,37 +508,37 @@ class MagicApprenticeAdventure:
             "start_time": session.created_at.isoformat() if hasattr(session, 'created_at') else datetime.now().isoformat(),
             "end_time": datetime.now().isoformat()
         }
-        
+
         stats_file = "adventure_stats.json"
         with open(stats_file, "w", encoding="utf-8") as f:
             json.dump(stats, f, indent=2, ensure_ascii=False)
-        
+
         print(f"  ✓ 统计报告: {stats_file}")
-        
+
         return stats
-    
+
     async def run_full_example(self):
         """运行完整示例"""
         print("=" * 60)
         print("魔法学徒冒险示例")
         print("=" * 60)
-        
+
         try:
             # 1. 设置世界
             world = await self.setup_world()
-            
+
             # 2. 创建角色
             characters = await self.create_characters()
-            
+
             # 3. 开始冒险
             session = await self.start_adventure(world, characters)
-            
+
             # 4. 运行故事
             session = await self.run_story(session)
-            
+
             # 5. 导出故事
             stats = await self.export_story(session)
-            
+
             print("\n" + "=" * 60)
             print("示例完成!")
             print(f"总回合数: {stats['total_turns']}")
@@ -546,9 +546,9 @@ class MagicApprenticeAdventure:
             print(f"总成本: ${stats['total_cost']:.6f}")
             print(f"平均回合长度: {stats['average_turn_length']:.0f} 字符")
             print("=" * 60)
-            
+
             return session
-            
+
         except Exception as e:
             print(f"示例运行失败: {e}")
             import traceback
@@ -560,12 +560,12 @@ async def main():
     # 从环境变量获取API密钥
     import os
     api_key = os.getenv("OPENAI_API_KEY")
-    
+
     if not api_key:
         print("错误: 请设置 OPENAI_API_KEY 环境变量")
         print("示例: export OPENAI_API_KEY='your-api-key'")
         return
-    
+
     # 创建并运行示例
     adventure = MagicApprenticeAdventure(api_key)
     await adventure.run_full_example()
@@ -706,7 +706,7 @@ if inconsistencies:
     print("发现角色不一致:")
     for inc in inconsistencies:
         print(f"  - {inc['character']}: {inc['issue']}")
-    
+
     # 修复不一致
     await session.fix_character_inconsistency(
         character="艾莉亚",
@@ -786,10 +786,10 @@ async def batch_process_turns(session, inputs):
     for input_text in inputs:
         task = session.add_turn(input_text)
         tasks.append(task)
-    
+
     # 并行处理
     results = await asyncio.gather(*tasks, return_exceptions=True)
-    
+
     # 处理结果
     for i, result in enumerate(results):
         if isinstance(result, Exception):

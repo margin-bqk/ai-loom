@@ -3,9 +3,9 @@
 测试第二阶段组件导入 - 修复版本
 """
 
-import sys
-import os
 import importlib
+import os
+import sys
 
 # 添加src目录到Python路径
 project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

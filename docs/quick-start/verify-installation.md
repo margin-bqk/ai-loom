@@ -71,11 +71,11 @@ loom --help
 
 # 预期输出应显示所有可用命令：
 # Usage: loom [OPTIONS] COMMAND [ARGS]...
-# 
+#
 # Options:
 #   --version  Show version
 #   --help     Show this message and exit.
-# 
+#
 # Commands:
 #   config   配置管理
 #   export   导出会话
@@ -291,7 +291,7 @@ def check_python_version():
     print("1. 检查 Python 版本...")
     version = platform.python_version()
     major, minor, _ = map(int, version.split('.'))
-    
+
     if major == 3 and minor >= 10:
         print(f"  ✓ Python {version} (符合要求)")
         return True
@@ -303,7 +303,7 @@ def check_virtual_env():
     """检查虚拟环境"""
     print("2. 检查虚拟环境...")
     success, stdout, _ = run_command("which python", check=False)
-    
+
     if "venv" in stdout or "VIRTUAL_ENV" in os.environ:
         print("  ✓ 在虚拟环境中")
         return True
@@ -321,7 +321,7 @@ def check_dependencies():
         ("aiohttp", "import aiohttp"),
         ("pydantic", "import pydantic"),
     ]
-    
+
     all_ok = True
     for name, import_stmt in dependencies:
         try:
@@ -330,19 +330,19 @@ def check_dependencies():
         except ImportError:
             print(f"  ✗ {name} 未安装")
             all_ok = False
-    
+
     return all_ok
 
 def check_loom_cli():
     """检查 LOOM CLI"""
     print("4. 检查 LOOM CLI...")
-    
+
     # 检查版本
     success, stdout, stderr = run_command("loom --version", check=False)
     if success and "loom" in stdout:
         version = stdout.strip()
         print(f"  ✓ {version}")
-        
+
         # 检查帮助
         success, stdout, stderr = run_command("loom --help", check=False)
         if success and "Commands:" in stdout:
@@ -358,18 +358,18 @@ def check_loom_cli():
 def check_configuration():
     """检查配置"""
     print("5. 检查配置...")
-    
+
     config_path = Path("config/default_config.yaml")
     if config_path.exists():
         try:
             with open(config_path) as f:
                 config = yaml.safe_load(f)
             print(f"  ✓ 配置文件存在 ({len(config)} 个配置项)")
-            
+
             # 检查必要配置
             required_sections = ["llm_providers", "session", "memory"]
             missing = [s for s in required_sections if s not in config]
-            
+
             if not missing:
                 print("  ✓ 必要配置部分完整")
                 return True
@@ -386,11 +386,11 @@ def check_configuration():
 def check_llm_providers():
     """检查 LLM 提供商"""
     print("6. 检查 LLM 提供商...")
-    
+
     # 检查环境变量
     env_vars = ["OPENAI_API_KEY", "ANTHROPIC_API_KEY", "GOOGLE_API_KEY"]
     configured = [var for var in env_vars if var in os.environ]
-    
+
     if configured:
         print(f"  ⚠ 已配置的 API 密钥: {len(configured)} 个")
         print(f"    建议至少配置一个 LLM 提供商")
@@ -403,16 +403,16 @@ def check_llm_providers():
 def run_smoke_test():
     """运行冒烟测试"""
     print("7. 运行冒烟测试...")
-    
+
     # 创建测试规则文件
     test_rules = Path("test_smoke_rules.md")
     test_rules.write_text("# 测试规则\n\n这是一个简单的测试规则文件。\n")
-    
+
     try:
         # 尝试启动会话（不实际运行）
         cmd = 'loom run interactive --canon test_smoke_rules.md --name "冒烟测试" --max-turns 0 --dry-run'
         success, stdout, stderr = run_command(cmd, check=False)
-        
+
         if success or "dry run" in stdout.lower():
             print("  ✓ 冒烟测试通过")
             return True
@@ -429,7 +429,7 @@ def main():
     print("=" * 60)
     print("LOOM 安装验证")
     print("=" * 60)
-    
+
     checks = [
         ("Python 版本", check_python_version),
         ("虚拟环境", check_virtual_env),
@@ -439,7 +439,7 @@ def main():
         ("LLM 提供商", check_llm_providers),
         ("冒烟测试", run_smoke_test),
     ]
-    
+
     results = []
     for name, check_func in checks:
         print(f"\n{name}:")
@@ -449,21 +449,21 @@ def main():
         except Exception as e:
             print(f"  ✗ 检查失败: {e}")
             results.append((name, False))
-    
+
     # 汇总结果
     print("\n" + "=" * 60)
     print("验证结果汇总")
     print("=" * 60)
-    
+
     passed = sum(1 for _, result in results if result)
     total = len(results)
-    
+
     for name, result in results:
         status = "✓ 通过" if result else "✗ 失败"
         print(f"{name}: {status}")
-    
+
     print(f"\n总计: {passed}/{total} 项检查通过")
-    
+
     if passed == total:
         print("\n🎉 所有检查通过！LOOM 已正确安装。")
         return 0

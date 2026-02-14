@@ -22,9 +22,7 @@ app = typer.Typer(
 @app.command()
 def init_project(
     path: str = typer.Argument(".", help="项目路径"),
-    force: bool = typer.Option(
-        False, "--force", "-f", help="强制初始化（覆盖现有文件）"
-    ),
+    force: bool = typer.Option(False, "--force", "-f", help="强制初始化（覆盖现有文件）"),
 ):
     """初始化LOOM项目"""
     project_dir = Path(path).resolve()
@@ -307,7 +305,9 @@ author: LOOM Team
 created: {date}
 genre: fantasy
 tags: [fantasy, medieval, magic, adventure]
-""".format(date=datetime.now().strftime("%Y-%m-%d"))
+""".format(
+        date=datetime.now().strftime("%Y-%m-%d")
+    )
 
     with open(canon_dir / "default.md", "w", encoding="utf-8") as f:
         f.write(default_canon)
@@ -339,7 +339,9 @@ version: 1.0.0
 author: LOOM Team
 created: {date}
 genre: scifi
-""".format(date=datetime.now().strftime("%Y-%m-%d"))
+""".format(
+        date=datetime.now().strftime("%Y-%m-%d")
+    )
 
     with open(canon_dir / "scifi_example.md", "w", encoding="utf-8") as f:
         f.write(scifi_canon)
@@ -363,18 +365,18 @@ import asyncio
 async def main():
     # 初始化配置
     config_manager = ConfigManager()
-    
+
     # 创建会话配置
     session_config = SessionConfig(
         name="我的第一个会话",
         canon_path="./canon/default.md",
         llm_provider="openai"
     )
-    
+
     # 创建会话
     session_manager = SessionManager(config_manager=config_manager)
     session = await session_manager.create_session(session_config)
-    
+
     print(f"会话创建成功: {session.id}")
 
 if __name__ == "__main__":
@@ -417,19 +419,19 @@ from src.loom.core.persistence_engine import SQLitePersistence
 async def main():
     """主函数"""
     print("=== LOOM 玩家干预示例 ===")
-    
+
     try:
         # 初始化配置
         config_manager = ConfigManager()
         config = config_manager.get_config()
-        
+
         # 初始化持久化引擎
         persistence = SQLitePersistence(config.data_dir)
         await persistence.initialize()
-        
+
         # 初始化会话管理器
         session_manager = SessionManager(persistence, config_manager)
-        
+
         # 创建会话配置
         session_config = SessionConfig(
             name="玩家干预示例会话",
@@ -440,39 +442,39 @@ async def main():
                 "description": "展示玩家干预功能"
             }
         )
-        
+
         # 创建会话
         session = await session_manager.create_session(session_config)
         print(f"✅会话创建成功: {session.id}")
         print(f"会话名称: {session.name}")
-        
+
         # 模拟玩家干预
         print("\\n=== 模拟玩家干预 ===")
-        
+
         interventions = [
             "主角在森林中发现了一个古老的遗迹",
             "突然出现一只巨龙袭击村庄",
             "主角获得了一把魔法剑",
             "队伍中出现了叛徒"
         ]
-        
+
         for i, intervention in enumerate(interventions, 1):
             print(f"\\n干预 {i}: {intervention}")
-            
+
             # 这里可以添加实际的干预逻辑
             # 例如: await session_manager.process_intervention(session.id, intervention)
-            
+
             # 模拟处理延迟
             await asyncio.sleep(0.5)
             print(f"  处理中...")
             await asyncio.sleep(0.5)
             print(f"  ✅干预已应用")
-        
+
         # 保存会话
         await session_manager.save_session(session, force=True)
         print(f"\\n✅会话已保存")
         print(f"数据位置: {config.data_dir}/sessions/{session.id}.json")
-        
+
     except Exception as e:
         print(f"❌错误: {e}")
         import traceback
@@ -537,10 +539,10 @@ def _create_documentation(project_dir: Path):
    ```bash
    # 列出所有会话
    loom session list
-   
+
    # 创建新会话
    loom session create --name "我的故事"
-   
+
    # 查看会话详情
    loom session show <session_id>
    ```

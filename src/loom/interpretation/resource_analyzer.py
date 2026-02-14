@@ -126,9 +126,7 @@ class MemoryAnalyzer:
     def __init__(self, config: Dict[str, Any]):
         self.config = config
         self.snapshot_interval = config.get("snapshot_interval", 60)  # 秒
-        self.memory_leak_threshold = config.get(
-            "memory_leak_threshold", 10.0
-        )  # MB/小时
+        self.memory_leak_threshold = config.get("memory_leak_threshold", 10.0)  # MB/小时
         self.high_memory_threshold = config.get("high_memory_threshold", 80.0)  # 百分比
 
         # 内存使用历史

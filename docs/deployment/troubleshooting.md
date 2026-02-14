@@ -435,5 +435,5 @@ kubectl rollout undo deployment/loom -n loom
 
 ---
 
-*最后更新: 2025-12-31*  
+*最后更新: 2025-12-31*
 *版本: 1.0*

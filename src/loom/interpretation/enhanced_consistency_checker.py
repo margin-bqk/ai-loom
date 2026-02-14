@@ -690,9 +690,7 @@ class EnhancedConsistencyChecker(ConsistencyChecker):
             char_motivations = char_content.get("motivations", [])
 
             # 查找角色在响应中的行为描述
-            char_pattern = (
-                f"{char_name}[^，。]*[做|行动|决定|选择|想要|试图][^，。]*[。！？]"
-            )
+            char_pattern = f"{char_name}[^，。]*[做|行动|决定|选择|想要|试图][^，。]*[。！？]"
             char_actions = re.findall(char_pattern, response_text)
 
             for action in char_actions:
@@ -1372,9 +1370,7 @@ class EnhancedConsistencyChecker(ConsistencyChecker):
                 summary = str(content)[:50]
             memory_summaries.append(f"- [{mem_type}] {summary}")
 
-        memories_text = (
-            "\n".join(memory_summaries) if memory_summaries else "无相关记忆"
-        )
+        memories_text = "\n".join(memory_summaries) if memory_summaries else "无相关记忆"
 
         prompt = f"""请分析以下叙事响应的一致性问题：
 
@@ -1441,9 +1437,7 @@ class EnhancedConsistencyChecker(ConsistencyChecker):
                         DeepConsistencyIssue(
                             type=f"llm_{issue_type}",
                             severity=issue_data.get("severity", "medium"),
-                            description=issue_data.get(
-                                "description", "LLM检测到一致性问题"
-                            ),
+                            description=issue_data.get("description", "LLM检测到一致性问题"),
                             evidence=issue_data.get("evidence", "无具体证据"),
                             suggestion=issue_data.get("suggestion", "请检查一致性"),
                             category=category,
@@ -1712,23 +1706,15 @@ class EnhancedConsistencyChecker(ConsistencyChecker):
 
             for issue_type, count in top_issues:
                 if issue_type.startswith("rule_"):
-                    recommendations.append(
-                        f"常见问题：规则违反（出现{count}次），建议加强规则理解"
-                    )
+                    recommendations.append(f"常见问题：规则违反（出现{count}次），建议加强规则理解")
                 elif issue_type.startswith("memory_"):
-                    recommendations.append(
-                        f"常见问题：记忆矛盾（出现{count}次），建议改进记忆整合"
-                    )
+                    recommendations.append(f"常见问题：记忆矛盾（出现{count}次），建议改进记忆整合")
                 elif issue_type.startswith("character_"):
-                    recommendations.append(
-                        f"常见问题：角色不一致（出现{count}次），建议统一角色设定"
-                    )
+                    recommendations.append(f"常见问题：角色不一致（出现{count}次），建议统一角色设定")
 
         # 总体建议
         pass_rate = sum(1 for r in reports if r.passed) / len(reports) * 100
         if pass_rate < 70:
-            recommendations.append(
-                f"整体通过率较低（{pass_rate:.1f}%），建议全面检查一致性流程"
-            )
+            recommendations.append(f"整体通过率较低（{pass_rate:.1f}%），建议全面检查一致性流程")
 
         return recommendations[:5]

@@ -1,6 +1,7 @@
-import yaml
-import sys
 import os
+import sys
+
+import yaml
 
 # 添加src到路径
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))

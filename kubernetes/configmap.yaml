@@ -9,12 +9,12 @@ data:
   LOOM_DATA_DIR: "/app/data"
   LOOM_ENABLE_METRICS: "true"
   LOOM_CANON_DIR: "/app/canon"
-  
+
   # 数据库配置（如果使用外部数据库）
   DATABASE_URL: "sqlite:///app/data/loom.db"
-  
+
   # 监控配置
   PROMETHEUS_METRICS_PORT: "8001"
-  
+
   # 规则配置
   DEFAULT_RULES_FILE: "canon/default.md"

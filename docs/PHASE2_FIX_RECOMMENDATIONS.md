@@ -12,7 +12,7 @@
 # 替换所有Unicode字符为ASCII等价物
 UNICODE_TO_ASCII = {
     "✓": "[OK]",
-    "✗": "[FAIL]", 
+    "✗": "[FAIL]",
     "⚠️": "[WARN]",
     "❌": "[ERROR]",
     "✅": "[PASS]"
@@ -71,15 +71,15 @@ class CompleteMockLLMProvider(LLMProvider):
         self.provider_type = "mock"
         self.supports_streaming = True
         self.max_tokens = 4096
-        
+
     async def _generate_impl(self, prompt, **kwargs):
         # 完整的模拟实现
         pass
-        
+
     async def generate_stream(self, prompt, **kwargs):
         # 完整的流式模拟
         pass
-        
+
     # 实现所有抽象方法和属性
 ```
 
@@ -122,7 +122,7 @@ from loom.interpretation.performance_monitor import PerformanceMonitor
 class EnhancedReasoningPipeline:
     def __init__(self):
         self.monitor = PerformanceMonitor()
-        
+
     async def process(self, context):
         with self.monitor.track("pipeline_process"):
             # 处理逻辑
@@ -145,7 +145,7 @@ class TestPhase2Integration:
     def test_reasoning_with_memory(self):
         """测试推理引擎与记忆系统的集成"""
         pass
-        
+
     def test_rules_with_consistency(self):
         """测试规则系统与一致性检查的集成"""
         pass
@@ -165,11 +165,11 @@ llm_providers:
   mock:
     enabled: true
     type: "mock"
-    
+
 vector_store:
   backend: "memory"  # 开发环境使用内存模拟
   embedding_model: "mock"
-  
+
 performance:
   monitoring: true
   benchmark: false  # 开发环境关闭基准测试
@@ -181,10 +181,10 @@ performance:
 llm_providers:
   mock:
     enabled: true
-    
+
 vector_store:
   backend: "memory"
-  
+
 logging:
   level: "INFO"
   file: "tests/test.log"
@@ -211,13 +211,13 @@ class EnhancedReasoningPipeline:
 def process(self, context: ReasoningContext) -> ReasoningResult:
     """
     处理推理请求
-    
+
     Args:
         context: 推理上下文，包含会话信息、玩家输入等
-        
+
     Returns:
         ReasoningResult: 推理结果，包含叙事响应和元数据
-        
+
     Raises:
         ProcessingError: 当处理过程中发生错误时
         ValidationError: 当输入验证失败时

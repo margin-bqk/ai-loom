@@ -346,23 +346,23 @@ from loom.core.config_manager import ConfigManager
 async def run_example():
     # 初始化配置
     config = ConfigManager()
-    
+
     # 创建会话管理器
     session_manager = SessionManager(config)
-    
+
     # 创建新会话
     session = await session_manager.create_session(
         name="Python API 示例",
         canon_path="templates/rules/fantasy_basic.md"
     )
-    
+
     # 执行行动
     response = await session.execute_action(
         "我来到风语镇，想找一份冒险者工作。"
     )
-    
+
     print(f"响应: {response}")
-    
+
     # 保存会话
     await session.save()
 

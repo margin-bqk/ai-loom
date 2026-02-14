@@ -187,7 +187,6 @@ class PluginManager:
                         and issubclass(obj, PluginBase)
                         and obj != PluginBase
                     ):
-
                         # 实例化并注册插件
                         plugin_instance = obj()
                         if self.register_plugin(plugin_instance):

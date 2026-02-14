@@ -26,7 +26,7 @@ LOOM 支持在主流云平台上部署，包括 AWS、Azure 和 Google Cloud Pla
 
 # 云平台 CLI
 # AWS: aws-cli
-# Azure: azure-cli  
+# Azure: azure-cli
 # GCP: gcloud-cli
 ```
 

@@ -14,14 +14,14 @@ import asyncio
 import os
 import sys
 from datetime import datetime
-from typing import List, Dict, Any
+from typing import Any, Dict, List
 
 # 添加项目根目录到路径
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
+    from loom import SessionConfig, SessionManager
     from loom.interpretation import LLMProviderFactory
-    from loom import SessionManager, SessionConfig
 except ImportError:
     print("错误: 无法导入 LOOM 模块。请确保在项目根目录运行此脚本。")
     print("尝试: cd /path/to/ai-loom && python examples/deepseek_example.py")
@@ -209,9 +209,7 @@ class DeepSeekExample:
                 print(f"  ✓ 推理完成")
                 print(f"    响应摘要: {response.content[:100]}...")
                 print(f"    模型: {response.model}")
-                print(
-                    f"    推理模式: {response.metadata.get('thinking_enabled', False)}"
-                )
+                print(f"    推理模式: {response.metadata.get('thinking_enabled', False)}")
                 print(f"    令牌: {response.usage.get('total_tokens', 0)}")
                 print(f"    成本: ${response.cost:.6f}")
 

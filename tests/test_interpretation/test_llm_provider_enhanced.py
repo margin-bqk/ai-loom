@@ -284,15 +284,16 @@ class TestAsyncFunctionality:
         manager.set_default("provider1")
 
         # 测试回退
-        with pytest.raises(Exception) as exc_info:
-            await manager.generate_with_fallback("Test prompt")
+        # provider1失败，provider2成功，应该返回成功结果
+        result = await manager.generate_with_fallback("Test prompt")
 
-        # 由于provider1失败，应该尝试provider2
-        # 但我们的模拟中provider2会成功，所以不应该抛出异常
-        # 这里需要调整测试逻辑
+        # 验证结果来自provider2
+        assert result.content == "Success from provider 2"
 
         # 验证provider1被调用
         mock_provider1.generate.assert_called_once_with("Test prompt")
+        # 验证provider2也被调用
+        mock_provider2.generate.assert_called_once_with("Test prompt")
 
     async def test_retry_with_backoff(self):
         """测试带退避的重试"""

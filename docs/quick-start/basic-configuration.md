@@ -51,13 +51,13 @@ llm_providers:
     model: gpt-3.5-turbo
     temperature: 0.7
     max_tokens: 1000
-    
+
   anthropic:
     type: anthropic
     enabled: true
     api_key: ${ANTHROPIC_API_KEY:}
     model: claude-3-haiku-20240307
-    
+
   deepseek:
     type: deepseek
     enabled: true
@@ -68,12 +68,12 @@ llm_providers:
     temperature: 1.0
     max_tokens: 4096
     timeout: 60  # DeepSeek可能需要更长的超时时间
-    
+
   google:
     type: google
     enabled: false  # 默认禁用
     api_key: ${GOOGLE_API_KEY:}
-    
+
   ollama:
     type: ollama
     enabled: false  # 默认禁用
@@ -105,12 +105,12 @@ memory:
     provider: chromadb  # 或 "sqlite", "memory"
     collection_name: loom_memory
     embedding_model: text-embedding-3-small
-    
+
   structured_store:
     enabled: true
     provider: sqlite
     database_path: ./data/memory.db
-    
+
   summarizer:
     enabled: true
     max_chunk_size: 2000
@@ -126,14 +126,14 @@ monitoring:
     - name: llm_latency
       enabled: true
       aggregation: p95
-      
+
     - name: memory_usage
       enabled: true
-      
+
     - name: cost_tracking
       enabled: true
       currency: USD
-      
+
   alerting:
     enabled: false
     webhook_url: ${ALERT_WEBHOOK_URL:}
@@ -272,17 +272,17 @@ llm_providers:
   openai:
     enabled: true
     model: gpt-3.5-turbo  # 使用便宜模型
-    
+
   deepseek:
     enabled: true
     model: deepseek-chat  # 中文优化模型
-    
+
   ollama:
     enabled: true  # 启用本地模型
-    
+
 session:
   auto_save_interval: 1  # 频繁保存
-  
+
 logging:
   level: DEBUG  # 详细日志
 ```
@@ -295,21 +295,21 @@ llm_providers:
   openai:
     enabled: true
     model: gpt-4-turbo  # 使用高质量模型
-    
+
   anthropic:
     enabled: true  # 启用备用提供商
-    
+
   deepseek:
     enabled: true  # 启用DeepSeek作为成本优化选项
-    
+
 session:
   auto_save_interval: 10  # 减少保存频率
-  
+
 monitoring:
   enabled: true
   alerting:
     enabled: true
-    
+
 logging:
   level: WARNING  # 减少日志量
 ```

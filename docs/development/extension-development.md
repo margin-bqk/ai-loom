@@ -29,33 +29,33 @@ from typing import Dict, Any
 
 class MyCustomRuleFormatter(RulePlugin):
     """自定义规则格式化插件"""
-    
+
     def __init__(self):
         super().__init__()
         self.name = "MyCustomRuleFormatter"
         self.version = "1.0.0"
         self.description = "自定义规则格式化器"
-        
+
     def initialize(self) -> bool:
         """初始化插件"""
         print(f"初始化插件: {self.name}")
         return True
-        
+
     def cleanup(self):
         """清理插件资源"""
         print(f"清理插件: {self.name}")
-        
+
     def preprocess_rule(self, rule_text: str) -> str:
         """预处理规则文本"""
         # 在这里实现预处理逻辑
         return rule_text.strip()
-        
+
     def postprocess_rule(self, rule_text: str, parsed_rule: Dict[str, Any]) -> Dict[str, Any]:
         """后处理解析后的规则"""
         # 添加自定义元数据
         parsed_rule["processed_by"] = self.name
         return parsed_rule
-        
+
     def validate_rule(self, rule_text: str) -> bool:
         """验证规则有效性"""
         # 实现验证逻辑
@@ -116,7 +116,7 @@ class ConfigurablePlugin(RulePlugin):
     def __init__(self, config_file: str = None):
         super().__init__()
         self.config = self._load_config(config_file)
-        
+
     def _load_config(self, config_file: str) -> Dict[str, Any]:
         """加载配置文件"""
         default_config = {
@@ -124,12 +124,12 @@ class ConfigurablePlugin(RulePlugin):
             "max_length": 1000,
             "strip_comments": True
         }
-        
+
         if config_file and os.path.exists(config_file):
             with open(config_file, 'r') as f:
                 user_config = json.load(f)
                 default_config.update(user_config)
-                
+
         return default_config
 ```
 
@@ -139,18 +139,18 @@ class CachedPlugin(RulePlugin):
     def __init__(self):
         super().__init__()
         self.cache = {}
-        
+
     def preprocess_rule(self, rule_text: str) -> str:
         # 使用缓存提高性能
         cache_key = hash(rule_text)
         if cache_key in self.cache:
             return self.cache[cache_key]
-            
+
         # 计算密集型操作
         result = self._expensive_processing(rule_text)
         self.cache[cache_key] = result
         return result
-        
+
     def _expensive_processing(self, text: str) -> str:
         # 模拟计算密集型操作
         import time
@@ -168,24 +168,24 @@ from src.loom.plugins.example_plugins import MarkdownRuleFormatter
 class TestMarkdownRuleFormatter:
     def setup_method(self):
         self.plugin = MarkdownRuleFormatter()
-        
+
     def test_initialization(self):
         """测试插件初始化"""
         assert self.plugin.name == "MarkdownRuleFormatter"
         assert self.plugin.version == "1.1.0"
-        
+
     def test_preprocess_rule(self):
         """测试规则预处理"""
         input_text = "  rule: test  \n\n  description: test  "
         expected = "rule: test\ndescription: test"
         result = self.plugin.preprocess_rule(input_text)
         assert result == expected
-        
+
     def test_validate_rule(self):
         """测试规则验证"""
         valid_rule = "rule: test\ndescription: test\ncondition: when\neffect: then"
         invalid_rule = "just some text"
-        
+
         assert self.plugin.validate_rule(valid_rule) == True
         assert self.plugin.validate_rule(invalid_rule) == False
 ```
@@ -199,15 +199,15 @@ class TestPluginIntegration:
     async def test_plugin_registration(self):
         """测试插件注册和初始化"""
         manager = get_plugin_manager()
-        
+
         # 注册插件
         plugin = MarkdownRuleFormatter()
         assert manager.register_plugin(plugin) == True
-        
+
         # 初始化插件
         results = manager.initialize_all()
         assert results["MarkdownRuleFormatter"] == True
-        
+
         # 清理插件
         manager.cleanup_all()
 ```
@@ -276,18 +276,18 @@ class CommunicatingPlugin(RulePlugin):
     def __init__(self, plugin_manager):
         super().__init__()
         self.plugin_manager = plugin_manager
-        
+
     def process_with_other_plugins(self, rule_text: str) -> str:
         """与其他插件协作处理"""
         # 获取所有规则插件
         rule_plugins = self.plugin_manager.get_plugins_by_type("rule")
-        
+
         # 按顺序应用所有插件
         result = rule_text
         for plugin in rule_plugins:
             if plugin != self:  # 排除自己
                 result = plugin.preprocess_rule(result)
-                
+
         return result
 ```
 
@@ -300,16 +300,16 @@ class DynamicPlugin(RulePlugin):
             "enable_feature": self._enable_feature,
             "set_threshold": self._set_threshold,
         }
-        
+
     def update_config(self, config: Dict[str, Any]):
         """动态更新配置"""
         for key, value in config.items():
             if key in self.config_handlers:
                 self.config_handlers[key](value)
-                
+
     def _enable_feature(self, enabled: bool):
         self.feature_enabled = enabled
-        
+
     def _set_threshold(self, threshold: float):
         self.threshold = threshold
 ```
@@ -323,25 +323,25 @@ class HookedPlugin(RulePlugin):
             "pre_process": [],
             "post_process": [],
         }
-        
+
     def add_hook(self, hook_name: str, callback):
         """添加钩子函数"""
         if hook_name in self.hooks:
             self.hooks[hook_name].append(callback)
-            
+
     def preprocess_rule(self, rule_text: str) -> str:
         """执行预处理钩子"""
         # 执行前置钩子
         for hook in self.hooks["pre_process"]:
             rule_text = hook(rule_text)
-            
+
         # 主要处理逻辑
         result = self._actual_processing(rule_text)
-        
+
         # 执行后置钩子
         for hook in self.hooks["post_process"]:
             result = hook(result)
-            
+
         return result
 ```
 
@@ -356,7 +356,7 @@ logger = logging.getLogger(__name__)
 class LoggedPlugin(RulePlugin):
     def preprocess_rule(self, rule_text: str) -> str:
         logger.debug(f"开始预处理规则，长度: {len(rule_text)}")
-        
+
         try:
             result = self._process(rule_text)
             logger.info(f"规则预处理成功，结果长度: {len(result)}")
@@ -378,7 +378,7 @@ def profile(func):
         start_time = time.time()
         result = func(*args, **kwargs)
         elapsed = time.time() - start_time
-        
+
         logger.info(f"{func.__name__} 执行时间: {elapsed:.3f}秒")
         return result
     return wrapper

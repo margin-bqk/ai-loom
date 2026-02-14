@@ -855,7 +855,7 @@ class DeepSeekProvider(LLMProvider):
         errors = []
         if not self.api_key:
             errors.append("API key is required for DeepSeek provider")
-        if not self.model:
+        if not self.config.get("model"):
             errors.append("Model is required for DeepSeek provider")
         return errors
 

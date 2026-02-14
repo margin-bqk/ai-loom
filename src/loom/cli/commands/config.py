@@ -86,9 +86,7 @@ async def _show_config_async(section: Optional[str], output_format: str):
 
             for section_name, section_data in snapshot.items():
                 if isinstance(section_data, dict):
-                    section_table = Table(
-                        title=f"{section_name} 配置", show_header=False
-                    )
+                    section_table = Table(title=f"{section_name} 配置", show_header=False)
                     section_table.add_column("配置项", style="cyan")
                     section_table.add_column("值", style="white")
 
@@ -354,9 +352,7 @@ async def _export_config_async(
 @app.command("import")
 def import_config(
     input: str = typer.Argument(..., help="输入文件路径"),
-    merge: bool = typer.Option(
-        True, "--merge/--replace", help="合并到现有配置（否则替换）"
-    ),
+    merge: bool = typer.Option(True, "--merge/--replace", help="合并到现有配置（否则替换）"),
     backup: bool = typer.Option(True, "--backup/--no-backup", help="备份现有配置"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="详细输出"),
 ):
@@ -520,9 +516,7 @@ def list_config(
 
 @app.command("test")
 def test_config(
-    provider: Optional[str] = typer.Option(
-        None, "--provider", "-p", help="测试特定LLM提供商"
-    ),
+    provider: Optional[str] = typer.Option(None, "--provider", "-p", help="测试特定LLM提供商"),
     all: bool = typer.Option(False, "--all", "-a", help="测试所有已启用的提供商"),
     database: bool = typer.Option(False, "--database", "-d", help="测试数据库连接"),
     memory: bool = typer.Option(False, "--memory", "-m", help="测试记忆系统"),
@@ -577,9 +571,7 @@ async def _test_config_async(
                     provider_config = config.llm_providers[provider_name]
 
                     if not provider_config.enabled:
-                        results.append(
-                            (f"LLM: {provider_name}", "❌ 已禁用", "跳过测试")
-                        )
+                        results.append((f"LLM: {provider_name}", "❌ 已禁用", "跳过测试"))
                         continue
 
                     # 检查API密钥
@@ -589,13 +581,9 @@ async def _test_config_async(
                         api_key_status = "⚠️ 未设置（使用环境变量）"
 
                     # 简单连接测试（这里只是模拟，实际需要实现真正的连接测试）
-                    results.append(
-                        (f"LLM: {provider_name}", "✅ 配置有效", api_key_status)
-                    )
+                    results.append((f"LLM: {provider_name}", "✅ 配置有效", api_key_status))
                 else:
-                    results.append(
-                        (f"LLM: {provider_name}", "❌ 未配置", "提供商不存在")
-                    )
+                    results.append((f"LLM: {provider_name}", "❌ 未配置", "提供商不存在"))
 
         # 测试数据库连接
         if test_database:
@@ -642,9 +630,7 @@ async def _test_config_async(
                             )
                         )
                 else:
-                    results.append(
-                        ("记忆系统", "✅ 配置有效", f"后端: {config.memory.backend}")
-                    )
+                    results.append(("记忆系统", "✅ 配置有效", f"后端: {config.memory.backend}"))
             except Exception as e:
                 results.append(("记忆系统", "❌ 配置错误", str(e)))
 
@@ -674,9 +660,7 @@ async def _test_config_async(
             else:
                 console.print("⚠️ 存在配置问题，请检查上述错误", style="bold yellow")
         else:
-            console.print(
-                "ℹ️ 未执行任何测试，请使用选项指定要测试的项目", style="yellow"
-            )
+            console.print("ℹ️ 未执行任何测试，请使用选项指定要测试的项目", style="yellow")
 
     except Exception as e:
         typer.echo(f"测试配置失败: {e}", err=True)

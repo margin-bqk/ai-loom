@@ -812,7 +812,9 @@ class ReasoningTracker:
         overall_level = (
             "高"
             if assessment.overall >= 0.8
-            else "中" if assessment.overall >= 0.5 else "低"
+            else "中"
+            if assessment.overall >= 0.5
+            else "低"
         )
 
         return {
@@ -1088,30 +1090,20 @@ class ReasoningTracker:
         for error_type, count in error_types.items():
             if count >= 2:
                 if "timeout" in error_type.lower():
-                    recommendations.append(
-                        f"超时错误频繁({count}次)，建议增加超时时间或优化处理逻辑"
-                    )
+                    recommendations.append(f"超时错误频繁({count}次)，建议增加超时时间或优化处理逻辑")
                 elif "memory" in error_type.lower():
-                    recommendations.append(
-                        f"内存相关错误({count}次)，建议检查内存使用或增加限制"
-                    )
+                    recommendations.append(f"内存相关错误({count}次)，建议检查内存使用或增加限制")
                 elif "network" in error_type.lower():
-                    recommendations.append(
-                        f"网络错误({count}次)，建议增加重试机制或检查连接"
-                    )
+                    recommendations.append(f"网络错误({count}次)，建议增加重试机制或检查连接")
                 else:
-                    recommendations.append(
-                        f"{error_type}错误频繁({count}次)，建议检查相关逻辑"
-                    )
+                    recommendations.append(f"{error_type}错误频繁({count}次)，建议检查相关逻辑")
 
         # 严重错误建议
         critical_errors = [
             e for e in errors if e.get("severity") in ["high", "critical"]
         ]
         if critical_errors:
-            recommendations.append(
-                f"存在{len(critical_errors)}个严重错误，需要优先处理"
-            )
+            recommendations.append(f"存在{len(critical_errors)}个严重错误，需要优先处理")
 
         return recommendations[:3]  # 限制数量
 
@@ -1371,7 +1363,9 @@ class ReasoningTracker:
             "trend": (
                 "increasing"
                 if len(durations) > 1 and durations[-1] > durations[0]
-                else "decreasing" if durations[-1] < durations[0] else "stable"
+                else "decreasing"
+                if durations[-1] < durations[0]
+                else "stable"
             ),
         }
 
@@ -1392,7 +1386,9 @@ class ReasoningTracker:
             "trend": (
                 "improving"
                 if len(confidences) > 1 and confidences[-1] > confidences[0]
-                else "declining" if confidences[-1] < confidences[0] else "stable"
+                else "declining"
+                if confidences[-1] < confidences[0]
+                else "stable"
             ),
         }
 
@@ -1410,7 +1406,9 @@ class ReasoningTracker:
             "trend": (
                 "improving"
                 if len(error_counts) > 1 and error_counts[-1] < error_counts[0]
-                else "worsening" if error_counts[-1] > error_counts[0] else "stable"
+                else "worsening"
+                if error_counts[-1] > error_counts[0]
+                else "stable"
             ),
         }
 
@@ -1497,9 +1495,7 @@ class ReasoningTracker:
         avg_duration = sum(durations) / len(durations)
 
         if avg_duration > 10.0:
-            recommendations.append(
-                f"平均推理时间{avg_duration:.1f}秒较长，建议优化性能"
-            )
+            recommendations.append(f"平均推理时间{avg_duration:.1f}秒较长，建议优化性能")
 
         # 分析错误率
         error_counts = [

@@ -30,8 +30,8 @@ sys.modules["watchdog.events"].FileSystemEventHandler = MockFileSystemEventHandl
 # 现在导入我们的模块
 try:
     from src.loom.rules.advanced_markdown_canon import AdvancedMarkdownCanon
-    from src.loom.rules.rule_validator import RuleValidator
     from src.loom.rules.markdown_canon import MarkdownCanon
+    from src.loom.rules.rule_validator import RuleValidator
 
     print("模块导入成功")
 except ImportError as e:
@@ -68,8 +68,8 @@ except ImportError as e:
     spec.loader.exec_module(rule_validator)
 
     from advanced_markdown_canon import AdvancedMarkdownCanon
-    from rule_validator import RuleValidator
     from markdown_canon import MarkdownCanon
+    from rule_validator import RuleValidator
 
     print("直接模块加载成功")
 
@@ -307,7 +307,7 @@ author: Compatibility Test
                 advanced_result = advanced_method()
 
             # 检查返回类型
-            assert type(base_result) == type(advanced_result)
+            assert type(base_result) is type(advanced_result)
             print(f"   ✓ {method_name} 方法兼容")
 
         # 测试增强方法

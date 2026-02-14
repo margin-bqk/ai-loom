@@ -183,7 +183,7 @@ groups:
           severity: critical
         annotations:
           summary: "LOOM 服务下线"
-          
+
       - alert: HighErrorRate
         expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
         for: 10m
@@ -308,7 +308,7 @@ python scripts/analyze_performance.py --days 30
    ```sql
    -- 每月分析查询性能
    EXPLAIN QUERY PLAN SELECT * FROM sessions WHERE user_id = ?;
-   
+
    -- 创建缺失的索引
    CREATE INDEX IF NOT EXISTS idx_sessions_user ON sessions(user_id);
    ```
@@ -510,6 +510,6 @@ docs/knowledge_base/
 
 ---
 
-*最后更新: 2025-12-31*  
-*版本: 1.0*  
+*最后更新: 2025-12-31*
+*版本: 1.0*
 *下次审核: 2026-03-31*

@@ -406,10 +406,7 @@ class PlayerIntervention:
     ) -> bool:
         """验证干预权限"""
         # 简化实现：检查规则中是否有权限限制
-        if (
-            "禁止编辑" in rules_text
-            and intervention.type == InterventionType.WORLD_EDIT
-        ):
+        if "禁止编辑" in rules_text and intervention.type == InterventionType.WORLD_EDIT:
             return False
 
         if "禁止Retcon" in rules_text and intervention.type == InterventionType.RETCON:

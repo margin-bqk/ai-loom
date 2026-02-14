@@ -25,10 +25,10 @@ PROJECT_ROOT = Path(__file__).parent.parent
 class RollbackManager:
     def __init__(self, verbose: bool = False):
         self.verbose = verbose
-    
+
     def log(self, message: str):
         print(f"[{time.strftime('%H:%M:%S')}] {message}")
-    
+
     def run_command(self, cmd: str, cwd: Optional[Path] = None) -> bool:
         """运行命令并返回成功状态"""
         try:
@@ -54,18 +54,20 @@ class RollbackManager:
             print(f"命令异常: {cmd}")
             print(f"异常: {e}")
             return False
-    
-    def rollback_docker(self, previous_tag: str = "stable", current_tag: str = "latest"):
+
+    def rollback_docker(
+        self, previous_tag: str = "stable", current_tag: str = "latest"
+    ):
         """回滚 Docker 部署"""
         self.log(f"回滚 Docker 部署: {current_tag} -> {previous_tag}")
-        
+
         # 停止当前容器
         self.run_command("docker stop loom-app 2>/dev/null || true")
         self.run_command("docker rm loom-app 2>/dev/null || true")
-        
+
         # 拉取上一个版本的镜像
         self.run_command(f"docker pull yourregistry/loom:{previous_tag}")
-        
+
         # 运行上一个版本的容器
         cmd = f"docker run -d -p 8000:8000 --name loom-app yourregistry/loom:{previous_tag}"
         if self.run_command(cmd):
@@ -74,23 +76,27 @@ class RollbackManager:
         else:
             self.log("Docker 回滚失败")
             return False
-    
-    def rollback_kubernetes(self, namespace: str = "loom", previous_version: str = "v0.1.0"):
+
+    def rollback_kubernetes(
+        self, namespace: str = "loom", previous_version: str = "v0.1.0"
+    ):
         """回滚 Kubernetes 部署"""
         self.log(f"回滚 Kubernetes 部署到版本 {previous_version}")
-        
+
         # 检查 kubectl 是否可用
         if not self.run_command("kubectl version --client"):
             self.log("错误: kubectl 不可用")
             return False
-        
+
         # 回滚 Deployment
         cmd = f"kubectl rollout undo deployment/loom -n {namespace}"
         if self.run_command(cmd):
             self.log("Kubernetes 回滚成功")
-            
+
             # 等待回滚完成
-            self.run_command(f"kubectl rollout status deployment/loom -n {namespace} --timeout=300s")
+            self.run_command(
+                f"kubectl rollout status deployment/loom -n {namespace} --timeout=300s"
+            )
             return True
         else:
             # 如果回滚失败，尝试使用之前的镜像标签
@@ -99,42 +105,42 @@ class RollbackManager:
             if self.run_command(patch_cmd):
                 self.log("镜像标签更新成功")
                 return True
-        
+
         self.log("Kubernetes 回滚失败")
         return False
-    
+
     def rollback_cloudformation(self, stack_name: str = "loom-stack"):
         """回滚 CloudFormation 堆栈"""
         self.log(f"回滚 CloudFormation 堆栈 {stack_name}")
-        
+
         # 检查 AWS CLI 是否可用
         if not self.run_command("aws --version"):
             self.log("错误: AWS CLI 不可用")
             return False
-        
+
         # 获取上一个成功的堆栈版本
         cmd = f"aws cloudformation list-stack-resources --stack-name {stack_name}"
         if not self.run_command(cmd):
             self.log("无法获取堆栈信息")
             return False
-        
+
         # 回滚到上一个版本（这里需要根据实际情况实现）
         self.log("CloudFormation 回滚需要手动操作")
         print("建议步骤:")
         print("1. 在 AWS 控制台中找到 CloudFormation 堆栈")
         print("2. 选择 '回滚到上一个成功的版本'")
         print("3. 或使用: aws cloudformation rollback-stack --stack-name loom-stack")
-        
+
         return False
-    
+
     def restore_backup(self, backup_file: str, target_dir: str = "/app/data"):
         """从备份恢复数据"""
         self.log(f"从备份恢复数据: {backup_file}")
-        
+
         if not Path(backup_file).exists():
             self.log(f"错误: 备份文件不存在 {backup_file}")
             return False
-        
+
         # 根据备份类型执行恢复
         if backup_file.endswith(".tar.gz"):
             cmd = f"tar -xzf {backup_file} -C {target_dir}"
@@ -143,18 +149,18 @@ class RollbackManager:
         else:
             self.log(f"错误: 不支持的备份格式 {backup_file}")
             return False
-        
+
         if self.run_command(cmd):
             self.log("数据恢复成功")
             return True
         else:
             self.log("数据恢复失败")
             return False
-    
+
     def create_emergency_plan(self):
         """创建紧急回滚计划文档"""
         self.log("创建紧急回滚计划...")
-        
+
         plan = """# LOOM 紧急回滚计划
 
 ## 情况评估
@@ -213,10 +219,10 @@ kubectl rollout status deployment/loom -n loom --timeout=300s
 - 监控仪表板: http://monitoring.example.com
 - 文档: https://docs.loom.dev/emergency
 """
-        
+
         with open("EMERGENCY_ROLLBACK_PLAN.md", "w", encoding="utf-8") as f:
             f.write(plan)
-        
+
         self.log("紧急回滚计划已保存到 EMERGENCY_ROLLBACK_PLAN.md")
         return True
 
@@ -230,36 +236,36 @@ def main():
     parser.add_argument("--plan", action="store_true", help="创建紧急回滚计划")
     parser.add_argument("--all", action="store_true", help="执行完整回滚流程")
     parser.add_argument("--verbose", "-v", action="store_true", help="详细输出")
-    
+
     args = parser.parse_args()
-    
+
     if not any([args.docker, args.k8s, args.aws, args.backup, args.plan, args.all]):
         parser.print_help()
         sys.exit(1)
-    
+
     manager = RollbackManager(verbose=args.verbose)
-    
+
     success = True
-    
+
     if args.all or args.docker:
         if not manager.rollback_docker():
             success = False
-    
+
     if args.all or args.k8s:
         if not manager.rollback_kubernetes():
             success = False
-    
+
     if args.all or args.aws:
         if not manager.rollback_cloudformation():
             success = False
-    
+
     if args.backup:
         if not manager.restore_backup(args.backup):
             success = False
-    
+
     if args.plan:
         manager.create_emergency_plan()
-    
+
     if success:
         print("\n回滚操作完成")
         sys.exit(0)

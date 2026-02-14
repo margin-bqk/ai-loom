@@ -22,49 +22,49 @@ sci_fi_world:
   name: "星海联邦宇宙"
   genre: "太空歌剧、硬科幻元素"
   time_period: "公元25世纪"
-  
+
   core_elements:
     ftl_travel:
       system: "跃迁门网络"
       description: "通过固定的跃迁门进行超光速旅行"
       limitations: "需要建立和维护跃迁门，无法随意跃迁"
       scientific_basis: "基于阿尔库贝利度规的扭曲驱动理论"
-    
+
     artificial_intelligence:
       levels:
         - level: "弱AI"
           description: "专用人工智能，无自我意识"
           examples: ["飞船导航AI", "医疗诊断系统", "资源管理AI"]
           restrictions: "无"
-        
+
         - level: "强AI"
           description: "通用人工智能，有自我意识"
           examples: ["星舰主脑", "科研AI", "军事战略AI"]
           restrictions: "受'AI三定律'严格限制，需要定期伦理审查"
-        
+
         - level: "超AI"
           description: "超越人类理解的人工智能"
           examples: ["古代文明遗留AI", "实验性量子AI"]
           restrictions: "禁止创造，现存个体受严密监控"
-    
+
     bio_engineering:
       technologies:
         - name: "基因优化"
           description: "消除遗传疾病，增强基础能力"
           ethical_status: "普遍接受，有监管"
-        
+
         - name: "基因定制"
           description: "定制外貌、能力、寿命"
           ethical_status: "有争议，受阶级限制"
-        
+
         - name: "基因武器"
           description: "针对特定基因的生化武器"
           ethical_status: "严格禁止，战争罪"
-        
+
         - name: "意识上传"
           description: "将意识数字化"
           ethical_status: "实验阶段，法律地位未定"
-    
+
     alien_civilizations:
       - name: "瓦肯人"
         type: "类人外星文明"
@@ -72,14 +72,14 @@ sci_fi_world:
         technology: ["先进理论物理", "医疗科技", "精神感应"]
         culture: "重视证据和逻辑，社会高度结构化"
         relationship: "联邦盟友，科技共享伙伴"
-      
+
       - name: "克里格虫族"
         type: "昆虫类集体意识文明"
         traits: ["蜂巢思维", "快速进化", "扩张主义"]
         technology: ["生物科技", "有机舰船", "群体战术"]
         culture: "无个体概念，完全为集体服务"
         relationship: "潜在威胁，边境冲突"
-      
+
       - name: "以太族"
         type: "能量生命体"
         traits: ["非物质形态", "神秘莫测", "时间感知不同"]
@@ -94,14 +94,14 @@ sci_fi_world:
         ideology: "多元文化、科技共享、和平扩张"
         strengths: ["科技先进", "文化包容", "外交灵活"]
         weaknesses: ["官僚主义", "决策缓慢", "军事分散"]
-      
+
       - name: "企业联盟"
         type: "企业统治政体"
         territory: "资源丰富星区"
         ideology: "资本主义极致、利润至上"
         strengths: ["经济实力", "效率", "技术创新"]
         weaknesses: ["社会不平等", "环境破坏", "道德模糊"]
-      
+
       - name: "自由边境"
         type: "无政府区域"
         territory: "法律薄弱星区"
@@ -114,17 +114,17 @@ sci_fi_world:
         type: "人类母星"
         status: "政治文化中心，历史象征"
         features: ["联合国总部", "历史档案馆", "地球化示范区"]
-      
+
       - name: "火星"
         type: "完全地球化行星"
         status: "科技研发中心，工业基地"
         features: ["轨道电梯", "地下城市", "量子计算中心"]
-      
+
       - name: "泰坦空间站"
         type: "最大贸易枢纽"
         status: "文化熔炉，经济中心"
         features: ["环形居住区", "零重力市场", "多元文化区"]
-      
+
       - name: "深渊前哨"
         type: "军事科研前哨"
         status: "对抗虫族最前线"
@@ -139,17 +139,17 @@ from loom import WorldBuilder, TechSystemBuilder, AlienCivilizationBuilder
 
 class SciFiWorldBuilder:
     """科幻世界构建器"""
-    
+
     def __init__(self):
         self.world_builder = WorldBuilder()
         self.tech_builder = TechSystemBuilder()
         self.alien_builder = AlienCivilizationBuilder()
-    
+
     def create_star_federation_world(self):
         """创建星海联邦世界"""
-        
+
         print("构建星海联邦科幻世界...")
-        
+
         # 创建基础世界
         world = self.world_builder.create_world(
             name="星海联邦宇宙",
@@ -157,40 +157,40 @@ class SciFiWorldBuilder:
             genre="space_opera",
             tone="探索、生存、道德挑战"
         )
-        
+
         # 添加科技系统
         tech_systems = self._create_tech_systems()
         for system in tech_systems:
             world.add_tech_system(system)
-        
+
         # 添加外星文明
         alien_civs = self._create_alien_civilizations()
         for civ in alien_civs:
             world.add_civilization(civ)
-        
+
         # 添加主要势力
         factions = self._create_factions()
         for faction in factions:
             world.add_faction(faction)
-        
+
         # 添加重要地点
         locations = self._create_locations()
         for location in locations:
             world.add_location(location)
-        
+
         print(f"世界构建完成: {world.name}")
         print(f"科技系统: {len(tech_systems)}个")
         print(f"外星文明: {len(alien_civs)}个")
         print(f"主要势力: {len(factions)}个")
         print(f"重要地点: {len(locations)}个")
-        
+
         return world
-    
+
     def _create_tech_systems(self):
         """创建科技系统"""
-        
+
         systems = []
-        
+
         # 1. 跃迁技术
         ftl_system = self.tech_builder.create_system(
             name="跃迁门网络",
@@ -201,7 +201,7 @@ class SciFiWorldBuilder:
             societal_impact="实现星际文明，改变时空观念"
         )
         systems.append(ftl_system)
-        
+
         # 2. 人工智能
         ai_system = self.tech_builder.create_system(
             name="人工智能体系",
@@ -212,7 +212,7 @@ class SciFiWorldBuilder:
             societal_impact="劳动力变革、伦理挑战、存在风险"
         )
         systems.append(ai_system)
-        
+
         # 3. 基因工程
         bio_system = self.tech_builder.create_system(
             name="基因工程技术",
@@ -223,7 +223,7 @@ class SciFiWorldBuilder:
             societal_impact="寿命延长、能力增强、身份重新定义"
         )
         systems.append(bio_system)
-        
+
         # 4. 纳米技术
         nano_system = self.tech_builder.create_system(
             name="纳米制造技术",
@@ -234,14 +234,14 @@ class SciFiWorldBuilder:
             societal_impact="物质极大丰富、医疗革命、环境修复"
         )
         systems.append(nano_system)
-        
+
         return systems
-    
+
     def _create_alien_civilizations(self):
         """创建外星文明"""
-        
+
         civilizations = []
-        
+
         # 1. 瓦肯人
         vulcans = self.alien_builder.create_civilization(
             name="瓦肯人",
@@ -261,7 +261,7 @@ class SciFiWorldBuilder:
             relationship_status="盟友"
         )
         civilizations.append(vulcans)
-        
+
         # 2. 克里格虫族
         krieg = self.alien_builder.create_civilization(
             name="克里格虫族",
@@ -281,7 +281,7 @@ class SciFiWorldBuilder:
             relationship_status="潜在威胁"
         )
         civilizations.append(krieg)
-        
+
         # 3. 以太族
         etherians = self.alien_builder.create_civilization(
             name="以太族",
@@ -301,12 +301,12 @@ class SciFiWorldBuilder:
             relationship_status="中立观察者"
         )
         civilizations.append(etherians)
-        
+
         return civilizations
-    
+
     def _create_factions(self):
         """创建主要势力"""
-        
+
         factions = [
             {
                 "name": "星海联邦",
@@ -345,12 +345,12 @@ class SciFiWorldBuilder:
                 "internal_conflicts": ["暴力循环", "资源争夺", "缺乏安全保障"]
             }
         ]
-        
+
         return factions
-    
+
     def _create_locations(self):
         """创建重要地点"""
-        
+
         locations = [
             {
                 "name": "地球",
@@ -409,17 +409,17 @@ class SciFiWorldBuilder:
                 "quest_hooks": ["军事冲突", "科研突破", "人道危机"]
             }
         ]
-        
+
         return locations
 
 # 使用示例
 if __name__ == "__main__":
     builder = SciFiWorldBuilder()
     world = builder.create_star_federation_world()
-    
+
     # 保存世界配置
     world.save("star_federation_world.yaml")
-    
+
     # 输出摘要
     print("\n世界摘要:")
     print(f"名称: {world.name}")
@@ -441,17 +441,17 @@ from loom.sci_fi import SciFiSessionBuilder
 
 class StarfleetExplorationSession:
     """星际探索会话管理器"""
-    
+
     def __init__(self, api_key: str):
         self.api_key = api_key
         self.session_manager = SessionManager()
         self.sci_fi_builder = SciFiSessionBuilder()
-    
+
     async def create_exploration_session(self, ship_name: str = "进取号"):
         """创建星际探索会话"""
-        
+
         print(f"创建星际探索会话 - 星舰: {ship_name}")
-        
+
         # 构建科幻会话配置
         session_config = self.sci_fi_builder.build_session(
             genre="space_exploration",
@@ -464,7 +464,7 @@ class StarfleetExplorationSession:
             tech_level="advanced_25th_century",
             scientific_accuracy="high"
         )
-        
+
         # 创建具体会话配置
         detailed_config = SessionConfig(
             session_type="starfleet_exploration",

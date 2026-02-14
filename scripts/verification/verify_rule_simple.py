@@ -14,8 +14,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 try:
     from loom.rules.advanced_markdown_canon import AdvancedMarkdownCanon
-    from loom.rules.rule_validator import RuleValidator, ValidationReport
     from loom.rules.markdown_canon import MarkdownCanon
+    from loom.rules.rule_validator import RuleValidator, ValidationReport
 
     print("✅ 模块导入成功")
 except ImportError as e:

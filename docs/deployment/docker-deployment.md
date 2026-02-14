@@ -231,7 +231,7 @@ LOOM 使用多阶段构建优化镜像大小：
 FROM python:3.12-slim as builder
 # 安装系统依赖和 Python 包
 
-# 第二阶段：运行阶段  
+# 第二阶段：运行阶段
 FROM python:3.12-slim as runtime
 # 复制依赖和应用代码
 # 创建非 root 用户
@@ -258,13 +258,13 @@ docker build --build-arg DEV_MODE=true -t loom:dev .
 volumes:
   # 应用数据
   - ./data:/app/data
-  
+
   # 配置文件
   - ./config:/app/config
-  
+
   # 日志文件
   - ./logs:/app/logs
-  
+
   # 典藏数据
   - ./canon:/app/canon
 ```

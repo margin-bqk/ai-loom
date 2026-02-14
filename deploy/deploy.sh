@@ -88,19 +88,19 @@ case $ACTION in
         echo -e "${GREEN}备份 $ENV 环境数据...${NC}"
         BACKUP_DIR="backups/$(date +%Y%m%d_%H%M%S)"
         mkdir -p "$BACKUP_DIR"
-        
+
         # 备份数据库
         if docker-compose -f "$COMPOSE_FILE" ps postgres 2>/dev/null | grep -q "Up"; then
             echo "备份 PostgreSQL..."
             docker-compose -f "$COMPOSE_FILE" exec -T postgres pg_dump -U loom loom_db > "$BACKUP_DIR/loom_db.sql"
         fi
-        
+
         # 备份数据目录
         if [ -d "data" ]; then
             echo "备份数据目录..."
             tar -czf "$BACKUP_DIR/data.tar.gz" data/
         fi
-        
+
         echo -e "${GREEN}备份完成: $BACKUP_DIR${NC}"
         ;;
     *)
@@ -117,7 +117,7 @@ if [ "$ACTION" = "up" ] || [ "$ACTION" = "restart" ] || [ "$ACTION" = "update" ]
     echo ""
     echo -e "${YELLOW}服务状态:${NC}"
     docker-compose -f "$COMPOSE_FILE" ps
-    
+
     echo ""
     echo -e "${YELLOW}访问地址:${NC}"
     case $ENV in
@@ -143,7 +143,7 @@ if [ "$ACTION" = "up" ] || [ "$ACTION" = "restart" ] || [ "$ACTION" = "update" ]
             echo "  指标导出: http://localhost:8081/metrics"
             ;;
     esac
-    
+
     echo ""
     echo -e "${YELLOW}查看日志:${NC}"
     echo "  $0 $ENV logs"

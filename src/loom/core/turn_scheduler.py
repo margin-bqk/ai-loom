@@ -132,9 +132,7 @@ class TurnScheduler:
 
         # 依赖关系跟踪
         self.dependency_graph: Dict[str, Set[str]] = {}  # turn_id -> 依赖的turn_ids
-        self.reverse_dependency: Dict[str, Set[str]] = (
-            {}
-        )  # turn_id -> 依赖于它的turn_ids
+        self.reverse_dependency: Dict[str, Set[str]] = {}  # turn_id -> 依赖于它的turn_ids
 
         # 并发控制
         self.semaphore = asyncio.Semaphore(max_concurrent)

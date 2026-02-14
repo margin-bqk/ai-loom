@@ -794,9 +794,7 @@ class RetconHandler:
 
         # 添加警告（如果一致性不够好）
         if consistency_score < 0.8:
-            result.warnings.append(
-                f"Retcon一致性一般（{consistency_score:.2f}），可能影响叙事连贯性"
-            )
+            result.warnings.append(f"Retcon一致性一般（{consistency_score:.2f}），可能影响叙事连贯性")
 
         return result
 

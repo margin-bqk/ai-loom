@@ -9,11 +9,12 @@ import sys
 # 添加项目根目录到路径
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+
 def verify_components():
     """验证所有核心组件"""
     print("验证核心运行时层组件...")
     print("=" * 60)
-    
+
     components = [
         ("ConfigManager", "src.loom.core.config_manager", "ConfigManager"),
         ("SessionManager", "src.loom.core.session_manager", "SessionManager"),
@@ -21,15 +22,15 @@ def verify_components():
         ("TurnScheduler", "src.loom.core.turn_scheduler", "TurnScheduler"),
         ("PromptAssembler", "src.loom.core.prompt_assembler", "PromptAssembler"),
     ]
-    
+
     all_passed = True
-    
+
     for name, module_path, class_name in components:
         try:
             module = __import__(module_path, fromlist=[class_name])
             cls = getattr(module, class_name)
             print(f"✅ {name}: 成功导入 {class_name}")
-            
+
             # 检查类是否有必要的属性/方法
             if name == "ConfigManager":
                 if hasattr(cls, "get_config") and hasattr(cls, "reload"):
@@ -37,75 +38,72 @@ def verify_components():
                 else:
                     print(f"   ⚠ 缺少某些方法")
                     all_passed = False
-                    
+
             elif name == "SessionManager":
                 if hasattr(cls, "create_session") and hasattr(cls, "load_session"):
                     print(f"   - 包含必要方法: create_session, load_session")
                 else:
                     print(f"   ⚠ 缺少某些方法")
                     all_passed = False
-                    
+
             elif name == "PersistenceEngine":
                 if hasattr(cls, "initialize") and hasattr(cls, "close"):
                     print(f"   - 包含必要方法: initialize, close")
                 else:
                     print(f"   ⚠ 缺少某些方法")
                     all_passed = False
-                    
+
             elif name == "TurnScheduler":
                 if hasattr(cls, "submit_turn") and hasattr(cls, "start"):
                     print(f"   - 包含必要方法: submit_turn, start")
                 else:
                     print(f"   ⚠ 缺少某些方法")
                     all_passed = False
-                    
+
             elif name == "PromptAssembler":
                 if hasattr(cls, "assemble") and hasattr(cls, "validate_context"):
                     print(f"   - 包含必要方法: assemble, validate_context")
                 else:
                     print(f"   ⚠ 缺少某些方法")
                     all_passed = False
-                    
+
         except ImportError as e:
             print(f"❌ {name}: 导入失败 - {e}")
             all_passed = False
         except AttributeError as e:
             print(f"❌ {name}: 类 {class_name} 不存在 - {e}")
             all_passed = False
-    
+
     print("\n" + "=" * 60)
-    
+
     # 检查配置文件
     print("\n检查配置文件...")
-    config_files = [
-        "config/default_config.yaml",
-        "config/llm_providers.yaml"
-    ]
-    
+    config_files = ["config/default_config.yaml", "config/llm_providers.yaml"]
+
     for config_file in config_files:
         if os.path.exists(config_file):
             print(f"✅ 配置文件存在: {config_file}")
         else:
             print(f"⚠ 配置文件不存在: {config_file}")
             all_passed = False
-    
+
     # 检查测试文件
     print("\n检查测试文件...")
     test_files = [
         "tests/test_core/test_config_manager.py",
         "tests/test_core/test_session_manager.py",
-        "tests/test_core/test_integration.py"
+        "tests/test_core/test_integration.py",
     ]
-    
+
     for test_file in test_files:
         if os.path.exists(test_file):
             print(f"✅ 测试文件存在: {test_file}")
         else:
             print(f"⚠ 测试文件不存在: {test_file}")
             all_passed = False
-    
+
     print("\n" + "=" * 60)
-    
+
     if all_passed:
         print("✅ 所有核心运行时层组件验证通过！")
         print("\n实现的功能包括：")
@@ -125,7 +123,7 @@ def check_architecture_compliance():
     """检查架构设计合规性"""
     print("\n检查架构设计合规性...")
     print("=" * 60)
-    
+
     compliance_checks = [
         ("异步接口设计", "所有核心组件都支持异步操作", True),
         ("错误处理", "组件包含适当的错误处理和日志记录", True),
@@ -136,9 +134,9 @@ def check_architecture_compliance():
         ("提示组装", "支持模板系统和LLM格式适配", True),
         ("单元测试", "包含基本的单元测试", True),
     ]
-    
+
     all_compliant = True
-    
+
     for check, description, expected in compliance_checks:
         # 这里我们基于实现的知识来判断
         # 在实际项目中，这应该通过更详细的检查来完成
@@ -146,9 +144,9 @@ def check_architecture_compliance():
         print(f"{status} {check}: {description}")
         if not expected:
             all_compliant = False
-    
+
     print("\n" + "=" * 60)
-    
+
     if all_compliant:
         print("✅ 架构设计合规性检查通过！")
         return True
@@ -161,10 +159,10 @@ def main():
     """主函数"""
     print("LOOM核心运行时层实现验证")
     print("=" * 60)
-    
+
     components_ok = verify_components()
     architecture_ok = check_architecture_compliance()
-    
+
     if components_ok and architecture_ok:
         print("\n" + "=" * 60)
         print("🎉 核心运行时层实现验证成功！")

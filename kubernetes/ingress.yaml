@@ -10,17 +10,17 @@ metadata:
 spec:
   ingressClassName: nginx
   tls:
-  - hosts:
-    - loom.example.com
-    secretName: loom-tls
+    - hosts:
+        - loom.example.com
+      secretName: loom-tls # pragma: allowlist secret
   rules:
-  - host: loom.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: loom-service
-            port:
-              number: 80
+    - host: loom.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: loom-service
+                port:
+                  number: 80

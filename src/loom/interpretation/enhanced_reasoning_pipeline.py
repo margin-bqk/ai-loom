@@ -751,7 +751,11 @@ class EnhancedReasoningPipeline:
             key=lambda c: (
                 0
                 if c.type == "permission"
-                else 1 if c.type == "prohibition" else 2 if c.type == "causality" else 3
+                else 1
+                if c.type == "prohibition"
+                else 2
+                if c.type == "causality"
+                else 3
             )
         )
 
@@ -774,7 +778,9 @@ class EnhancedReasoningPipeline:
                     else (
                         1
                         if m.get("type") == "character"
-                        else 2 if m.get("type") == "event" else 3
+                        else 2
+                        if m.get("type") == "event"
+                        else 3
                     )
                 ),
                 m.get("relevance_score", 0),

@@ -170,7 +170,7 @@ class MyPlugin(LoomPlugin):
     def initialize(self, config):
         # 初始化插件
         pass
-    
+
     def process(self, data):
         # 处理数据
         return processed_data

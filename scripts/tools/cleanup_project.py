@@ -8,7 +8,7 @@ import os
 import shutil
 import sys
 from pathlib import Path
-from typing import List, Tuple, Dict
+from typing import Dict, List, Tuple
 
 
 class ProjectCleanup:
@@ -332,13 +332,9 @@ class ProjectCleanup:
 
         if confirm:
             print("\n将要执行以下操作:")
-            print(
-                f"  1. 移动 {len(categories['debug_files'])} 个debug文件到 scripts/debug/"
-            )
+            print(f"  1. 移动 {len(categories['debug_files'])} 个debug文件到 scripts/debug/")
             print(f"  2. 移动 {len(categories['test_files'])} 个测试文件到 tests/temp/")
-            print(
-                f"  3. 移动 {len(categories['verify_files'])} 个verify文件到 tests/verify/"
-            )
+            print(f"  3. 移动 {len(categories['verify_files'])} 个verify文件到 tests/verify/")
             print(f"  4. 处理 {len(categories['temp_files'])} 个临时文件")
 
             response = input("\n是否继续？(y/N): ").strip().lower()
@@ -420,9 +416,7 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(description="项目清理工具")
-    parser.add_argument(
-        "--dry-run", action="store_true", help="模拟运行，显示将要执行的操作"
-    )
+    parser.add_argument("--dry-run", action="store_true", help="模拟运行，显示将要执行的操作")
     parser.add_argument("--report", action="store_true", help="生成清理报告")
     parser.add_argument("--yes", "-y", action="store_true", help="自动确认，不提示")
     parser.add_argument("--root", default=".", help="项目根目录路径")

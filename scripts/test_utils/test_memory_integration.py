@@ -6,8 +6,8 @@
 """
 
 import asyncio
-import sys
 import os
+import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -15,24 +15,24 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.loom.memory.vector_memory_store import VectorMemoryStore, VectorStoreBackend
+from src.loom.memory.enhanced_world_memory import (
+    EnhancedMemoryConfig,
+    EnhancedWorldMemory,
+)
+from src.loom.memory.interfaces import MemoryQuery
+from src.loom.memory.memory_consistency_checker import MemoryConsistencyChecker
 from src.loom.memory.memory_summarizer import (
     MemorySummarizer,
-    SummaryStrategy,
     SummaryFormat,
+    SummaryStrategy,
 )
-from src.loom.memory.enhanced_world_memory import (
-    EnhancedWorldMemory,
-    EnhancedMemoryConfig,
-)
-from src.loom.memory.memory_consistency_checker import MemoryConsistencyChecker
+from src.loom.memory.vector_memory_store import VectorMemoryStore, VectorStoreBackend
 from src.loom.memory.world_memory import (
     MemoryEntity,
     MemoryEntityType,
     MemoryRelation,
     MemoryRelationType,
 )
-from src.loom.memory.interfaces import MemoryQuery
 
 
 class MockLLMProvider:

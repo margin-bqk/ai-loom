@@ -285,7 +285,9 @@ class EnhancedContextBuilder:
                     else (
                         1
                         if getattr(c, "type", "") == "permission"
-                        else 2 if getattr(c, "type", "") == "causality" else 3
+                        else 2
+                        if getattr(c, "type", "") == "causality"
+                        else 3
                     )
                 ),
                 -len(getattr(c, "content", "")),  # 内容越长可能越重要
@@ -988,9 +990,7 @@ class EnhancedContextBuilder:
         prompt = prompt.replace("## 相关记忆", memory_section)
 
         # 添加记忆整合说明
-        integration_note = (
-            "\n\n**记忆整合要求**：你的响应必须明确引用上述记忆，展示历史连续性。"
-        )
+        integration_note = "\n\n**记忆整合要求**：你的响应必须明确引用上述记忆，展示历史连续性。"
         if "请生成" in prompt:
             # 在生成指令前插入
             parts = prompt.split("请生成")

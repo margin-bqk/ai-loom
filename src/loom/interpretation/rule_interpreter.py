@@ -138,9 +138,7 @@ class RuleInterpreter:
 
             sentence_lower = sentence.lower()
 
-            if any(
-                word in sentence_lower for word in ["不能", "禁止", "不允许", "不可以"]
-            ):
+            if any(word in sentence_lower for word in ["不能", "禁止", "不允许", "不可以"]):
                 constraints.append(
                     RuleConstraint(
                         type="permission",

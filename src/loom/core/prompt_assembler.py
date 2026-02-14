@@ -364,7 +364,9 @@ class PromptAssembler:
                 memory_text += f"**内容**: {content}\n"
 
             if metadata:
-                memory_text += f"**元数据**: {json.dumps(metadata, ensure_ascii=False, indent=2)}\n"
+                memory_text += (
+                    f"**元数据**: {json.dumps(metadata, ensure_ascii=False, indent=2)}\n"
+                )
 
             formatted.append(memory_text.strip())
 

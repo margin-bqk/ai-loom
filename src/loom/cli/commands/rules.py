@@ -27,12 +27,8 @@ app = typer.Typer(
 @app.command("load")
 def load_rules(
     canon: str = typer.Option("default", "--canon", "-c", help="规则集名称"),
-    path: Optional[str] = typer.Option(
-        None, "--path", "-p", help="规则文件路径（覆盖默认路径）"
-    ),
-    validate: bool = typer.Option(
-        True, "--validate/--no-validate", help="是否验证规则"
-    ),
+    path: Optional[str] = typer.Option(None, "--path", "-p", help="规则文件路径（覆盖默认路径）"),
+    validate: bool = typer.Option(True, "--validate/--no-validate", help="是否验证规则"),
     format: str = typer.Option(
         "table", "--format", "-f", help="输出格式 (table, json, yaml)"
     ),
@@ -162,9 +158,7 @@ async def _load_rules_async(
 @app.command("list")
 def list_rules(
     path: Optional[str] = typer.Option(None, "--path", "-p", help="规则目录路径"),
-    recursive: bool = typer.Option(
-        True, "--recursive/--no-recursive", help="是否递归搜索"
-    ),
+    recursive: bool = typer.Option(True, "--recursive/--no-recursive", help="是否递归搜索"),
     format: str = typer.Option(
         "table", "--format", "-f", help="输出格式 (table, json, csv)"
     ),
@@ -254,14 +248,10 @@ async def _list_rules_async(
 
 @app.command("validate")
 def validate_rules(
-    canon: Optional[str] = typer.Option(
-        None, "--canon", "-c", help="规则集名称（如未指定则验证所有）"
-    ),
+    canon: Optional[str] = typer.Option(None, "--canon", "-c", help="规则集名称（如未指定则验证所有）"),
     path: Optional[str] = typer.Option(None, "--path", "-p", help="规则目录路径"),
     fix: bool = typer.Option(False, "--fix", "-f", help="尝试自动修复问题"),
-    format: str = typer.Option(
-        "table", "--format", "-f", help="输出格式 (table, json)"
-    ),
+    format: str = typer.Option("table", "--format", "-f", help="输出格式 (table, json)"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="详细输出"),
 ):
     """验证规则集"""
@@ -566,9 +556,7 @@ created: {date_str}
 @app.command("stats")
 def rules_stats(
     path: Optional[str] = typer.Option(None, "--path", "-p", help="规则目录路径"),
-    format: str = typer.Option(
-        "table", "--format", "-f", help="输出格式 (table, json)"
-    ),
+    format: str = typer.Option("table", "--format", "-f", help="输出格式 (table, json)"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="详细输出"),
 ):
     """显示规则集统计信息"""
@@ -642,13 +630,9 @@ async def _rules_stats_async(rules_path: Optional[str], output_format: str):
             stats_table.add_row(
                 "平均章节数", f"{stats.get('avg_sections_per_canon', 0):.1f}"
             )
-            stats_table.add_row(
-                "平均字数", f"{stats.get('avg_words_per_canon', 0):.1f}"
-            )
+            stats_table.add_row("平均字数", f"{stats.get('avg_words_per_canon', 0):.1f}")
             stats_table.add_row("缓存规则集数", str(stats.get("cached_canons", 0)))
-            stats_table.add_row(
-                "依赖图大小", str(stats.get("dependency_graph_size", 0))
-            )
+            stats_table.add_row("依赖图大小", str(stats.get("dependency_graph_size", 0)))
 
             console.print(Panel(stats_table, title="统计信息"))
 

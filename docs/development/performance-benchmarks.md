@@ -209,7 +209,7 @@ database:
     cache_size: -2000  # 2GB 缓存
     journal_mode: WAL  # 写前日志
     synchronous: NORMAL
-  
+
   # PostgreSQL 优化
   postgresql:
     pool_size: 20
@@ -226,7 +226,7 @@ cache:
     port: 6379
     db: 0
     max_connections: 50
-  
+
   # 内存缓存
   memory:
     max_size: 1000  # 最大缓存条目数
@@ -241,7 +241,7 @@ llm:
     timeout: 30      # 超时时间（秒）
     max_retries: 3   # 最大重试次数
     batch_size: 10   # 批处理大小
-  
+
   # 缓存配置
   cache:
     enabled: true
@@ -266,9 +266,9 @@ async def process_turn_parallel(self, turn):
     # 并行加载规则和记忆
     rules_task = self.load_rules()
     memories_task = self.load_memories()
-    
+
     rules, memories = await asyncio.gather(rules_task, memories_task)
-    
+
     # 继续处理
     prompt = await self.assemble_prompt(rules, memories)
     response = await self.call_llm(prompt)
@@ -284,22 +284,22 @@ class OptimizedComponent:
     def __init__(self):
         self._cache = {}
         self._lock = asyncio.Lock()
-    
+
     async def get_data_with_cache(self, key):
         # 检查缓存
         if key in self._cache:
             return self._cache[key]
-        
+
         # 缓存未命中，获取数据
         async with self._lock:
             # 双重检查，防止并发重复获取
             if key in self._cache:
                 return self._cache[key]
-            
+
             data = await self._fetch_data(key)
             self._cache[key] = data
             return data
-    
+
     @lru_cache(maxsize=128)
     def compute_expensive_operation(self, input_data):
         # CPU密集型操作使用LRU缓存
@@ -314,22 +314,22 @@ class BatchProcessor:
         self.flush_interval = flush_interval
         self.batch = []
         self.last_flush = time.time()
-    
+
     async def add_to_batch(self, item):
         self.batch.append(item)
-        
+
         # 检查是否达到批处理大小或时间间隔
-        if (len(self.batch) >= self.batch_size or 
+        if (len(self.batch) >= self.batch_size or
             time.time() - self.last_flush >= self.flush_interval):
             await self.flush()
-    
+
     async def flush(self):
         if not self.batch:
             return
-        
+
         # 批量处理
         await self._process_batch(self.batch)
-        
+
         # 重置
         self.batch = []
         self.last_flush = time.time()
@@ -400,17 +400,17 @@ metrics:
     type: histogram
     labels: [session_type, llm_provider]
     buckets: [0.1, 0.5, 1, 2, 5, 10]
-  
+
   # 吞吐量
   - name: loom_turns_processed_total
     type: counter
     labels: [status]
-  
+
   # 错误率
   - name: loom_errors_total
     type: counter
     labels: [error_type, component]
-  
+
   # 资源使用
   - name: loom_memory_usage_bytes
     type: gauge
@@ -426,12 +426,12 @@ business_metrics:
     type: gauge
   - name: loom_sessions_created_total
     type: counter
-  
+
   # LLM使用
   - name: loom_llm_tokens_used_total
     type: counter
     labels: [provider, model]
-  
+
   # 成本
   - name: loom_cost_usd_total
     type: counter
@@ -450,7 +450,7 @@ alerts:
     annotations:
       summary: "回合处理延迟过高"
       description: "95%的回合处理时间超过5秒"
-  
+
   - alert: HighErrorRate
     expr: rate(loom_errors_total[5m]) / rate(loom_turns_processed_total[5m]) > 0.05
     for: 5m
@@ -471,7 +471,7 @@ alerts:
     annotations:
       summary: "内存使用率过高"
       description: "内存使用率超过80%"
-  
+
   - alert: HighCPUUsage
     expr: loom_cpu_usage_percent > 80
     for: 5m

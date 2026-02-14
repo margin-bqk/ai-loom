@@ -344,9 +344,7 @@ class NarrativeInterpreterAdapter(NarrativeInterpreter):
         interpretation_parts = []
         interpretation_parts.append(f"叙事解释 - 会话: {session.name}")
         interpretation_parts.append(f"当前场景: {context.current_scene}")
-        interpretation_parts.append(
-            f"在场角色: {', '.join(context.characters_present)}"
-        )
+        interpretation_parts.append(f"在场角色: {', '.join(context.characters_present)}")
         interpretation_parts.append(f"叙事基调: {context.narrative_tone}")
         interpretation_parts.append(f"叙事节奏: {context.narrative_pace}")
 
@@ -371,9 +369,7 @@ class NarrativeInterpreterAdapter(NarrativeInterpreter):
             suggestions.append("叙事一致性较低，建议检查角色和场景的一致性")
 
         if continuity_issues:
-            suggestions.append(
-                f"发现{len(continuity_issues)}个连续性问题，建议审查叙事时间线"
-            )
+            suggestions.append(f"发现{len(continuity_issues)}个连续性问题，建议审查叙事时间线")
 
         if consistency_score > 0.9 and not continuity_issues:
             suggestions.append("叙事质量良好，继续保持")

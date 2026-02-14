@@ -53,7 +53,8 @@ class StructuredStore:
             cursor = conn.cursor()
 
             # 实体表 - 存储角色、地点、物品等
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS memory_entities (
                     id TEXT PRIMARY KEY,
                     session_id TEXT NOT NULL,
@@ -65,10 +66,12 @@ class StructuredStore:
                     metadata TEXT NOT NULL,
                     is_active BOOLEAN DEFAULT 1
                 )
-            """)
+            """
+            )
 
             # 关系表 - 实体间关系
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS memory_relations (
                     source_id TEXT NOT NULL,
                     target_id TEXT NOT NULL,
@@ -80,10 +83,12 @@ class StructuredStore:
                     FOREIGN KEY (source_id) REFERENCES memory_entities (id),
                     FOREIGN KEY (target_id) REFERENCES memory_entities (id)
                 )
-            """)
+            """
+            )
 
             # 事实表 - 存储事件、状态变化等
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS memory_facts (
                     id TEXT PRIMARY KEY,
                     session_id TEXT NOT NULL,
@@ -98,10 +103,12 @@ class StructuredStore:
                     FOREIGN KEY (source_entity_id) REFERENCES memory_entities (id),
                     FOREIGN KEY (target_entity_id) REFERENCES memory_entities (id)
                 )
-            """)
+            """
+            )
 
             # 剧情线表 - 故事线、任务、目标
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS plotlines (
                     id TEXT PRIMARY KEY,
                     session_id TEXT NOT NULL,
@@ -115,10 +122,12 @@ class StructuredStore:
                     created_at TEXT NOT NULL,
                     updated_at TEXT NOT NULL
                 )
-            """)
+            """
+            )
 
             # 剧情线-实体关联表
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS plotline_entities (
                     plotline_id TEXT NOT NULL,
                     entity_id TEXT NOT NULL,
@@ -129,10 +138,12 @@ class StructuredStore:
                     FOREIGN KEY (plotline_id) REFERENCES plotlines (id),
                     FOREIGN KEY (entity_id) REFERENCES memory_entities (id)
                 )
-            """)
+            """
+            )
 
             # 版本控制表 - 数据版本历史
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS entity_versions (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
                     entity_id TEXT NOT NULL,
@@ -145,10 +156,12 @@ class StructuredStore:
                     FOREIGN KEY (entity_id) REFERENCES memory_entities (id),
                     UNIQUE(entity_id, version)
                 )
-            """)
+            """
+            )
 
             # 记忆关联表 - 实体-事实关联
-            cursor.execute("""
+            cursor.execute(
+                """
                 CREATE TABLE IF NOT EXISTS entity_fact_associations (
                     entity_id TEXT NOT NULL,
                     fact_id TEXT NOT NULL,
@@ -160,7 +173,8 @@ class StructuredStore:
                     FOREIGN KEY (entity_id) REFERENCES memory_entities (id),
                     FOREIGN KEY (fact_id) REFERENCES memory_facts (id)
                 )
-            """)
+            """
+            )
 
             # 创建索引
             cursor.execute(
@@ -300,9 +314,9 @@ class StructuredStore:
 
             cursor.execute(
                 """
-                SELECT * FROM memory_entities 
-                WHERE session_id = ? AND type = ? 
-                ORDER BY updated_at DESC 
+                SELECT * FROM memory_entities
+                WHERE session_id = ? AND type = ?
+                ORDER BY updated_at DESC
                 LIMIT ?
             """,
                 (session_id, entity_type.value, limit),
@@ -347,9 +361,9 @@ class StructuredStore:
 
             # 简单关键词搜索
             sql = """
-                SELECT * FROM memory_entities 
-                WHERE content LIKE ? 
-                ORDER BY updated_at DESC 
+                SELECT * FROM memory_entities
+                WHERE content LIKE ?
+                ORDER BY updated_at DESC
                 LIMIT ?
             """
 
@@ -391,7 +405,7 @@ class StructuredStore:
 
             cursor.execute(
                 """
-                INSERT OR REPLACE INTO memory_relations 
+                INSERT OR REPLACE INTO memory_relations
                 (source_id, target_id, relation_type, strength, metadata)
                 VALUES (?, ?, ?, ?, ?)
             """,
@@ -428,7 +442,7 @@ class StructuredStore:
             if relation_type:
                 cursor.execute(
                     """
-                    SELECT * FROM memory_relations 
+                    SELECT * FROM memory_relations
                     WHERE (source_id = ? OR target_id = ?) AND relation_type = ?
                 """,
                     (entity_id, entity_id, relation_type.value),
@@ -436,7 +450,7 @@ class StructuredStore:
             else:
                 cursor.execute(
                     """
-                    SELECT * FROM memory_relations 
+                    SELECT * FROM memory_relations
                     WHERE source_id = ? OR target_id = ?
                 """,
                     (entity_id, entity_id),
@@ -502,9 +516,9 @@ class StructuredStore:
             # 实体统计
             cursor.execute(
                 """
-                SELECT type, COUNT(*) as count 
-                FROM memory_entities 
-                WHERE session_id = ? 
+                SELECT type, COUNT(*) as count
+                FROM memory_entities
+                WHERE session_id = ?
                 GROUP BY type
             """,
                 (session_id,),
@@ -517,8 +531,8 @@ class StructuredStore:
             # 关系统计
             cursor.execute(
                 """
-                SELECT relation_type, COUNT(*) as count 
-                FROM memory_relations 
+                SELECT relation_type, COUNT(*) as count
+                FROM memory_relations
                 WHERE source_id IN (SELECT id FROM memory_entities WHERE session_id = ?)
                 GROUP BY relation_type
             """,

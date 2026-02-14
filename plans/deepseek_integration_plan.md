@@ -31,17 +31,17 @@
 ```python
 class DeepSeekProvider(LLMProvider):
     """DeepSeek API提供者"""
-    
+
     def __init__(self, config: Dict[str, Any]):
         super().__init__(config)
         self.api_key = config.get("api_key")
         self.base_url = config.get("base_url", "https://api.deepseek.com")
         self.thinking_enabled = config.get("thinking_enabled", False)
-        
+
         # DeepSeek特定配置
         self.max_tokens = config.get("max_tokens", 4096)
         self.temperature = config.get("temperature", 1.0)
-        
+
     async def _generate_impl(self, prompt: str, **kwargs) -> LLMResponse:
         """生成文本的具体实现"""
         session = await self.get_session()
@@ -50,7 +50,7 @@ class DeepSeekProvider(LLMProvider):
                 "Authorization": f"Bearer {self.api_key}",
                 "Content-Type": "application/json"
             }
-            
+
             # 构建请求体
             payload = {
                 "model": kwargs.get("model", self.model),
@@ -61,18 +61,18 @@ class DeepSeekProvider(LLMProvider):
                 "max_tokens": kwargs.get("max_tokens", self.max_tokens),
                 "stream": False
             }
-            
+
             # 处理推理模式
             if self.thinking_enabled:
                 payload["thinking"] = {"type": "enabled"}
             else:
                 payload["thinking"] = {"type": "disabled"}
-            
+
             # 添加其他参数
             for key in ["frequency_penalty", "presence_penalty", "top_p", "stop"]:
                 if key in kwargs:
                     payload[key] = kwargs[key]
-            
+
             async with session.post(
                 f"{self.base_url}/chat/completions",
                 json=payload,
@@ -83,9 +83,9 @@ class DeepSeekProvider(LLMProvider):
                     error_text = await response.text()
                     logger.error(f"DeepSeek API error: {response.status} - {error_text}")
                     raise Exception(f"API error: {response.status}")
-                
+
                 data = await response.json()
-                
+
                 return LLMResponse(
                     content=data["choices"][0]["message"]["content"],
                     model=data["model"],
@@ -99,22 +99,22 @@ class DeepSeekProvider(LLMProvider):
                 )
         finally:
             await self.release_session(session)
-    
+
     def _calculate_cost(self, response: LLMResponse) -> float:
         """计算DeepSeek成本"""
         if not response.usage:
             return super()._calculate_cost(response)
-        
+
         # DeepSeek定价模型
         input_tokens = response.usage.get("prompt_tokens", 0)
         output_tokens = response.usage.get("completion_tokens", 0)
-        
+
         # 定价：$0.28/1M输入token，$0.42/1M输出token
         input_cost = (input_tokens / 1_000_000) * 0.28
         output_cost = (output_tokens / 1_000_000) * 0.42
-        
+
         return input_cost + output_cost
-    
+
     def validate_config(self) -> List[str]:
         """验证配置"""
         errors = []
@@ -156,7 +156,7 @@ deepseek:
       context_length: 128000
       cost_per_1k_input: 0.00028  # $0.28/1M tokens
       cost_per_1k_output: 0.00042 # $0.42/1M tokens
-      
+
     - name: "deepseek-reasoner"
       description: "DeepSeek Reasoner (推理模式)"
       max_tokens: 32000
@@ -164,17 +164,17 @@ deepseek:
       cost_per_1k_input: 0.00028
       cost_per_1k_output: 0.00042
       features: ["reasoning_mode"]
-  
+
   capabilities:
     - "reasoning_mode"
     - "json_output"
     - "tool_calls"
     - "128k_context"
-  
+
   rate_limits:
     requests_per_minute: "unlimited"  # DeepSeek不限制速率
     tokens_per_minute: "unlimited"
-  
+
   requirements:
     - "API key from platform.deepseek.com"
     - "Internet connection"
@@ -220,7 +220,7 @@ session_type_mapping:
     preferred_provider: "deepseek"
     preferred_model: "deepseek-chat"
     fallback_to: "openai"
-    
+
   reasoning_tasks:
     preferred_provider: "deepseek"
     preferred_model: "deepseek-reasoner"
@@ -284,35 +284,35 @@ class TestDeepSeekProvider:
         assert provider.provider_type == "deepseek"
         assert provider.model == "deepseek-chat"
         assert provider.thinking_enabled == False
-    
+
     @pytest.mark.asyncio
     async def test_generate_success(self):
         """测试成功生成响应"""
         config = {"api_key": "test", "model": "deepseek-chat"}
         provider = DeepSeekProvider(config)
-        
+
         with patch.object(provider, '_generate_impl') as mock_generate:
             mock_generate.return_value = LLMResponse(
                 content="测试响应",
                 model="deepseek-chat",
                 usage={"prompt_tokens": 10, "completion_tokens": 20}
             )
-            
+
             response = await provider.generate("测试提示")
             assert response.content == "测试响应"
             assert response.model == "deepseek-chat"
-    
+
     def test_cost_calculation(self):
         """测试成本计算"""
         config = {"api_key": "test", "model": "deepseek-chat"}
         provider = DeepSeekProvider(config)
-        
+
         response = LLMResponse(
             content="测试",
             model="deepseek-chat",
             usage={"prompt_tokens": 1000, "completion_tokens": 500}
         )
-        
+
         # 1000输入token + 500输出token
         # 成本 = (1000/1M * 0.28) + (500/1M * 0.42) = 0.00028 + 0.00021 = 0.00049
         cost = provider._calculate_cost(response)
@@ -333,7 +333,7 @@ class TestDeepSeekIntegration:
         }
         provider = LLMProviderFactory.create_provider(config)
         assert isinstance(provider, DeepSeekProvider)
-    
+
     def test_provider_manager_integration(self):
         """测试提供商管理器集成"""
         configs = {
@@ -358,16 +358,16 @@ class TestDeepSeekEndToEnd:
         """使用DeepSeek完成完整会话"""
         # 配置DeepSeek为默认提供商
         config = load_config_with_deepseek()
-        
+
         # 创建会话管理器
         session_manager = SessionManager(config)
-        
+
         # 创建会话并运行
         session = await session_manager.create_session(
             session_type="chinese_content",
             initial_prompt="用中文写一个科幻故事开头"
         )
-        
+
         # 验证响应
         assert session.responses
         assert "deepseek" in session.metadata.get("llm_provider", "")
@@ -468,7 +468,7 @@ DEEPSEEK_MODEL=deepseek-chat  # 可选
 3. **定期检查**：每周检查进度，调整计划
 4. **用户反馈**：收集早期用户反馈，优化实现
 
-**计划创建者**: AI-Loom架构团队  
-**创建日期**: 2026-02-07  
-**版本**: 1.0  
+**计划创建者**: AI-Loom架构团队
+**创建日期**: 2026-02-07
+**版本**: 1.0
 **状态**: 待评审

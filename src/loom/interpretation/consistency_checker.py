@@ -517,9 +517,7 @@ class ConsistencyChecker:
     ) -> str:
         """生成记忆一致性摘要"""
         if not issues:
-            return (
-                f"记忆一致性检查通过（检查了{memory_count}条记忆），分数：{score:.2f}"
-            )
+            return f"记忆一致性检查通过（检查了{memory_count}条记忆），分数：{score:.2f}"
 
         memory_issues = [
             i
@@ -561,25 +559,15 @@ class ConsistencyChecker:
 
             # 添加具体的修正建议
             if issue.type == "rule_violation":
-                suggestion["specific_advice"] = (
-                    "考虑修改响应以避免直接违反规则，或添加解释说明为什么这个例外是合理的。"
-                )
+                suggestion["specific_advice"] = "考虑修改响应以避免直接违反规则，或添加解释说明为什么这个例外是合理的。"
             elif issue.type == "memory_conflict":
-                suggestion["specific_advice"] = (
-                    "检查历史记忆，确保新响应不与已建立的事实矛盾。"
-                )
+                suggestion["specific_advice"] = "检查历史记忆，确保新响应不与已建立的事实矛盾。"
             elif issue.type == "character_inconsistency":
-                suggestion["specific_advice"] = (
-                    "保持角色特征的一致性，如果需要改变，请提供合理的角色发展解释。"
-                )
+                suggestion["specific_advice"] = "保持角色特征的一致性，如果需要改变，请提供合理的角色发展解释。"
             elif issue.type == "tone_mismatch":
-                suggestion["specific_advice"] = (
-                    "调整语言风格以匹配故事基调，使用更符合基调的词汇和句式。"
-                )
+                suggestion["specific_advice"] = "调整语言风格以匹配故事基调，使用更符合基调的词汇和句式。"
             elif issue.type == "logic_error":
-                suggestion["specific_advice"] = (
-                    "检查逻辑矛盾，确保叙事前后一致，时间顺序合理。"
-                )
+                suggestion["specific_advice"] = "检查逻辑矛盾，确保叙事前后一致，时间顺序合理。"
 
             suggestions.append(suggestion)
 

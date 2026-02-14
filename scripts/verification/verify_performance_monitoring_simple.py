@@ -3,8 +3,8 @@
 性能监控系统验证脚本 - 简单版本
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # 直接导入性能监控模块
@@ -84,9 +84,9 @@ def test_basic_functionality():
 
     try:
         from src.loom.interpretation.performance_monitor import (
-            PerformanceMonitor,
             Metric,
             MetricType,
+            PerformanceMonitor,
         )
 
         # 创建性能监控器

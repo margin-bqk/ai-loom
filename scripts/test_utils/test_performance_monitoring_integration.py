@@ -7,9 +7,9 @@
 """
 
 import asyncio
-import time
-import sys
 import os
+import sys
+import time
 from pathlib import Path
 
 # 添加项目根目录到Python路径
@@ -17,12 +17,12 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from src.loom.interpretation import (
-    get_performance_monitor,
-    get_benchmark_framework,
-    get_resource_analyzer,
-    PerformanceMonitor,
     BenchmarkFramework,
+    PerformanceMonitor,
     ResourceAnalyzer,
+    get_benchmark_framework,
+    get_performance_monitor,
+    get_resource_analyzer,
 )
 from src.loom.interpretation.performance_optimizer import get_performance_optimizer
 
@@ -363,22 +363,22 @@ async def main():
 
     try:
         # 测试性能监控器集成
-        test_results["performance_monitor"] = (
-            await test_performance_monitor_integration()
-        )
+        test_results[
+            "performance_monitor"
+        ] = await test_performance_monitor_integration()
 
         # 测试基准测试框架集成
-        test_results["benchmark_framework"] = (
-            await test_benchmark_framework_integration()
-        )
+        test_results[
+            "benchmark_framework"
+        ] = await test_benchmark_framework_integration()
 
         # 测试资源分析器集成
         test_results["resource_analyzer"] = await test_resource_analyzer_integration()
 
         # 测试性能优化器集成
-        test_results["performance_optimizer"] = (
-            await test_performance_optimizer_integration()
-        )
+        test_results[
+            "performance_optimizer"
+        ] = await test_performance_optimizer_integration()
 
         # 测试完整集成
         test_results["full_integration"] = await test_full_integration()

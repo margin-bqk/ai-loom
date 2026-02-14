@@ -28,15 +28,15 @@ async def main():
             scenario="你是一名勇敢的冒险者，正在探索古老的遗迹。",
             rules=["战斗规则", "魔法规则"]
         )
-        
+
         print(f"创建会话: {session['id']}")
-        
+
         # 处理回合
         response = await client.process_turn(
             session_id=session['id'],
             input_text="我检查一下这个房间"
         )
-        
+
         print(f"响应: {response['response']}")
 
 # 运行异步函数
@@ -57,15 +57,15 @@ with SyncLoomClient(base_url="http://localhost:8000") as client:
         scenario="你是一名太空探险家，发现了未知的外星文明。",
         rules=["物理规则", "外交规则"]
     )
-    
+
     print(f"创建会话: {session['id']}")
-    
+
     # 处理回合
     response = client.process_turn(
         session_id=session['id'],
         input_text="扫描外星结构"
     )
-    
+
     print(f"响应: {response['response']}")
 ```
 
@@ -99,7 +99,7 @@ async def close(self)
 
 ##### `create_session`
 ```python
-async def create_session(self, world_name: str, character_name: str, 
+async def create_session(self, world_name: str, character_name: str,
                        scenario: str = "", rules: List[str] = None) -> Dict[str, Any]
 ```
 创建新会话。
@@ -404,14 +404,14 @@ async def batch_operations():
                 "scenario": "你是一名强大的法师，正在研究古代魔法。"
             },
             {
-                "world_name": "科幻世界", 
+                "world_name": "科幻世界",
                 "character_name": "工程师",
                 "scenario": "你是一名太空工程师，负责维护空间站。"
             }
         ]
-        
+
         results = await client.batch_create_sessions(sessions_data)
-        
+
         # 批量处理回合
         for session in results:
             response = await client.process_turn(
@@ -432,23 +432,23 @@ async def memory_example():
             character_name="侦探",
             scenario="你是一名侦探，正在调查一桩谋杀案。"
         )
-        
+
         # 进行几轮对话
         await client.process_turn(session['id'], "我到达犯罪现场")
         await client.process_turn(session['id'], "检查尸体")
         await client.process_turn(session['id'], "寻找线索")
-        
+
         # 查询记忆
         memories = await client.query_memory(
             session_id=session['id'],
             query="犯罪现场",
             limit=5
         )
-        
+
         print(f"找到 {len(memories)} 条相关记忆:")
         for memory in memories:
             print(f"- {memory['content'][:100]}...")
-        
+
         # 获取记忆总结
         summary = await client.summarize_memory(session['id'])
         print(f"记忆总结: {summary['summary'][:200]}...")

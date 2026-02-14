@@ -13,12 +13,12 @@ characters:
     role: "主角"
     description: "年轻的法师学徒，拥有强大的魔法天赋"
     traits: ["好奇", "勇敢", "善良"]
-    
+
   - name: "雷纳德"
     role: "导师"
     description: "经验丰富的老法师，艾莉亚的导师"
     traits: ["智慧", "耐心", "神秘"]
-    
+
   - name: "暗影之王"
     role: "反派"
     description: "试图吞噬世界魔力的黑暗存在"
@@ -28,11 +28,11 @@ locations:
   - name: "法师塔"
     description: "位于山顶的古老法师塔，雷纳德的居所"
     type: "建筑"
-    
+
   - name: "幽暗森林"
     description: "充满神秘生物和古老魔法的森林"
     type: "自然"
-    
+
   - name: "遗忘之城"
     description: "古代文明的废墟，隐藏着强大的魔法秘密"
     type: "遗迹"
@@ -41,13 +41,13 @@ magic_system:
   magic_types:
     - name: "元素魔法"
       description: "操控火、水、土、风等自然元素"
-      
+
     - name: "奥术魔法"
       description: "纯粹的魔法能量，用于创造和破坏"
-      
+
     - name: "治疗魔法"
       description: "治愈伤口和疾病的魔法"
-      
+
     - name: "召唤魔法"
       description: "召唤生物和元素仆从"
 
@@ -56,7 +56,7 @@ rules:
   allow_player_intervention: true
   max_retcon_depth: 3
   memory_retention: "7天"
-  
+
 llm_settings:
   provider: "openai"
   model: "gpt-4"

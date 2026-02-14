@@ -324,7 +324,7 @@ logger = get_logger(__name__)
 @dataclass
 class ExampleConfig:
     """配置类示例"""
-    
+
     param1: str
     param2: int = 10
     param3: Optional[bool] = None
@@ -332,34 +332,34 @@ class ExampleConfig:
 
 class ExampleClass:
     """类职责说明"""
-    
+
     def __init__(self, config: ExampleConfig):
         """初始化
-        
+
         Args:
             config: 配置参数
         """
         self.config = config
         self._internal_state: Dict[str, Any] = {}
-        
+
     async def example_method(self, input_data: str) -> Dict[str, Any]:
         """方法职责说明
-        
+
         Args:
             input_data: 输入数据说明
-            
+
         Returns:
             返回数据说明
-            
+
         Raises:
             ValueError: 当输入无效时
         """
         if not input_data:
             raise ValueError("输入数据不能为空")
-            
+
         # 方法实现
         result = {"processed": input_data}
-        
+
         logger.info(f"处理完成: {input_data}")
         return result
 ```
@@ -378,24 +378,24 @@ from src.loom.core.example import ExampleClass, ExampleConfig
 
 class TestExampleClass:
     """ExampleClass 测试"""
-    
+
     @pytest.fixture
     def config(self):
         """测试配置"""
         return ExampleConfig(param1="test", param2=20)
-    
+
     @pytest.fixture
     def example_instance(self, config):
         """测试实例"""
         return ExampleClass(config)
-    
+
     @pytest.mark.asyncio
     async def test_example_method_success(self, example_instance):
         """测试成功场景"""
         result = await example_instance.example_method("test input")
-        
+
         assert result["processed"] == "test input"
-    
+
     @pytest.mark.asyncio
     async def test_example_method_empty_input(self, example_instance):
         """测试空输入场景"""
@@ -410,6 +410,6 @@ class TestExampleClass:
 
 ---
 
-**最后更新**: 2026-01-12  
-**版本**: 1.0  
+**最后更新**: 2026-01-12
+**版本**: 1.0
 **状态**: 实施中

@@ -309,7 +309,9 @@ class BatchProcessor:
         for request in requests:
             try:
                 # 模拟批处理响应
-                response = f"[批处理响应] 请求ID: {request.request_id}, 提示长度: {len(request.prompt)}"
+                response = (
+                    f"[批处理响应] 请求ID: {request.request_id}, 提示长度: {len(request.prompt)}"
+                )
                 await request.callback(response)
             except Exception as e:
                 logger.error(f"Error processing request {request.request_id}: {e}")

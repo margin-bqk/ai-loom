@@ -25,14 +25,10 @@ app = typer.Typer(
 
 @app.command("interactive")
 def run_interactive(
-    canon: str = typer.Option(
-        "./canon/default.md", "--canon", "-c", help="规则文件路径"
-    ),
+    canon: str = typer.Option("./canon/default.md", "--canon", "-c", help="规则文件路径"),
     name: str = typer.Option("New Session", "--name", "-n", help="会话名称"),
     provider: Optional[str] = typer.Option(None, "--provider", "-p", help="LLM提供商"),
-    max_turns: Optional[int] = typer.Option(
-        None, "--max-turns", "-m", help="最大回合数"
-    ),
+    max_turns: Optional[int] = typer.Option(None, "--max-turns", "-m", help="最大回合数"),
     output: Optional[str] = typer.Option(None, "--output", "-o", help="输出文件路径"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="详细输出"),
 ):
@@ -181,9 +177,7 @@ async def _export_session(session_id: str, output_path: str, persistence):
 @app.command("batch")
 def run_batch(
     input_file: str = typer.Argument(..., help="输入文件路径（JSON或文本）"),
-    canon: str = typer.Option(
-        "./canon/default.md", "--canon", "-c", help="规则文件路径"
-    ),
+    canon: str = typer.Option("./canon/default.md", "--canon", "-c", help="规则文件路径"),
     name: Optional[str] = typer.Option(None, "--name", "-n", help="会话名称"),
     output: Optional[str] = typer.Option(None, "--output", "-o", help="输出文件路径"),
     verbose: bool = typer.Option(False, "--verbose", "-v", help="详细输出"),

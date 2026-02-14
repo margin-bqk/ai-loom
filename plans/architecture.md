@@ -301,11 +301,11 @@ graph TB
     H --> I[WorldMemory]
     I --> J[PersistenceEngine]
     J --> K[输出响应]
-    
+
     L[ConfigManager] --> M[所有组件]
     N[SessionManager] --> O[TurnScheduler]
     O --> P[所有会话]
-    
+
     Q[监控系统] --> R[性能指标]
     Q --> S[错误日志]
     Q --> T[成本跟踪]

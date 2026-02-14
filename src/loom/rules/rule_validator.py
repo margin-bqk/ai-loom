@@ -493,9 +493,7 @@ class RuleValidator:
 
             for section_name, section in canon.sections.items():
                 # 提取关键词（简化实现）
-                keywords = re.findall(
-                    r"[不能|必须|禁止|允许|可以|应当]+[^。]*", section.content
-                )
+                keywords = re.findall(r"[不能|必须|禁止|允许|可以|应当]+[^。]*", section.content)
                 for keyword in keywords:
                     keyword_sections.setdefault(keyword, []).append(section_name)
 

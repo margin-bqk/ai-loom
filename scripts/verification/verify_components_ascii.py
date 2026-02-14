@@ -5,9 +5,9 @@ Verify Enhanced Reasoning Engine Components
 Check file existence, syntax correctness, and basic functionality.
 """
 
+import importlib.util
 import os
 import sys
-import importlib.util
 from pathlib import Path
 
 

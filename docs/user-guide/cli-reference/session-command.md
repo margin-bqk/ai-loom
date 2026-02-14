@@ -327,7 +327,7 @@ loom session stats --all --format chart
 
 时间分布:
 - 今天: 2 个会话
-- 本周: 8 个会话  
+- 本周: 8 个会话
 - 本月: 15 个会话
 
 世界类型分布:
@@ -490,10 +490,10 @@ loom session analyze --all --output analysis_report.json --format json
 ```markdown
 # 会话: 奇幻冒险
 
-**ID**: abc123-def456  
-**创建时间**: 2024-01-15 10:30:00  
-**更新时间**: 2024-01-15 11:45:00  
-**回合数**: 15  
+**ID**: abc123-def456
+**创建时间**: 2024-01-15 10:30:00
+**更新时间**: 2024-01-15 11:45:00
+**回合数**: 15
 
 ## 配置
 - **规则文件**: templates/rules/fantasy_basic.md
@@ -502,11 +502,11 @@ loom session analyze --all --output analysis_report.json --format json
 ## 历史记录
 
 ### 回合 1
-**玩家**: 我来到风语镇  
+**玩家**: 我来到风语镇
 **响应**: 欢迎来到风语镇，这是一个位于...
 
 ### 回合 2
-**玩家**: 我想找一份工作  
+**玩家**: 我想找一份工作
 **响应**: 风语镇有几个地方可能需要帮手...
 
 ## 记忆摘要

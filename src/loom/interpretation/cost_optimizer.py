@@ -76,9 +76,7 @@ class ProviderPricing:
     """Provider定价配置"""
 
     provider_name: str
-    model_pricing: Dict[
-        str, Dict[str, float]
-    ]  # 模型名 -> {"input": 价格, "output": 价格}
+    model_pricing: Dict[str, Dict[str, float]]  # 模型名 -> {"input": 价格, "output": 价格}
     default_input_price: float = 0.0015  # 默认输入价格（美元/千令牌）
     default_output_price: float = 0.0020  # 默认输出价格（美元/千令牌）
 
@@ -119,9 +117,7 @@ class CostOptimizer:
 
         # 优化策略
         self.optimization_enabled = config.get("optimization_enabled", True)
-        self.auto_switch_threshold = config.get(
-            "auto_switch_threshold", 0.8
-        )  # 预算使用率阈值
+        self.auto_switch_threshold = config.get("auto_switch_threshold", 0.8)  # 预算使用率阈值
 
         logger.info(
             f"Initialized cost optimizer with budget: ${self.budget_limit.total_budget}"

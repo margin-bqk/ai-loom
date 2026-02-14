@@ -4,8 +4,8 @@
 使用ASCII字符避免编码问题
 """
 
-import sys
 import os
+import sys
 from pathlib import Path
 
 # 添加项目根目录到Python路径
@@ -105,16 +105,16 @@ def check_class_hierarchy():
 
     try:
         # 导入接口
+        from src.loom.memory.enhanced_world_memory import EnhancedWorldMemory
         from src.loom.memory.interfaces import (
-            VectorStoreInterface,
             SummarizerInterface,
+            VectorStoreInterface,
             WorldMemoryInterface,
         )
+        from src.loom.memory.memory_summarizer import MemorySummarizer
 
         # 导入实现
         from src.loom.memory.vector_memory_store import VectorMemoryStore
-        from src.loom.memory.memory_summarizer import MemorySummarizer
-        from src.loom.memory.enhanced_world_memory import EnhancedWorldMemory
 
         # 检查继承关系
         checks = [
@@ -153,12 +153,12 @@ def check_enum_values():
     print("=" * 60)
 
     try:
-        from src.loom.memory.vector_memory_store import VectorStoreBackend
-        from src.loom.memory.memory_summarizer import SummaryStrategy, SummaryFormat
         from src.loom.memory.memory_consistency_checker import (
             ConsistencyIssueType,
             ConsistencySeverity,
         )
+        from src.loom.memory.memory_summarizer import SummaryFormat, SummaryStrategy
+        from src.loom.memory.vector_memory_store import VectorStoreBackend
 
         enums = [
             ("VectorStoreBackend", VectorStoreBackend),

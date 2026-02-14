@@ -157,24 +157,24 @@ on:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-    
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install pyyaml
-    
+
     - name: Run verification
       run: |
         python verify_fixes.py --output both --output-file verification_report.json
-    
+
     - name: Upload verification report
       uses: actions/upload-artifact@v3
       with:
@@ -203,7 +203,7 @@ repos:
 ```python
 class CustomVerifier(BaseVerifier):
     """自定义验证器"""
-    
+
     def verify(self):
         # 实现验证逻辑
         self.report.add_result(VerificationResult(

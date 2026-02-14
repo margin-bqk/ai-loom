@@ -258,16 +258,16 @@ llm_providers:
   openai:
     enabled: true
     model: gpt-3.5-turbo  # 使用便宜模型开发
-    
+
   ollama:
     enabled: true  # 启用本地模型测试
 
 session:
   auto_save_interval: 1  # 频繁保存用于调试
-  
+
 logging:
   level: DEBUG  # 详细日志
-  
+
 monitoring:
   enabled: false  # 开发环境禁用监控
 ```
@@ -321,7 +321,7 @@ environment: testing
 llm_providers:
   openai:
     enabled: false  # 测试环境禁用真实 API
-    
+
   mock:
     enabled: true
     type: mock
@@ -331,11 +331,11 @@ llm_providers:
 session:
   persistence:
     enabled: false  # 测试环境禁用持久化
-    
+
 logging:
   level: INFO
   file: ./logs/test.log
-  
+
 testing:
   enabled: true
   mock_llm: true
@@ -457,27 +457,27 @@ python -c "import redis; r = redis.Redis(); print(r.ping())"
 server {
     listen 80;
     server_name loom.your-domain.com;
-    
+
     location / {
         proxy_pass http://127.0.0.1:8000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
-        
+
         # WebSocket 支持
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
     }
-    
+
     # 静态文件缓存
     location /static/ {
         alias /opt/loom/src/loom/web/static/;
         expires 1y;
         add_header Cache-Control "public, immutable";
     }
-    
+
     # 访问日志
     access_log /var/log/nginx/loom_access.log;
     error_log /var/log/nginx/loom_error.log;
@@ -630,10 +630,10 @@ mkdir -p $BACKUP_DIR
 loom session list --format json | jq -c '.[]' | while read session; do
     SESSION_ID=$(echo $session | jq -r '.id')
     SESSION_NAME=$(echo $session | jq -r '.name')
-    
+
     # 清理文件名中的特殊字符
     SAFE_NAME=$(echo $SESSION_NAME | tr -cd '[:alnum:]-_ ')
-    
+
     loom session export \
       --session-id $SESSION_ID \
       --output "$BACKUP_DIR/${DATE}_${SAFE_NAME}.json" \

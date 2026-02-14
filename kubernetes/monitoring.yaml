@@ -36,7 +36,7 @@ data:
         annotations:
           summary: "LOOM instance is down"
           description: "LOOM instance {{ $labels.instance }} has been down for more than 1 minute."
-      
+
       - alert: HighErrorRate
         expr: rate(http_requests_total{status=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
         for: 2m
@@ -45,7 +45,7 @@ data:
         annotations:
           summary: "High error rate on LOOM"
           description: "Error rate is above 5% for the last 5 minutes."
-      
+
       - alert: HighLatency
         expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 2
         for: 5m

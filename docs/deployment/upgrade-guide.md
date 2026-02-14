@@ -336,7 +336,7 @@ import json
 def migrate_0_1_to_0_2():
     """从 0.1.0 迁移到 0.2.0"""
     conn = sqlite3.connect('data/loom.db')
-    
+
     # 添加新表
     conn.execute('''
         CREATE TABLE IF NOT EXISTS metrics (
@@ -346,10 +346,10 @@ def migrate_0_1_to_0_2():
             value REAL
         )
     ''')
-    
+
     # 添加索引
     conn.execute('CREATE INDEX IF NOT EXISTS idx_metrics_timestamp ON metrics(timestamp)')
-    
+
     conn.commit()
     conn.close()
 ```
@@ -537,15 +537,15 @@ jobs:
   tasks:
     - name: Backup current installation
       command: ./scripts/backup.sh
-      
+
     - name: Install new version
       pip:
         name: loom
         version: "{{ target_version }}"
-        
+
     - name: Run migrations
       command: loom db migrate
-      
+
     - name: Restart service
       systemd:
         name: loom
@@ -570,5 +570,5 @@ jobs:
 
 ---
 
-*最后更新: 2025-12-31*  
+*最后更新: 2025-12-31*
 *版本: 1.0*

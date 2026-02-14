@@ -38,12 +38,12 @@ world:
   name: "艾瑟兰大陆"
   description: "一个充满魔法与冒险的奇幻世界"
   genre: "fantasy"
-  
+
 characters:
   - name: "艾莉亚"
     role: "主角"
     description: "年轻的法师学徒"
-    
+
 locations:
   - name: "法师塔"
     description: "位于山顶的古老建筑"

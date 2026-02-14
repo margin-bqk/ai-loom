@@ -8,33 +8,33 @@
 import asyncio
 import sys
 from pathlib import Path
-from unittest.mock import Mock, AsyncMock
+from unittest.mock import AsyncMock, Mock
 
 # 直接导入新组件
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 try:
+    from loom.interpretation.enhanced_consistency_checker import (
+        ConsistencyCategory,
+        EnhancedConsistencyChecker,
+    )
+    from loom.interpretation.enhanced_context_builder import (
+        ContextOptimizationStrategy,
+        EnhancedContextBuilder,
+    )
     from loom.interpretation.enhanced_reasoning_pipeline import (
         EnhancedReasoningPipeline,
         EnhancedReasoningResult,
-    )
-    from loom.interpretation.enhanced_context_builder import (
-        EnhancedContextBuilder,
-        ContextOptimizationStrategy,
-    )
-    from loom.interpretation.enhanced_consistency_checker import (
-        EnhancedConsistencyChecker,
-        ConsistencyCategory,
-    )
-    from loom.interpretation.reasoning_tracker import (
-        ReasoningTracker,
-        ReasoningStepType,
-        DecisionImportance,
     )
 
     # 导入基础类型
     from loom.interpretation.interfaces import ReasoningContext, ReasoningResult
     from loom.interpretation.llm_provider import LLMResponse
+    from loom.interpretation.reasoning_tracker import (
+        DecisionImportance,
+        ReasoningStepType,
+        ReasoningTracker,
+    )
 except ImportError as e:
     print(f"导入错误: {e}")
     print("尝试直接导入模块...")

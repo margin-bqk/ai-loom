@@ -6,24 +6,27 @@ LLM Provider增强组件集成验证脚本
 """
 
 import asyncio
-import sys
 import os
+import sys
 from pathlib import Path
 
 # 添加项目根目录到Python路径
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from src.loom.interpretation.llm_provider import (
-    LLMProvider,
-    ProviderManager,
-    LLMProviderFactory,
-)
+from src.loom.interpretation.cost_optimizer import BudgetLimit, CostOptimizer
 from src.loom.interpretation.enhanced_provider_manager import (
     EnhancedProviderManager,
     ProviderPriority,
 )
-from src.loom.interpretation.cost_optimizer import CostOptimizer, BudgetLimit
+
+# 导入LLMResponse
+from src.loom.interpretation.llm_provider import (
+    LLMProvider,
+    LLMProviderFactory,
+    LLMResponse,
+    ProviderManager,
+)
 from src.loom.interpretation.local_model_provider import LocalModelProvider
 
 

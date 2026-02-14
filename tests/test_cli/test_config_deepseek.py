@@ -226,7 +226,7 @@ llm_providers:
     api_key: ${OPENAI_API_KEY}
     model: gpt-3.5-turbo
     enabled: true
-    
+
   deepseek:
     type: deepseek
     api_key: ${DEEPSEEK_API_KEY}
@@ -245,13 +245,13 @@ provider_selection:
     - deepseek
     - google
     - ollama
-  
+
   session_type_mapping:
     chinese_content:
       preferred_provider: deepseek
       preferred_model: deepseek-chat
       fallback_to: openai
-      
+
     reasoning_tasks:
       preferred_provider: deepseek
       preferred_model: deepseek-reasoner

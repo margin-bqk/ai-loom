@@ -224,9 +224,7 @@ version: 1.0.0
         """测试特定章节解析"""
         # 测试权限解析
         permissions_content = "玩家可以探索。玩家不能偷窃。禁止杀人。"
-        permissions = self.interpreter._parse_permissions(
-            permissions_content, "权限边界"
-        )
+        permissions = self.interpreter._parse_permissions(permissions_content, "权限边界")
         assert len(permissions) >= 2
 
         # 检查禁止性规则

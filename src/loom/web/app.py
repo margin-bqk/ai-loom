@@ -176,9 +176,7 @@ async def list_sessions(include_inactive: bool = False):
         return {"sessions": sessions_list, "count": len(sessions_list)}
 
     except Exception as e:
-        return JSONResponse(
-            status_code=500, content={"error": f"获取会话列表失败: {str(e)}"}
-        )
+        return JSONResponse(status_code=500, content={"error": f"获取会话列表失败: {str(e)}"})
 
 
 @app.post("/api/sessions")
@@ -224,9 +222,7 @@ async def create_session(session_data: dict):
         }
 
     except Exception as e:
-        return JSONResponse(
-            status_code=500, content={"error": f"创建会话失败: {str(e)}"}
-        )
+        return JSONResponse(status_code=500, content={"error": f"创建会话失败: {str(e)}"})
 
 
 @app.get("/api/sessions/{session_id}")
@@ -248,9 +244,7 @@ async def get_session(session_id: str):
         return {"session": session.to_dict(), "stats": stats}
 
     except Exception as e:
-        return JSONResponse(
-            status_code=500, content={"error": f"获取会话失败: {str(e)}"}
-        )
+        return JSONResponse(status_code=500, content={"error": f"获取会话失败: {str(e)}"})
 
 
 @app.delete("/api/sessions/{session_id}")
@@ -279,9 +273,7 @@ async def delete_session(session_id: str, permanent: bool = False):
             return JSONResponse(status_code=500, content={"error": "删除会话失败"})
 
     except Exception as e:
-        return JSONResponse(
-            status_code=500, content={"error": f"删除会话失败: {str(e)}"}
-        )
+        return JSONResponse(status_code=500, content={"error": f"删除会话失败: {str(e)}"})
 
 
 @app.get("/api/rules")
@@ -307,9 +299,7 @@ async def list_rules():
         return {"rules": rules_list, "count": len(rules_list)}
 
     except Exception as e:
-        return JSONResponse(
-            status_code=500, content={"error": f"获取规则列表失败: {str(e)}"}
-        )
+        return JSONResponse(status_code=500, content={"error": f"获取规则列表失败: {str(e)}"})
 
 
 @app.get("/api/rules/{canon_name}")
@@ -336,9 +326,7 @@ async def get_rule(canon_name: str):
         }
 
     except Exception as e:
-        return JSONResponse(
-            status_code=500, content={"error": f"获取规则集失败: {str(e)}"}
-        )
+        return JSONResponse(status_code=500, content={"error": f"获取规则集失败: {str(e)}"})
 
 
 @app.post("/api/turns/{session_id}")
@@ -377,9 +365,7 @@ async def process_turn(session_id: str, turn_data: dict):
         }
 
     except Exception as e:
-        return JSONResponse(
-            status_code=500, content={"error": f"处理回合失败: {str(e)}"}
-        )
+        return JSONResponse(status_code=500, content={"error": f"处理回合失败: {str(e)}"})
 
 
 # WebSocket 端点

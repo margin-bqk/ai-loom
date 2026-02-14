@@ -11,32 +11,32 @@ graph TB
         A --> E[AzureProvider]
         A --> F[LocalProvider]
     end
-    
+
     subgraph "新增DeepSeek集成"
         A --> G[DeepSeekProvider]
         G --> G1[API客户端]
         G --> G2[成本计算器]
         G --> G3[错误处理器]
     end
-    
+
     subgraph "核心组件"
         H[LLMProviderFactory] --> I[提供商创建]
         J[ProviderManager] --> K[提供商管理]
         L[ConfigManager] --> M[配置加载]
     end
-    
+
     subgraph "配置系统"
         N[llm_providers.yaml] --> O[DeepSeek配置]
         P[default_config.yaml] --> Q[默认设置]
         R[环境变量] --> S[API密钥]
     end
-    
+
     subgraph "使用层"
         T[ReasoningPipeline] --> U[推理引擎]
         V[SessionManager] --> W[会话管理]
         X[CLI命令] --> Y[用户交互]
     end
-    
+
     %% 连接关系
     I --> G
     M --> O
@@ -63,14 +63,14 @@ classDiagram
         +get_stats() Dict
         +close() None
     }
-    
+
     class OpenAIProvider {
         +api_key: str
         +base_url: str
         +_generate_impl(prompt: str, **kwargs) LLMResponse
         +_calculate_cost(response: LLMResponse) float
     }
-    
+
     class AnthropicProvider {
         +api_key: str
         +base_url: str
@@ -78,7 +78,7 @@ classDiagram
         +_generate_impl(prompt: str, **kwargs) LLMResponse
         +_calculate_cost(response: LLMResponse) float
     }
-    
+
     class DeepSeekProvider {
         +api_key: str
         +base_url: str
@@ -87,14 +87,14 @@ classDiagram
         +_calculate_cost(response: LLMResponse) float
         +validate_config() List[str]
     }
-    
+
     class LLMProviderFactory {
         <<static>>
         +create_provider(config: Dict) LLMProvider
         +create_from_configs(configs: Dict) Dict[str, LLMProvider]
         +create_provider_manager(configs: Dict) ProviderManager
     }
-    
+
     class ProviderManager {
         +providers: Dict[str, LLMProvider]
         +default_provider: str
@@ -102,7 +102,7 @@ classDiagram
         +get_provider(name: str) LLMProvider
         +generate_with_fallback(prompt: str, **kwargs) LLMResponse
     }
-    
+
     class LLMResponse {
         +content: str
         +model: str
@@ -110,17 +110,17 @@ classDiagram
         +metadata: Dict[str, Any]
         +to_dict() Dict
     }
-    
+
     %% 继承关系
     LLMProvider <|-- OpenAIProvider
     LLMProvider <|-- AnthropicProvider
     LLMProvider <|-- DeepSeekProvider
-    
+
     %% 创建关系
     LLMProviderFactory ..> DeepSeekProvider : creates
     LLMProviderFactory ..> OpenAIProvider : creates
     LLMProviderFactory ..> AnthropicProvider : creates
-    
+
     %% 管理关系
     ProviderManager --> LLMProvider : manages
 ```
@@ -137,27 +137,27 @@ sequenceDiagram
     participant Config as ConfigManager
     participant DeepSeek as DeepSeekProvider
     participant API as DeepSeek API
-    
+
     User->>Session: 创建会话(类型: chinese_content)
     Session->>Config: 获取配置
     Config-->>Session: 返回配置(包含DeepSeek)
-    
+
     Session->>Pipeline: 执行推理
     Pipeline->>Manager: 请求LLM生成
     Manager->>Factory: 获取提供商实例
     Factory->>Config: 读取提供商配置
     Config-->>Factory: 返回DeepSeek配置
-    
+
     Factory->>DeepSeek: 创建DeepSeekProvider实例
     DeepSeek-->>Factory: 返回实例
     Factory-->>Manager: 返回提供商
-    
+
     Manager->>DeepSeek: 调用generate()
     DeepSeek->>API: POST /chat/completions
     API-->>DeepSeek: 返回响应
     DeepSeek->>DeepSeek: 计算成本
     DeepSeek-->>Manager: 返回LLMResponse
-    
+
     Manager-->>Pipeline: 返回响应
     Pipeline-->>Session: 返回推理结果
     Session-->>User: 返回会话响应
@@ -171,20 +171,20 @@ flowchart TD
     B --> C[加载用户配置]
     C --> D[合并配置]
     D --> E{检查DeepSeek配置}
-    
+
     E -->|存在| F[验证API密钥]
     E -->|不存在| G[使用默认值]
-    
+
     F --> H{密钥有效?}
     H -->|是| I[启用DeepSeek提供商]
     H -->|否| J[禁用DeepSeek提供商]
-    
+
     G --> K[创建默认配置]
     K --> I
-    
+
     I --> L[注册到ProviderManager]
     J --> M[记录警告日志]
-    
+
     L --> N[应用就绪]
     M --> N
 ```
@@ -194,27 +194,27 @@ flowchart TD
 ```mermaid
 stateDiagram-v2
     [*] --> 正常状态
-    
+
     正常状态 --> API调用: 用户请求
     API调用 --> 成功响应: HTTP 200
     API调用 --> 认证错误: HTTP 401
     API调用 --> 速率限制: HTTP 429
     API调用 --> 服务器错误: HTTP 5xx
     API调用 --> 网络超时: Timeout
-    
+
     成功响应 --> 正常状态: 返回结果
-    
+
     认证错误 --> 禁用提供商: 标记为不可用
     禁用提供商 --> 回退其他提供商: 自动切换
     回退其他提供商 --> 正常状态: 使用备用提供商
-    
+
     速率限制 --> 等待重试: 指数退避
     等待重试 --> API调用: 重新尝试
-    
+
     服务器错误 --> 临时禁用: 短时间禁用
     临时禁用 --> 健康检查: 定期检查
     健康检查 --> 正常状态: 恢复可用
-    
+
     网络超时 --> 增加超时: 调整配置
     增加超时 --> API调用: 重新尝试
 ```
@@ -229,19 +229,19 @@ graph LR
         C --> D[输入: $0.28/1M tokens]
         C --> E[输出: $0.42/1M tokens]
     end
-    
+
     subgraph "监控层"
         F[成本聚合器] --> G[实时监控]
         H[预算管理器] --> I[告警系统]
         J[使用分析] --> K[优化建议]
     end
-    
+
     subgraph "报告层"
         L[成本报告] --> M[每日摘要]
         N[使用趋势] --> O[预测分析]
         P[提供商对比] --> Q[成本效益分析]
     end
-    
+
     B --> F
     F --> L
     F --> N
@@ -260,20 +260,20 @@ graph TB
         B1[集成测试] --> B2[提供商管理器测试]
         C1[端到端测试] --> C2[完整会话测试]
     end
-    
+
     subgraph "测试组件"
         D[Mock API服务器] --> E[模拟响应]
         F[测试配置] --> G[隔离环境]
         H[测试数据] --> I[验证用例]
     end
-    
+
     subgraph "验证点"
         J[API兼容性] --> K[OpenAI格式兼容]
         L[错误处理] --> M[重试机制]
         N[成本计算] --> O[定价准确性]
         P[性能指标] --> Q[响应时间]
     end
-    
+
     A2 --> D
     B2 --> F
     C2 --> H
@@ -292,17 +292,17 @@ timeline
         实现DeepSeekProvider类
         添加提供商工厂支持
         基础单元测试
-    
+
     section 第2周: 配置集成
         更新配置文件
         CLI命令集成
         集成测试
-    
+
     section 第3周: 测试优化
         端到端测试
         性能测试
         文档更新
-    
+
     section 第4周: 部署发布
         预发布环境
         金丝雀发布
@@ -355,5 +355,5 @@ timeline
 
 ---
 
-*图表最后更新: 2026-02-07*  
+*图表最后更新: 2026-02-07*
 *架构版本: 1.0*

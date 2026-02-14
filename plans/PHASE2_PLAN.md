@@ -308,35 +308,35 @@ class MemoryRelation:
 ```python
 class ReasoningPipeline:
     """推理管道"""
-    
+
     async def process(self, context: ReasoningContext) -> ReasoningResult:
         """处理推理请求"""
         # 1. 规则解释
         constraints = await self.rule_interpreter.interpret(context.rules)
-        
+
         # 2. 记忆检索
         memories = await self.world_memory.retrieve_relevant(
-            context.session_id, 
+            context.session_id,
             context.player_input
         )
-        
+
         # 3. 上下文构建
         prompt = await self.context_builder.build(
             constraints=constraints,
             memories=memories,
             player_input=context.player_input
         )
-        
+
         # 4. LLM生成
         response = await self.llm_provider.generate(prompt)
-        
+
         # 5. 一致性检查
         consistency_report = await self.consistency_checker.check(
             response=response,
             constraints=constraints,
             memories=memories
         )
-        
+
         # 6. 记忆更新
         if consistency_report.passed:
             await self.world_memory.store_fact(
@@ -344,7 +344,7 @@ class ReasoningPipeline:
                 fact_type="narrative_event",
                 content={"text": response.content}
             )
-        
+
         return ReasoningResult(
             narrative_response=response.content,
             reasoning_steps=self.get_steps(),
@@ -393,7 +393,7 @@ benchmarks:
       - p95_latency_ms
       - memory_usage_mb
       - llm_tokens_per_turn
-  
+
   memory_operations:
     operations:
       - store_entity
@@ -404,7 +404,7 @@ benchmarks:
 
 ---
 
-**计划制定**: 2026-01-14  
-**版本**: 1.0  
-**状态**: 待执行  
+**计划制定**: 2026-01-14
+**版本**: 1.0
+**状态**: 待执行
 **负责人**: 架构负责人

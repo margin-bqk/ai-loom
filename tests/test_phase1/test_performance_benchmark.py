@@ -170,9 +170,7 @@ class TestPerformanceBenchmarks:
         print(f"  平均序列化时间: {avg_serialization_time:.3f} ms")
 
         # 性能断言：序列化时间应小于0.05ms
-        assert (
-            avg_serialization_time < 0.05
-        ), f"序列化太慢: {avg_serialization_time:.3f} ms"
+        assert avg_serialization_time < 0.05, f"序列化太慢: {avg_serialization_time:.3f} ms"
 
     def test_memory_usage_estimation(self):
         """测试内存使用估算"""

@@ -58,9 +58,9 @@ class MemorySummarizer:
     ):
         self.llm_provider = llm_provider
         self.config = config or SummaryConfig()
-        self.summary_cache: Dict[str, Dict[str, Any]] = (
-            {}
-        )  # cache_key -> {summary, timestamp}
+        self.summary_cache: Dict[
+            str, Dict[str, Any]
+        ] = {}  # cache_key -> {summary, timestamp}
         logger.info(
             f"MemorySummarizer initialized with strategy: {self.config.summary_strategy}"
         )
@@ -320,17 +320,17 @@ class MemorySummarizer:
     2. 主要角色及其关系
     3. 重要地点和物品
     4. 剧情发展脉络
-    
+
     请以JSON格式返回，包含以下字段：
     - timeline: 事件时间线数组
     - characters: 角色信息数组
     - locations: 地点信息数组
     - plot_development: 剧情发展描述
     - summary_text: 整体摘要文本
-    
+
     记忆实体：
     {summary_input}
-    
+
     请生成结构化摘要："""
 
             response = await self.llm_provider.generate(prompt)

@@ -86,10 +86,10 @@ safety check
    ```bash
    # 安装构建工具
    pip install build twine
-   
+
    # 构建包
    python -m build
-   
+
    # 验证包
    twine check dist/*
    ```
@@ -100,14 +100,14 @@ safety check
    python -m venv test-venv
    source test-venv/bin/activate  # Linux/Mac
    # 或 test-venv\Scripts\activate  # Windows
-   
+
    # 安装构建的包
    pip install dist/loom-X.Y.Z-py3-none-any.whl
-   
+
    # 验证安装
    loom --version
    loom --help
-   
+
    # 运行基础测试
    python -m pytest tests/test_core/ -v
    ```
@@ -280,5 +280,5 @@ python scripts/release.py tag
 
 ---
 
-*最后更新: 2025-12-31*  
+*最后更新: 2025-12-31*
 *版本: 1.0*

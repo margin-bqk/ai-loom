@@ -436,18 +436,18 @@ mkdocs gh-deploy
 def create_session(name: str, canon_path: str) -> Session:
     """
     创建新会话。
-    
+
     Args:
         name: 会话名称
         canon_path: 规则文件路径
-        
+
     Returns:
         Session: 创建的会话对象
-        
+
     Raises:
         FileNotFoundError: 规则文件不存在
         ValidationError: 规则文件无效
-        
+
     Example:
         >>> session = create_session("测试会话", "rules/fantasy.md")
         >>> session.name
