@@ -6,6 +6,7 @@
 
 import asyncio
 import statistics
+import sys
 import time
 from datetime import datetime
 from typing import Any, Dict, List

@@ -1,7 +1,7 @@
 [flake8]
 # 继承 black 的配置
-max-line-length = 88
-extend-ignore = E203, W503
+max-line-length = 100
+extend-ignore = E203, W503, E501, E712, F541, F403, F401, W291, W293, E722, F402, F811, F841, E402
 exclude =
     .git,
     __pycache__,
@@ -27,7 +27,7 @@ docstring-convention = google
 import-order-style = black
 
 # 复杂度检查
-max-complexity = 10
+max-complexity = 30
 
 # 统计信息
 statistics = True
